@@ -368,6 +368,7 @@ watch(position, position => emit('update:position', position))
 	position relative
 	height 100%
 	overflow-y scroll
+	scroll-fade-mask()
 
 .content
 	padding var(--tq-pane-padding) calc(var(--tq-pane-padding) - var(--tq-scrollbar-width)) var(--tq-pane-padding) var(--tq-pane-padding)

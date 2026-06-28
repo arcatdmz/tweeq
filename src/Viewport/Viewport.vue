@@ -14,4 +14,7 @@ initTweeq('viewport')
 @import '../common.styl'
 
 reset-viewport('.TqViewport')
+
+// Global (non-scoped) so scroll-fade-mask()'s keyframe names resolve everywhere.
+scroll-fade-globals()
 </style>

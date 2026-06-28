@@ -233,5 +233,6 @@ watch(() => state.tabs.map(tab => tab.id), ensureActiveTab, {immediate: true})
 		overflow-y auto
 		border-left 1px solid var(--tq-color-border)
 		padding-left var(--tq-rem)
+		scroll-fade-mask()
 </style>
 ../stores/useAppStorage

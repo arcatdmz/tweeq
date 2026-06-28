@@ -158,6 +158,7 @@ onMounted(() => {
 
 	&.scroll
 		overflow-y scroll
+		scroll-fade-mask()
 
 .divider
 	position relative

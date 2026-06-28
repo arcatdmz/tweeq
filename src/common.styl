@@ -141,6 +141,48 @@ input-overlay()
 set-alpha(name, opacity)
 	'color-mix(in srgb, var(%s) %d%, transparent)' % (name opacity * 100)
 
+// Registered custom props + keyframes backing scroll-fade-mask(). Declared once
+// globally (called from the Viewport's non-scoped style) so the keyframe names
+// stay stable and the <length> props can interpolate smoothly.
+scroll-fade-globals()
+	@property --tq-scroll-fade-top
+		syntax '<length>'
+		inherits false
+		initial-value 0
+
+	@property --tq-scroll-fade-bottom
+		syntax '<length>'
+		inherits false
+		initial-value 0
+
+	@keyframes tq-scroll-fade-top
+		from
+			--tq-scroll-fade-top 0
+		to
+			--tq-scroll-fade-top var(--tq-scroll-fade-size)
+
+	@keyframes tq-scroll-fade-bottom
+		from
+			--tq-scroll-fade-bottom var(--tq-scroll-fade-size)
+		to
+			--tq-scroll-fade-bottom 0
+
+// Fade the overflowing edge(s) of a scroll container with a mask, revealed by a
+// scroll-driven animation: the top fade grows in once you've scrolled down past
+// `size`, the bottom fade is present until you reach the end. A non-scrolling
+// element keeps the props at their 0 initial value (inactive timeline), so no
+// fade shows. Pair with scroll-fade-globals(). Longhands only, so we never reset
+// animation-duration/-timeline via the shorthand.
+scroll-fade-mask(size = calc(var(--tq-input-height) / 2))
+	--tq-scroll-fade-size size
+	mask-image unquote('linear-gradient(to bottom, transparent, #000 var(--tq-scroll-fade-top)), linear-gradient(to top, transparent, #000 var(--tq-scroll-fade-bottom))')
+	mask-composite intersect
+	animation-name tq-scroll-fade-top, tq-scroll-fade-bottom
+	animation-fill-mode both
+	animation-timing-function linear
+	animation-timeline scroll(self)
+	animation-range unquote('0 var(--tq-scroll-fade-size), calc(100% - var(--tq-scroll-fade-size)) 100%')
+
 reset-viewport(selector)
 	@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap')
 

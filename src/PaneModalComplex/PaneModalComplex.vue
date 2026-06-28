@@ -119,6 +119,8 @@ defineExpose({
 </template>
 
 <style lang="stylus" scoped>
+@import '../common.styl'
+
 .TqPaneModalComplex
 	display flex
 	flex-direction column
@@ -136,6 +138,7 @@ defineExpose({
 		// Room so focus rings / inputs aren't clipped by the scroll edge.
 		margin-right calc(-1 * var(--tq-pane-padding))
 		padding-right var(--tq-pane-padding)
+		scroll-fade-mask()
 
 	.footer
 		flex 0 0 auto
