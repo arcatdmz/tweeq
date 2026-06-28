@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {ref, watch} from 'vue'
+
 import {Icon} from '../Icon'
 import {useAppConfigStore} from '../stores/appConfig'
 import ParameterHeading from './ParameterHeading.vue'
@@ -14,10 +16,29 @@ defineSlots<{
 const appConfig = useAppConfigStore()
 
 const expanded = appConfig.ref(props.name, true)
+
+// The 0fr↔1fr collapse needs overflow:hidden to clip the content, but that also
+// crops focus outlines of inputs once the group is open. So clip only while
+// collapsed or mid-animation: clip immediately on collapse, then unclip once the
+// expand transition finishes.
+const clipped = ref(!expanded.value)
+
+watch(expanded, expanded => {
+	if (!expanded) clipped.value = true
+})
+
+function onTransitionEnd(e: TransitionEvent) {
+	if (e.propertyName === 'grid-template-rows') {
+		clipped.value = !expanded.value
+	}
+}
 </script>
 
 <template>
-	<div class="ParameterGroup" :class="{collapsed: !expanded}">
+	<div
+		class="ParameterGroup"
+		:class="{collapsed: !expanded}"
+		@transitionend="onTransitionEnd">
 		<ParameterHeading>
 			<template #default>
 				<div class="heading" @click="expanded = !expanded">
@@ -30,7 +51,7 @@ const expanded = appConfig.ref(props.name, true)
 			</template>
 		</ParameterHeading>
 		<!-- Always rendered; the 0fr↔1fr grid-row animates the height. -->
-		<div class="content">
+		<div class="content" :class="{clipped}">
 			<slot />
 		</div>
 	</div>
@@ -52,21 +73,25 @@ const expanded = appConfig.ref(props.name, true)
 	&.collapsed
 		grid-template-rows auto 0fr
 
-// The subgrid of parameters, and the clip child of the 0fr↔1fr trick: overflow
-// hidden + min-height 0 so the row can hug 0 when collapsed. The heading↔content
-// gap is this padding-top; it's animated to 0 on collapse because, with
-// box-sizing:border-box, the padding would otherwise linger inside the 0fr row
-// (leaving a gap under a collapsed heading). Group↔group spacing stays the grid
-// gap alone, so it isn't doubled. Column subgrid keeps the alignment.
+// The subgrid of parameters, and the clip child of the 0fr↔1fr trick: min-height
+// 0 so the row can hug 0 when collapsed. overflow:hidden only while clipped (i.e.
+// collapsed or mid-animation) so a fully-expanded group doesn't crop the focus
+// outlines of its inputs. The heading↔content gap is this padding-top; it's
+// animated to 0 on collapse because, with box-sizing:border-box, the padding
+// would otherwise linger inside the 0fr row (leaving a gap under a collapsed
+// heading). Group↔group spacing stays the grid gap alone, so it isn't doubled.
+// Column subgrid keeps the alignment.
 .content
 	display grid
 	grid-template-columns subgrid
 	grid-column 1 / 3
 	gap var(--tq-gap-control)
 	padding-top var(--tq-gap-control)
-	overflow hidden
 	min-height 0
 	transition padding-top var(--tq-hover-transition-duration) ease
+
+	&.clipped
+		overflow hidden
 
 	.collapsed &
 		padding-top 0
