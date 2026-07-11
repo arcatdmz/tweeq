@@ -4,6 +4,7 @@ import {Fragment, type PropsWithChildren, useRef} from 'react'
 
 import {initTweeq, type TweeqOptions} from '../../initTweeq'
 import {CommandPalette} from '../CommandPalette'
+import {InputColorProvider} from '../InputColor/InputColorContext'
 import {MultiSelectPopup} from '../MultiSelectPopup'
 import {TooltipRoot} from '../Tooltip'
 
@@ -17,6 +18,7 @@ export function TweeqProvider({
 	accentColor,
 	backgroundColor,
 	grayColor,
+	colorPresets,
 	children,
 }: TweeqProviderProps) {
 	const initialized = useRef(false)
@@ -26,17 +28,20 @@ export function TweeqProvider({
 			accentColor,
 			backgroundColor,
 			grayColor,
+			colorPresets,
 		})
 		initialized.current = true
 	}
 
 	// Future batches mount PaneModalComplex and PaneModalTabs beside `children`.
 	return (
-		<Fragment>
-			{children}
-			<CommandPalette />
-			<MultiSelectPopup />
-			<TooltipRoot />
-		</Fragment>
+		<InputColorProvider presets={colorPresets}>
+			<Fragment>
+				{children}
+				<CommandPalette />
+				<MultiSelectPopup />
+				<TooltipRoot />
+			</Fragment>
+		</InputColorProvider>
 	)
 }
