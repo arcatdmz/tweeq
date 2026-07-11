@@ -1,5 +1,6 @@
 // Framework-agnostic core of Tweeq: pure TS + DOM only (no vue, no react).
 export * from './drag'
+export * from './dropdown'
 export * from './balloon'
 export * from './inputShuffle'
 export * from './inputNumber'

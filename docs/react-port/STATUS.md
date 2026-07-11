@@ -115,3 +115,15 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - Demo/e2e verifies InputAngle, time expressions, drum keys, rotary rendering, and Timeline zoom. Pointer-lock paths share the already unit-tested drag core.
 
 **Next-batch contracts:** `inputTimeFormatEntry` is the sole persisted display-format source; future modal/menus should use `useConfigRef` rather than create another context. Timeline consumers receive all Vue scoped-slot fields through the `children` render prop. Rotary/Time overlays must remain inside TweakOverlay to escape containing blocks.
+
+## 2026-07-12 · Batch 6 agent (Codex)
+
+**Done: dropdown/palette/code — InputDropdown, CommandPalette, MultiSelectPopup, MonacoEditor, InputCode, Markdown.** Core owns tested dropdown viewport placement. TweeqProvider now mounts the shared command palette and multi-select popup roots. Gates: TypeScript + ESLint clean, 76 Vitest tests, 7 Playwright tests.
+
+- InputDropdown preserves controlled value preview, fuzzy filtering, label/icon customization, keyboard navigation, current/active rows, selected-item placement, and hover-driven scroll arrows. Its listbox/option roles also make selection semantics accessible.
+- CommandPalette uses the native Popover API, Cmd/Ctrl+P, fuzzy action search, keyboard/pointer execution, and persisted recent-action history. It consumes the Phase 1 vanilla action store rather than introducing component-local registration.
+- MultiSelectPopup anchors to the focused selected input and exposes additive/multiplicative number sliders, a two-number pad, and compatible-value swapping. Its shared root and viewport reset are mounted once by TweeqProvider.
+- MonacoEditor uses the bundled Monaco instance through `@monaco-editor/react`, tracks Tweeq theme changes, controlled content/cursor state, and error markers. InputCode provides the styled input wrapper. Markdown retains the legacy markdown-it anchor/definition-list/footnote/TOC pipeline.
+- Demo/e2e covers all six public components and verifies dropdown selection, a real registered palette action, both Monaco surfaces, and rendered Markdown links/headings.
+
+**Next-batch contracts:** InputColor channel selection should reuse InputDropdown and pass stable option arrays/labels. GlslCanvas should remain the only WebGL surface and clean up its regl resources. Keep shared top-layer roots in TweeqProvider; individual inputs must not mount duplicate palette or multi-select roots.
