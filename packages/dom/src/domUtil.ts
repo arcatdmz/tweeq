@@ -1,3 +1,12 @@
+import type {Rect} from '@tweeq/core'
+
+export function rectFromDOMRect(rect: DOMRectReadOnly): Rect {
+	return [
+		[rect.left, rect.top],
+		[rect.right, rect.bottom],
+	]
+}
+
 export function isDecendantElementOf(child: Element, parent: Element) {
 	let node: Element | null = child
 	while (node) {

@@ -2,14 +2,13 @@ import type {HSVA} from '@tweeq/core'
 import {
 	type Rect,
 	rectCenter,
-	rectFromDOMRect,
 	rectsIntersect,
 	uniteRects,
 } from '@tweeq/core'
 import {vec2} from 'linearly'
 import {createStore} from 'zustand/vanilla'
 
-import {nodeContains} from '../domUtil.js'
+import {nodeContains, rectFromDOMRect} from '../domUtil.js'
 
 export type MultiSelectType = 'number' | 'color' | 'string' | 'boolean'
 

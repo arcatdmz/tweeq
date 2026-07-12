@@ -2,13 +2,6 @@ import {type vec2} from 'linearly'
 
 export type Rect = readonly [topLeft: vec2, bottomRight: vec2]
 
-export function rectFromDOMRect(rect: DOMRectReadOnly): Rect {
-	return [
-		[rect.left, rect.top],
-		[rect.right, rect.bottom],
-	]
-}
-
 export function rectCenter(rect: Rect): vec2 {
 	return [
 		(rect[0][0] + rect[1][0]) / 2,

@@ -44,7 +44,7 @@ const domGlobalPattern =
 	/\b(?:window|document|navigator|localStorage|sessionStorage)\s*[.([]/
 
 const importPattern =
-	/(?:^|\n)\s*(?:import|export)[^'"]*?from\s*['"]([^'".][^'"]*)['"]|import\(\s*['"]([^'".][^'"]*)['"]/g
+	/(?:^|\n)\s*(?:(?:import|export)[^'"]*?from\s*['"]([^'"]+)['"]|import\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\))/g
 
 function* walk(dir) {
 	for (const entry of readdirSync(dir)) {
@@ -61,6 +61,13 @@ let failures = 0
 
 for (const [pkg, forbidden] of Object.entries(rules)) {
 	const srcDir = join(root, pkg, 'src')
+	const manifest = JSON.parse(readFileSync(join(root, pkg, 'package.json'), 'utf8'))
+	const declaredDependencies = new Set([
+		...Object.keys(manifest.dependencies ?? {}),
+		...Object.keys(manifest.devDependencies ?? {}),
+		...Object.keys(manifest.peerDependencies ?? {}),
+		...Object.keys(manifest.optionalDependencies ?? {}),
+	])
 	let files
 	try {
 		files = [...walk(srcDir)]
@@ -71,11 +78,22 @@ for (const [pkg, forbidden] of Object.entries(rules)) {
 		const text = readFileSync(file, 'utf8')
 		const rel = relative(root, file)
 		for (const match of text.matchAll(importPattern)) {
-			const spec = match[1] ?? match[2]
-			if (!spec) continue
+			const spec = match[1] ?? match[2] ?? match[3]
+			if (!spec || spec.startsWith('.')) continue
 			const hit = forbidden.find(f => spec === f || spec.startsWith(f + '/'))
 			if (hit) {
 				console.error(`✗ ${rel}: forbidden import '${spec}' (${pkg} may not depend on ${hit})`)
+				failures++
+			}
+			const owner = spec.startsWith('@')
+				? spec.split('/').slice(0, 2).join('/')
+				: spec.split('/')[0]
+			if (
+				owner.startsWith('@tweeq/') &&
+				owner !== manifest.name &&
+				!declaredDependencies.has(owner)
+			) {
+				console.error(`✗ ${rel}: undeclared workspace dependency '${owner}'`)
 				failures++
 			}
 		}
@@ -88,6 +106,45 @@ for (const [pkg, forbidden] of Object.entries(rules)) {
 		}
 	}
 }
+
+const packageDirs = readdirSync(join(root, 'packages'))
+const workspace = new Map()
+for (const dir of packageDirs) {
+	const manifestPath = join(root, 'packages', dir, 'package.json')
+	let manifest
+	try {
+		manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+	} catch {
+		continue
+	}
+	workspace.set(manifest.name, {dir: `packages/${dir}`, manifest})
+}
+
+const visiting = new Set()
+const visited = new Set()
+function visitPackage(name, path = []) {
+	if (visiting.has(name)) {
+		console.error(`✗ workspace dependency cycle: ${[...path, name].join(' -> ')}`)
+		failures++
+		return
+	}
+	if (visited.has(name)) return
+	const item = workspace.get(name)
+	if (!item) return
+	visiting.add(name)
+	const dependencies = new Set([
+		...Object.keys(item.manifest.dependencies ?? {}),
+		...Object.keys(item.manifest.devDependencies ?? {}),
+		...Object.keys(item.manifest.optionalDependencies ?? {}),
+	])
+	for (const dependency of dependencies) {
+		if (workspace.has(dependency)) visitPackage(dependency, [...path, name])
+	}
+	visiting.delete(name)
+	visited.add(name)
+}
+
+for (const name of workspace.keys()) visitPackage(name)
 
 if (failures > 0) {
 	console.error(`\n${failures} boundary violation(s).`)

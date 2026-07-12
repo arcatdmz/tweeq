@@ -13,11 +13,8 @@ export function precisionOf(step: number) {
  * Converts a number to a string with a fixed number of decimal places, while removing trailing zeros
  */
 export function toFixed(value: number, precision: number) {
-	// TODO: Fix this
 	if (typeof value !== 'number') {
-		// eslint-disable-next-line no-console
-		console.error('Error', value)
-		throw new Error('Error')
+		throw new TypeError(`Expected a number, received ${typeof value}`)
 	}
 
 	return value
