@@ -206,6 +206,10 @@
 	width: 9rem;
 }
 
+.color-controls [data-radio-label] {
+	gap: 0.35em;
+}
+
 .color-preview {
 	display: flex;
 	flex-direction: column;
@@ -343,6 +347,14 @@
 
 	.vp-hide-mobile {
 		display: none !important;
+	}
+
+	/* Keep the article title in the normal gutter, but let the exhaustive
+	   component gallery use the full mobile width like its former top-level
+	   page did. Auto width plus symmetric negative margins includes its own
+	   padding without creating horizontal overflow. */
+	.all-components {
+		margin-inline: -1.5rem;
 	}
 
 	.ExampleContainer .sandbox {

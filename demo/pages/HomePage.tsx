@@ -31,8 +31,8 @@ export function HomePage() {
 		].map(([title, details]) => <div className="vp-feature" key={title}><h2>{title}</h2><p>{details}</p></div>)}</div>
 		<div {...{'vp-content': ''}} data-testid="home-page">
 			<div className="badges"><p><a href="http://spdx.org/licenses/MIT"><img src="https://img.shields.io/npm/l/tweeq.svg?style=flat-square" alt="npm license" /></a></p></div>
-			<p>Tweeq is a collection of <a href="https://react.dev">React</a> components for creative professionals. The components range from fundamental UIs such as numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use.</p>
-			<p>It is continuously developed by the visual artist <a href="https://baku89.com">Baku Hashimoto</a>. The original Vue implementation remains available below as a reference.</p>
+			<p>This repository is a <a href="https://react.dev">React</a> fork of <a href="https://github.com/baku89/tweeq">baku89/tweeq</a>, the original Vue version created by visual artist <a href="https://baku89.com">Baku Hashimoto</a>.</p>
+			<p>Tweeq provides components for creative professionals, ranging from numeric sliders and color pickers to advanced controls like a cubic-bezier editor, with micro-interactions designed for professional use. The React example is shown by default; switch to Vue below to view the original API.</p>
 			<Heading level={2} id="how-to-use">How to Use</Heading>
 			<div className="framework-switcher" role="group" aria-label="Framework example">
 				<button type="button" aria-pressed={react} onClick={() => setFramework('react')}>React</button>

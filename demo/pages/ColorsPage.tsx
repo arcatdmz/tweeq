@@ -1,7 +1,7 @@
 import {useMemo, useState} from 'react'
 
 import {buildSemanticColors, type ColorMode,generateThemeColorsRadix, paletteRepresentatives} from '../../src/core'
-import {InputColor, InputRadio, Viewport} from '../../src/react'
+import {Icon, InputColor, InputRadio, Viewport} from '../../src/react'
 import {Heading} from './docs'
 
 export function ColorsPage() {
@@ -27,7 +27,7 @@ export function ColorsPage() {
 			<p>Tweak the inputs below to see it all update live.</p>
 			<Viewport appId="react-colors" className="ColorPaletteDemo">
 			<div className="color-controls">
-				<label><span>Appearance</span><InputRadio<ColorMode> value={appearance} options={['light', 'dark']} icons={['mdi:white-balance-sunny', 'mdi:weather-night']} onChange={value => { setAppearance(value); setBackground(value === 'light' ? '#ffffff' : '#111111') }} /></label>
+				<label><span>Appearance</span><InputRadio<ColorMode> value={appearance} options={['light', 'dark']} icons={['mdi:white-balance-sunny', 'mdi:weather-night']} renderOption={({label, value}) => <><Icon icon={value === 'light' ? 'mdi:white-balance-sunny' : 'mdi:weather-night'} /><span>{label}</span></>} onChange={value => { setAppearance(value); setBackground(value === 'light' ? '#ffffff' : '#111111') }} /></label>
 				<label><span>Accent</span><InputColor value={accent} onChange={setAccent} /></label>
 				<label><span>Gray</span><InputColor value={gray} onChange={setGray} /></label>
 				<label><span>Background</span><InputColor value={background} onChange={setBackground} /></label>

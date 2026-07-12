@@ -4,11 +4,23 @@ test('documentation navigation switches React pages', async ({page}) => {
 	await page.goto('/')
 	await expect(page.getByTestId('home-page')).toBeVisible()
 	await expect(page.getByRole('button', {name: 'React'})).toHaveAttribute('aria-pressed', 'true')
+	await expect(page.getByRole('link', {name: 'baku89/tweeq'})).toHaveAttribute('href', 'https://github.com/baku89/tweeq')
+	await expect(page.getByRole('banner').getByRole('link', {name: 'All Components'})).toHaveCount(0)
 	await page.getByRole('main').getByRole('link', {name: 'Example', exact: true}).click()
 	await expect(page).toHaveURL(/#\/example$/)
 	await expect(page.getByTestId('examples-page')).toBeVisible()
 	await page.getByRole('link', {name: 'Features'}).click()
 	await expect(page.getByRole('heading', {name: 'Expression Support'})).toBeVisible()
+})
+
+test('curated Components page links to the exhaustive gallery', async ({page}) => {
+	await page.goto('/#/components')
+	const galleryLink = page.getByRole('main').getByRole('link', {name: 'All Components gallery'})
+	await expect(galleryLink).toBeVisible()
+	await galleryLink.click()
+	await expect(page).toHaveURL(/#\/all-components$/)
+	await expect(page.getByRole('heading', {name: 'All Components'})).toBeVisible()
+	await expect(page.getByRole('main').getByRole('link', {name: 'Components page'})).toBeVisible()
 })
 
 test('Many Sliders edits update the live JSON value', async ({page}) => {
@@ -63,4 +75,8 @@ test('Colors page renders the generated swatches', async ({page}) => {
 	await expect(page.getByTestId('colors-page')).toBeVisible()
 	await expect(page.getByTestId('color-swatch')).toHaveCount(24)
 	await expect(page.getByText('error / alert / rec')).toBeVisible()
+	const appearance = page.locator('.color-controls label').first()
+	await expect(appearance.locator('[data-radio-label]').getByText('Light')).toBeVisible()
+	await expect(appearance.locator('[data-radio-label]').getByText('Dark')).toBeVisible()
+	await expect(appearance.locator('[data-radio-label] svg')).toHaveCount(2)
 })

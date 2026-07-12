@@ -44,18 +44,19 @@ type Page =
 	| 'user-study-components'
 	| 'presentation'
 
-// Original VuePress navbar order (config.ts) + our extra All Components tab.
+// Original VuePress navbar order. The exhaustive gallery is linked from the
+// curated Components page rather than competing with it in the primary nav.
 const pages: {page: Page; label: string}[] = [
 	{page: 'home', label: 'Home'},
 	{page: 'features', label: 'Features'},
 	{page: 'components', label: 'Components'},
 	{page: 'colors', label: 'Colors'},
 	{page: 'example', label: 'Example'},
-	{page: 'all-components', label: 'All Components'},
 ]
 
 const routePages: Page[] = [
 	...pages.map(({page}) => page),
+	'all-components',
 	'uist2025',
 	'user-study',
 	'user-study-components',
@@ -70,13 +71,15 @@ function pageFromHash(): Page {
 }
 
 function AllComponentsPage() {
-	// Our own page (not part of the original docs): the auto-discovered
-	// gallery, wrapped in a tweeq Viewport like any embedding app would.
 	return (
-		<Viewport appId="react-demo" className="all-components">
-			<article className="docs-page" data-testid="components-page">
-				<h1>All Components</h1>
-				<p>Interactive gallery of every component in the React port.</p>
+		<div {...{'vp-content': ''}} data-testid="components-page">
+			<h1>All Components</h1>
+			<p>
+				This exhaustive gallery contains every component in the React port. For
+				the documented, selected set with usage notes, see the{' '}
+				<a href="#/components">Components page</a>.
+			</p>
+			<Viewport appId="react-demo" className="all-components">
 				{sections.length === 0 && (
 					<p data-testid="placeholder">
 						No components ported yet — sections appear here per batch.
@@ -85,8 +88,8 @@ function AllComponentsPage() {
 				{sections.map(([name, Section]) => (
 					<Section key={name} />
 				))}
-			</article>
-		</Viewport>
+			</Viewport>
+		</div>
 	)
 }
 
