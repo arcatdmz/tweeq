@@ -17,8 +17,14 @@ const files = ['components', 'layouts'].flatMap(dir =>
 		.map(file => path.join(pkgRoot, dir, String(file)))
 )
 
+// Lazy-loaded route components whose styles never inject on normal pages
+// in a real VuePress app (NotFound styles the whole .vp-theme-container
+// down to a 740px column — only correct on 404 pages).
+const excluded = new Set(['NotFound.vue'])
+
 const partials = []
 for (const file of files.sort()) {
+	if (excluded.has(path.basename(file))) continue
 	const src = fs.readFileSync(file, 'utf8')
 	const blocks = [...src.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)]
 	if (!blocks.length) continue
