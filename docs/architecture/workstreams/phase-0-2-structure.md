@@ -95,3 +95,6 @@ contain renderer markup only and no copied state transition.
   renderers; the Vue-local `eval` implementation was removed.
 - Its shared renderer contract covers controlled updates, numeric and expression
   edits, configured-step keyboard changes, disabled state, and stable parts.
+- InputSize now uses the core aspect-ratio controller in both renderers, and its
+  ratio toggle is a native button with matching disabled and pressed semantics.
+- Vue InputVec now propagates disabled and invalid state to each numeric input.

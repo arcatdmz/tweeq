@@ -62,13 +62,13 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputRadio | SFC | ✅ | — | text-toggles | |
 | InputRotary | SFC | ✅ | `inputRotary` | temporal | |
 | InputShuffle | SFC | ✅ | `inputShuffle` | text-toggles | |
-| InputSize | SFC | ✅ | `inputSize` | components-parity, number-vectors | aspect-lock semantics |
+| InputSize | SFC | ✅ | `inputSize` | components-parity, number-vectors | shared aspect-lock controller; native disabled ratio button and `aria-pressed` aligned in Phase 4 |
 | InputString | SFC | ✅ | `stringExpression` | text-toggles | expression compilation/coercion shared by both renderers |
 | InputSwitch | SFC | ✅ | `inputSwitch` | text-toggles | drag-toggle overlay |
 | InputTextBase | SFC | ✅ | — | — | internal base, not public API |
 | InputTime | SFC | ✅ | `inputTime` | temporal | timecode / frame quantization fixtures protected |
 | InputTranslate | SFC | ✅ | `inputTranslate` | number-vectors | |
-| InputVec | SFC | ✅ | — | number-vectors | |
+| InputVec | SFC | ✅ | — | number-vectors | batched updates; disabled and invalid propagation aligned in Phase 4 |
 | Markdown | SFC | ✅ | — | dropdown-code | markdown-it pipeline shared |
 | Menu | SFC | ✅ | `menu` | overlay | |
 | MonacoEditor | SFC | ✅ | — | dropdown-code | `monaco-editor-vue3` vs `@monaco-editor/react` |

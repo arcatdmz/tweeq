@@ -70,6 +70,8 @@ function commitConfirm() {
 			:max="maxAt(i)"
 			:step="stepAt(i)"
 			:leftIcon="leftIconAt(i)"
+			:disabled="props.disabled"
+			:invalid="props.invalid"
 			:modelValue="v"
 			:inline-position="inlinePositionAt(i)"
 			@update:modelValue="commitChange(i, $event)"

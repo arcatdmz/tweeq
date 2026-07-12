@@ -21,7 +21,7 @@ vi.mock('@iconify/vue', () => ({
 }))
 
 HTMLElement.prototype.scrollIntoView ??= () => undefined
-HTMLElement.prototype.togglePopover ??= () => undefined
+HTMLElement.prototype.togglePopover ??= () => false
 
 runInputDropdownContract(async (component, initialProps) => {
 	if (component !== 'InputDropdown') throw new Error(`Unsupported: ${component}`)
@@ -36,7 +36,8 @@ runInputDropdownContract(async (component, initialProps) => {
 			h(InputDropdown, {
 				...props,
 				modelValue: value.value,
-				'onUpdate:modelValue'(next: string) {
+				'onUpdate:modelValue'(next: unknown) {
+					if (typeof next !== 'string') return
 					value.value = next
 					captured.push({name: 'change', payload: [next]})
 				},
