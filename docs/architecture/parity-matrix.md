@@ -165,6 +165,7 @@ introduced-in, removal criteria, status.
 | Family | Status | Evidence |
 | --- | --- | --- |
 | 1. primitives, icons, groups, buttons, switches | **done 2026-07-13** | shared contracts run against both renderers for InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputGroup, and IconIndicator; Icon source parsing has core fixtures; BindIcon/SvgIcon remain renderer-only markup; packed examples and relevant Playwright specs pass |
+| 2. text and dropdown controls | **done 2026-07-13** | InputString and InputDropdown shared contracts run against both renderers; expression compilation, label generation, placement, and wrap/empty navigation are core-owned; packed examples and text/dropdown Playwright specs pass |
 
 ## Stage V1 completion note (2026-07-13)
 

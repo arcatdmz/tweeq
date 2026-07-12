@@ -79,7 +79,7 @@ contain renderer markup only and no copied state transition.
   pressed semantics, pointer/keyboard activation, and stable parts.
 - Do not publish any package until ADR 0001's ownership question is settled.
 
-## Phase 4 family 2 (in progress)
+## Phase 4 family 2 (done 2026-07-13)
 
 - InputString expression mode now uses the same core compiler in both renderers;
   the Vue-local `eval` implementation was removed.
