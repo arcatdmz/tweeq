@@ -58,10 +58,11 @@ test('default route, clickable nav, theme toggle, and sidebar behave like docs c
 	await expect(page.locator('#expression-support')).toBeInViewport()
 })
 
-test('UIST 2025 and legacy research routes render React demos', async ({page}) => {
+test('research routes render React demos and select the Vue renderer', async ({page}) => {
 	await page.goto('/#/uist2025')
 	await expect(page.getByTestId('uist2025-page')).toBeVisible()
 	await expect(page.getByRole('heading', {name: /Parameter-Tuning GUI Widgets/})).toBeVisible()
+	await expect(page.getByRole('navigation', {name: 'Renderer example'}).getByRole('link', {name: 'Vue'})).toHaveAttribute('href', './vue/#/research')
 	await page.goto('/#/presentation')
 	await expect(page.getByTestId('presentation-page')).toBeVisible()
 	await page.goto('/#/user-study')

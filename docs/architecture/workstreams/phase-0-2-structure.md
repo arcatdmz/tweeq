@@ -226,8 +226,14 @@ contain renderer markup only and no copied state transition.
   `@tweeq/vue` 2.0.0 removal version. New Vue examples use named imports.
 - `docs/api-exports.md` is generated from package export maps and built
   declaration entries. CI rebuilds packages and rejects a stale API inventory.
-- Remaining Phase 5 work: executable snippet/link validation and selectable
-  React/Vue research demos where both renderer APIs can express the example.
+- UIST and user-study pages select between the React documentation examples
+  and an independently built Vue research app. Pages deploys both renderer
+  artifacts without mixing their providers or component APIs in one runtime.
+- The Vue playground now has strict template typechecking and full lint
+  coverage; enabling that gate exposed and fixed InputComplex's invalid
+  descriptor requirement for an internally supplied `modelValue`.
+- Remaining Phase 5 work: executable snippet and general documentation-link
+  validation.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

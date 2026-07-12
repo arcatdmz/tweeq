@@ -2,6 +2,7 @@ import type {Scheme} from '@tweeq/react'
 
 import {Heading} from './docs'
 import {ExampleContainer} from './ExampleContainer'
+import {RendererLinks} from './RendererLinks'
 import {angleScheme, booleanScheme, colorScheme, numberScheme, positionScheme, timeScheme, UserStudyDemos} from './ResearchDemos'
 
 const gestures: Record<string, string[]> = {
@@ -23,6 +24,7 @@ export function UIST2025Page() {
 	type Switches = Record<`switch_${number}`, boolean>
 	return <div {...{'vp-content': ''}} data-testid="uist2025-page">
 		<Heading level={1} id="tweeq-parameter-tuning-gui-widgets">Tweeq: Parameter-Tuning GUI Widgets by/for Creative Professionals</Heading>
+		<RendererLinks reactRoute="uist2025" />
 		<p><a href="https://baku89.com">Baku Hashimoto</a>†, <a href="https://junkato.jp/">Jun Kato</a>†<br /><small>† National Institute of Advanced Industrial Science and Technology (AIST), Japan</small></p>
 		<blockquote><p>In Proceedings of the ACM Symposium on User Interface Software and Technology (UIST '25)<br />September 28–October 1, 2025.<br /><a href="https://doi.org/10.1145/3746059.3747723">doi.org/10.1145/3746059.3747723</a></p></blockquote>
 		<ul><li><a href="https://dl.acm.org/doi/10.1145/3746059.3747723">📃 Paper</a></li><li><a href="https://programs.sigchi.org/uist/2025/program/content/206933">🗣️ Program</a></li></ul>

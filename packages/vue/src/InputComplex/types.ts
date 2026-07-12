@@ -13,7 +13,8 @@ import {InputVecProps} from '../InputVec'
 
 type ParameterBase = {label?: string; icon?: string}
 
-type Desc<T extends Record<string, unknown>, P> = T & P
+type ControlProps<P> = Omit<P, 'modelValue'>
+type Desc<T extends Record<string, unknown>, P> = T & ControlProps<P>
 
 type ParameterDescNumber = Desc<
 	{type: 'number'; ui?: undefined},
@@ -33,12 +34,8 @@ type ParameterDescCode = Desc<{type: 'string'; ui: 'code'}, InputCodeProps>
 type ParameterDescColor = Desc<{type: 'string'; ui: 'color'}, InputColorProps>
 
 type ParameterDescBoolean = Desc<
-	{type: 'boolean'; ui?: undefined},
-	InputSwitchProps
->
-type ParameterDescCheckbox = Desc<
-	{type: 'boolean'; ui: 'checkbox'},
-	InputCheckboxProps
+	{type: 'boolean'; ui?: 'checkbox'},
+	InputSwitchProps & Partial<InputCheckboxProps>
 >
 
 type ParameterDescForType<T> = T extends number
@@ -46,7 +43,7 @@ type ParameterDescForType<T> = T extends number
 	: T extends string
 		? ParameterDescString | ParameterDescCode | ParameterDescColor
 		: T extends boolean
-			? ParameterDescBoolean | ParameterDescCheckbox
+			? ParameterDescBoolean
 			: T extends vec2
 				? ParameterDescVec2 | ParameterDescPosition
 				: never

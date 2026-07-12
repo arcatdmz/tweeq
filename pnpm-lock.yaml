@@ -163,6 +163,9 @@ importers:
       vite-plugin-glsl:
         specifier: 'catalog:'
         version: 1.6.0(@rollup/pluginutils@5.4.0(rollup@4.62.2))(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
+      vue-tsc:
+        specifier: ^2.1.10
+        version: 2.2.12(typescript@5.9.3)
 
   examples/react-vite:
     dependencies:
