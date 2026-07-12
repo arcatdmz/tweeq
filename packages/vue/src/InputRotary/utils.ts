@@ -1,30 +1,5 @@
-import {Rect} from '@baku89/pave'
-import {checkIntersection} from 'line-intersect'
-import {vec2} from 'linearly'
-import {partial} from 'lodash-es'
-
-export function clampPosWithinRect(origin: vec2, pos: vec2, rect: Rect): vec2 {
-	const [[left, top], [right, bottom]] = rect
-
-	let ret: ReturnType<typeof checkIntersection>
-
-	const check = partial(checkIntersection, ...origin, ...pos)
-
-	if ((ret = check(left, top, right, top)).type === 'intersecting') {
-		return [ret.point.x, ret.point.y]
-	}
-
-	if ((ret = check(right, top, right, bottom)).type === 'intersecting') {
-		return [ret.point.x, ret.point.y]
-	}
-
-	if ((ret = check(right, bottom, left, bottom)).type === 'intersecting') {
-		return [ret.point.x, ret.point.y]
-	}
-
-	if ((ret = check(left, bottom, left, top)).type === 'intersecting') {
-		return [ret.point.x, ret.point.y]
-	}
-
-	return pos
-}
+// Stage V2: the implementation lives in @tweeq/core (fixture:
+// core/src/inputRotary.test.ts "clamps a label ray to the viewport
+// rectangle"). @baku89/pave's Rect and core's geometry Rect are the same
+// readonly [min, max] tuple, so callers pass either.
+export {clampPosWithinRect} from '@tweeq/core'
