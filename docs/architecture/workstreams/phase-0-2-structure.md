@@ -93,3 +93,5 @@ contain renderer markup only and no copied state transition.
 
 - InputNumber expression mode now uses the shared core compiler in both
   renderers; the Vue-local `eval` implementation was removed.
+- Its shared renderer contract covers controlled updates, numeric and expression
+  edits, configured-step keyboard changes, disabled state, and stable parts.

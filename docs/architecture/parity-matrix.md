@@ -57,7 +57,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputDropdown | SFC | ✅ | `dropdown` | shared contract + components-parity, dropdown-code | shared empty/wrap navigation; click confirm, Escape rollback, and listbox ARIA aligned in Phase 4 |
 | InputDrum | SFC | ✅ | `inputDrum` | temporal | |
 | InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
-| InputNumber | SFC | ✅ | `inputNumber` | docs-pages, number-vectors | decimal precision, drag-scale, and expression compiler fixtures protected |
+| InputNumber | SFC | ✅ | `inputNumber` | shared contract + docs-pages, number-vectors | controlled edits, expressions, configured steps, disabled state, stable parts, decimal precision, and drag-scale protected |
 | InputPosition | SFC | ✅ | (`inputTranslate`) | number-vectors | |
 | InputRadio | SFC | ✅ | — | text-toggles | |
 | InputRotary | SFC | ✅ | `inputRotary` | temporal | |
@@ -166,6 +166,7 @@ introduced-in, removal criteria, status.
 | --- | --- | --- |
 | 1. primitives, icons, groups, buttons, switches | **done 2026-07-13** | shared contracts run against both renderers for InputButton, InputButtonToggle, InputSwitch, InputCheckbox, InputGroup, and IconIndicator; Icon source parsing has core fixtures; BindIcon/SvgIcon remain renderer-only markup; packed examples and relevant Playwright specs pass |
 | 2. text and dropdown controls | **done 2026-07-13** | InputString and InputDropdown shared contracts run against both renderers; expression compilation, label generation, placement, and wrap/empty navigation are core-owned; packed examples and text/dropdown Playwright specs pass |
+| 3. number and vector controls | **in progress** | InputNumber uses the core expression compiler and its shared contract runs against both renderers; InputVec, InputPosition, and InputSize convergence remains underway |
 
 ## Stage V1 completion note (2026-07-13)
 

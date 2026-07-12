@@ -6,6 +6,10 @@ export type {
 	RendererHarnessFactory,
 } from './harness'
 export {
+	type InputNumberContractProps,
+	runInputNumberContract,
+} from './inputNumber'
+export {
 	type InputStringContractProps,
 	runInputStringContract,
 } from './inputString'
