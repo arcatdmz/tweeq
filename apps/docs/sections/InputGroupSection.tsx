@@ -1,6 +1,5 @@
+import {type InputBoxProps, InputGroup} from '@tweeq/react'
 import {type ButtonHTMLAttributes} from 'react'
-
-import {type InputBoxProps, InputGroup} from '../../../src/react'
 
 interface GroupItemProps
 	extends InputBoxProps,

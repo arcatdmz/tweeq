@@ -1,4 +1,4 @@
-import {Balloon} from '../../../src/react'
+import {Balloon} from '@tweeq/react'
 
 export default function BalloonSection() {
 	return (

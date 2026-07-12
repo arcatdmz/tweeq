@@ -1,7 +1,6 @@
+import {InputSize} from '@tweeq/react'
 import {type vec2} from 'linearly'
 import {useState} from 'react'
-
-import {InputSize} from '../../../src/react'
 
 export default function InputSizeSection() {
 	const [value, setValue] = useState<vec2>([100, 50])

@@ -1,6 +1,5 @@
+import {InputComplex, type Scheme} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputComplex, type Scheme} from '../../../src/react'
 
 type Value = {amount: number; enabled: boolean; label: string}
 

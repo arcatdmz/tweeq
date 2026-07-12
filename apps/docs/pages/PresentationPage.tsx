@@ -1,4 +1,5 @@
-import type {Scheme} from '../../../src/react'
+import type {Scheme} from '@tweeq/react'
+
 import {ExampleContainer} from './ExampleContainer'
 import {angleScheme, booleanScheme, numberScheme, positionScheme, timeScheme} from './ResearchDemos'
 

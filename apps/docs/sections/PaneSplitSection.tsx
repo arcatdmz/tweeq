@@ -1,4 +1,4 @@
-import {PaneSplit} from '../../../src/react'
+import {PaneSplit} from '@tweeq/react'
 
 export default function PaneSplitSection() {
 	return (

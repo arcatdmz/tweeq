@@ -1,6 +1,5 @@
+import {Menu, type MenuItem} from '@tweeq/react'
 import {useState} from 'react'
-
-import {Menu, type MenuItem} from '../../../src/react'
 
 export default function MenuSection() {
 	const [result, setResult] = useState('none')

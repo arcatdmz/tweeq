@@ -1,4 +1,4 @@
-import {PaneExpandable} from '../../../src/react'
+import {PaneExpandable} from '@tweeq/react'
 
 export default function PaneExpandableSection() {
 	return (

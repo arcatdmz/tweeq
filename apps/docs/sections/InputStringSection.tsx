@@ -1,6 +1,5 @@
+import {InputString} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputString} from '../../../src/react'
 
 export default function InputStringSection() {
 	const [value, setValue] = useState('hello')

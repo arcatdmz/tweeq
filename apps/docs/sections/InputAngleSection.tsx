@@ -1,6 +1,5 @@
+import {InputAngle} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputAngle} from '../../../src/react'
 
 export default function InputAngleSection() {
 	const [value, setValue] = useState(30)

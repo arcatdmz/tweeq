@@ -1,6 +1,5 @@
+import {InputCode} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputCode} from '../../../src/react'
 
 export default function InputCodeSection() {
 	const [value, setValue] = useState('{\n  "enabled": true\n}')

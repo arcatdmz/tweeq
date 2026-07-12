@@ -1,4 +1,4 @@
-import {PaneZUI} from '../../../src/react'
+import {PaneZUI} from '@tweeq/react'
 
 export default function PaneZUISection() {
 	return (

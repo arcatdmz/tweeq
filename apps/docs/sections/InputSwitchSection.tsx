@@ -1,6 +1,5 @@
+import {InputSwitch} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputSwitch} from '../../../src/react'
 
 export default function InputSwitchSection() {
 	const [value, setValue] = useState(false)

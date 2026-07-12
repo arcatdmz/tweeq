@@ -1,4 +1,5 @@
-import {TitleBar} from '../../../src/react'
+import {TitleBar} from '@tweeq/react'
+
 import {assetPath} from '../assetPath'
 
 export default function TitleBarSection() {

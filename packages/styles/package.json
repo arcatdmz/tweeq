@@ -5,10 +5,12 @@
 	"description": "Design tokens, reset, and shared component style parts for Tweeq",
 	"type": "module",
 	"exports": {
-		"./style.css": "./dist/style.css"
+		"./style.css": "./dist/style.css",
+		"./common.styl": "./src/common.styl"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"src"
 	],
 	"scripts": {
 		"build": "rm -rf dist && mkdir -p dist && stylus --compress --out dist src/style.styl"

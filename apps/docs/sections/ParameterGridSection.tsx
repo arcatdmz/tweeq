@@ -4,7 +4,7 @@ import {
 	ParameterGrid,
 	ParameterGroup,
 	ParameterHeading,
-} from '../../../src/react'
+} from '@tweeq/react'
 
 export default function ParameterGridSection() {
 	return (

@@ -1,6 +1,5 @@
+import {InputDrum} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputDrum} from '../../../src/react'
 
 export default function InputDrumSection() {
 	const [value, setValue] = useState('Auto')

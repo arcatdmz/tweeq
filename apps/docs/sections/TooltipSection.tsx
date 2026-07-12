@@ -1,6 +1,5 @@
+import {useTooltip} from '@tweeq/react'
 import {useRef} from 'react'
-
-import {useTooltip} from '../../../src/react'
 
 export default function TooltipSection() {
 	const trigger = useRef<HTMLButtonElement>(null)

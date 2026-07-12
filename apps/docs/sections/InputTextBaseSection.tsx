@@ -1,6 +1,5 @@
+import {InputTextBase} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputTextBase} from '../../../src/react'
 
 export default function InputTextBaseSection() {
 	const [value, setValue] = useState('base text')

@@ -1,6 +1,5 @@
+import {MonacoEditor} from '@tweeq/react'
 import {useState} from 'react'
-
-import {MonacoEditor} from '../../../src/react'
 
 export default function MonacoEditorSection() {
 	const [value, setValue] = useState('const answer = 42')

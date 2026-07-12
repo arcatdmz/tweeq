@@ -1,6 +1,5 @@
+import {InputButton, modalStore, type Scheme} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputButton, modalStore, type Scheme} from '../../../src/react'
 
 type Value = {speed: number}
 const scheme: Scheme<Value> = {speed: {type: 'number', min: 0}}

@@ -1,4 +1,5 @@
-import {type Scheme} from '../../../src/react'
+import {type Scheme} from '@tweeq/react'
+
 import {Heading} from './docs'
 import {ExampleContainer} from './ExampleContainer'
 

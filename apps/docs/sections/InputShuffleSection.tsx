@@ -1,6 +1,5 @@
+import {InputShuffle} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputShuffle} from '../../../src/react'
 
 export default function InputShuffleSection() {
 	const [value, setValue] = useState(1)

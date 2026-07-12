@@ -1,6 +1,5 @@
+import {IconIndicator} from '@tweeq/react'
 import {useState} from 'react'
-
-import {IconIndicator} from '../../../src/react'
 
 export default function IconIndicatorSection() {
 	const [active, setActive] = useState(false)

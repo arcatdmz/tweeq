@@ -1,6 +1,5 @@
+import {InputRotary} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputRotary} from '../../../src/react'
 
 export default function InputRotarySection() {
 	const [value, setValue] = useState(45)

@@ -1,4 +1,4 @@
-import {SvgIcon} from '../../../src/react'
+import {SvgIcon} from '@tweeq/react'
 
 export default function SvgIconSection() {
 	return (

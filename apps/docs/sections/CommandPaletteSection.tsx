@@ -1,6 +1,5 @@
+import {actionsStore} from '@tweeq/react'
 import {useEffect, useState} from 'react'
-
-import {actionsStore} from '../../../src/react'
 
 export default function CommandPaletteSection() {
 	const [count, setCount] = useState(0)

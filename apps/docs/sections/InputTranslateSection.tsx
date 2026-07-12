@@ -1,7 +1,6 @@
+import {InputTranslate} from '@tweeq/react'
 import {type vec2} from 'linearly'
 import {useState} from 'react'
-
-import {InputTranslate} from '../../../src/react'
 
 export default function InputTranslateSection() {
 	const [value, setValue] = useState<vec2>([0, 0])

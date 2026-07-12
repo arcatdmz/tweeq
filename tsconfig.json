@@ -26,5 +26,5 @@
 		"noFallthroughCasesInSwitch": true
 	},
 	// The legacy Vue sources are reference-only and intentionally excluded.
-	"include": ["src/core", "src/react", "apps/docs"]
+	"include": ["apps/docs", "e2e", "scripts"]
 }

@@ -1,6 +1,5 @@
+import {TweakOverlay} from '@tweeq/react'
 import {useState} from 'react'
-
-import {TweakOverlay} from '../../../src/react'
 
 export default function TweakOverlaySection() {
 	const [show, setShow] = useState(false)

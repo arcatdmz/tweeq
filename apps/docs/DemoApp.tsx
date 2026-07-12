@@ -1,3 +1,5 @@
+import {themeStore} from '@tweeq/react'
+import {Viewport} from '@tweeq/react'
 import {
 	type ComponentType,
 	Fragment,
@@ -6,8 +8,6 @@ import {
 	useState,
 } from 'react'
 
-import {themeStore} from '../../src/core'
-import {Viewport} from '../../src/react'
 import {assetPath} from './assetPath'
 import {ColorsPage} from './pages/ColorsPage'
 import {ComponentsPage} from './pages/ComponentsPage'

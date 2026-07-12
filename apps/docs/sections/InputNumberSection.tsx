@@ -1,6 +1,5 @@
+import {InputNumber} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputNumber} from '../../../src/react'
 
 export default function InputNumberSection() {
 	const [value, setValue] = useState(25)

@@ -24,7 +24,7 @@
 	],
 	"scripts": {
 		"build": "rm -rf dist && vite build",
-		"test": "vitest run"
+		"test": "vitest run --passWithNoTests"
 	},
 	"peerDependencies": {
 		"vue": "^3.0.0"

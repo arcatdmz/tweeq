@@ -2,7 +2,8 @@ import {
 	InputAngle, InputButton, InputCheckbox, InputColor, InputDropdown, InputDrum,
 	InputNumber, InputPosition, InputRadio, InputSize, InputString, InputSwitch,
 	InputTime, InputVec, type Scheme,
-} from '../../../src/react'
+} from '@tweeq/react'
+
 import {DemoComponent, useAnchorScroll} from './DemoComponent'
 import {Heading} from './docs'
 

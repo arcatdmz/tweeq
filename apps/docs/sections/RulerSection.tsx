@@ -1,6 +1,5 @@
+import {Ruler} from '@tweeq/react'
 import {useState} from 'react'
-
-import {Ruler} from '../../../src/react'
 
 export default function RulerSection() {
 	const [value, setValue] = useState(0)

@@ -1,6 +1,5 @@
+import {InputButtonToggle} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputButtonToggle} from '../../../src/react'
 
 export default function InputButtonToggleSection() {
 	const [value, setValue] = useState(false)

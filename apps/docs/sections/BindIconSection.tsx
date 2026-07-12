@@ -1,4 +1,4 @@
-import {BindIcon} from '../../../src/react'
+import {BindIcon} from '@tweeq/react'
 
 export default function BindIconSection() {
 	return (

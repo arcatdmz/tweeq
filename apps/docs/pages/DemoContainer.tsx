@@ -1,6 +1,5 @@
+import {InputButton, Viewport} from '@tweeq/react'
 import {type ReactNode, useState} from 'react'
-
-import {InputButton, Viewport} from '../../../src/react'
 
 export interface DemoContainerProps {
 	className?: string

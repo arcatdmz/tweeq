@@ -1,4 +1,4 @@
-import {Viewport} from '../../../src/react'
+import {Viewport} from '@tweeq/react'
 
 export default function ViewportSection() {
 	return (

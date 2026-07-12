@@ -1,6 +1,6 @@
+import {Icon, InputComplex, type Scheme, useKeys} from '@tweeq/react'
 import {type ReactNode, useEffect, useState} from 'react'
 
-import {Icon, InputComplex, type Scheme, useKeys} from '../../../src/react'
 import {DemoContainer} from './DemoContainer'
 
 export interface DemoListeners {

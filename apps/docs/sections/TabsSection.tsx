@@ -1,4 +1,4 @@
-import {Tab, Tabs} from '../../../src/react'
+import {Tab, Tabs} from '@tweeq/react'
 
 export default function TabsSection() {
 	return (

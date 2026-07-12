@@ -11,10 +11,12 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
-		}
+		},
+		"./shaders/*.frag": "./src/shaders/*.frag"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"src"
 	],
 	"scripts": {
 		"build": "rm -rf dist && tsc -p tsconfig.build.json",

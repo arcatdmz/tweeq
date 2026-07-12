@@ -1,6 +1,5 @@
+import {InputTime} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputTime} from '../../../src/react'
 
 export default function InputTimeSection() {
 	const [value, setValue] = useState(24)

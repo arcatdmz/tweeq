@@ -1,7 +1,7 @@
+import {buildSemanticColors, type ColorMode,generateThemeColorsRadix, paletteRepresentatives} from '@tweeq/react'
+import {Icon, InputColor, InputRadio, Viewport} from '@tweeq/react'
 import {useMemo, useState} from 'react'
 
-import {buildSemanticColors, type ColorMode,generateThemeColorsRadix, paletteRepresentatives} from '../../../src/core'
-import {Icon, InputColor, InputRadio, Viewport} from '../../../src/react'
 import {Heading} from './docs'
 
 export function ColorsPage() {

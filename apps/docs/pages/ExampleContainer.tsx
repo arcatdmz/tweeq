@@ -1,6 +1,6 @@
+import {InputComplex, type Scheme} from '@tweeq/react'
 import {type ReactNode, useState} from 'react'
 
-import {InputComplex, type Scheme} from '../../../src/react'
 import {DemoContainer} from './DemoContainer'
 
 export interface ExampleContainerProps<T extends Record<string, unknown>> {

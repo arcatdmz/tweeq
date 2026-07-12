@@ -1,6 +1,5 @@
+import {InputRadio} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputRadio} from '../../../src/react'
 
 export default function InputRadioSection() {
 	const [value, setValue] = useState('alpha')

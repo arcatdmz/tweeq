@@ -1,6 +1,5 @@
+import {InputButton, PaneModal} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputButton, PaneModal} from '../../../src/react'
 
 export default function PaneModalSection() {
 	const [open, setOpen] = useState(false)

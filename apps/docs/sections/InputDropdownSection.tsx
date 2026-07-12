@@ -1,6 +1,5 @@
+import {InputDropdown} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputDropdown} from '../../../src/react'
 
 const options = [
 	'alpha',

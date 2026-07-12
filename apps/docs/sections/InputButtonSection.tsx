@@ -1,6 +1,5 @@
+import {InputButton} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputButton} from '../../../src/react'
 
 export default function InputButtonSection() {
 	const [count, setCount] = useState(0)

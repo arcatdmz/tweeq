@@ -1,4 +1,4 @@
-import {PaneFloating} from '../../../src/react'
+import {PaneFloating} from '@tweeq/react'
 
 export default function PaneFloatingSection() {
 	return (

@@ -1,4 +1,4 @@
-import {Markdown} from '../../../src/react'
+import {Markdown} from '@tweeq/react'
 
 export default function MarkdownSection() {
 	return (

@@ -1,6 +1,5 @@
+import {Timeline} from '@tweeq/react'
 import {useState} from 'react'
-
-import {Timeline} from '../../../src/react'
 
 export default function TimelineSection() {
 	const [frameWidth, setFrameWidth] = useState(20)

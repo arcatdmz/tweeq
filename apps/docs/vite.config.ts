@@ -4,18 +4,26 @@ import react from '@vitejs/plugin-react'
 import {defineConfig} from 'vite'
 import glsl from 'vite-plugin-glsl'
 
-// Demo playground for the React port (see docs/react-port/PLAN.md).
-// Serve with `npm run dev:demo`; Playwright e2e boots this via `npm run e2e`.
+const here = new URL('.', import.meta.url).pathname
+
+// Documentation playground for the React renderer. Serve with `pnpm dev`;
+// Playwright e2e boots this via the root `pnpm e2e`.
 export default defineConfig({
 	plugins: [glsl(), react()],
 	resolve: {
 		alias: {
+			// Compile the workspace packages from source so the playground gets
+			// HMR and always tracks the working tree. Packed-artifact coverage
+			// lives in examples/react-vite instead.
+			'@tweeq/react': path.resolve(here, '../../packages/react/src'),
+			'@tweeq/core': path.resolve(here, '../../packages/core/src'),
+			'@tweeq/dom': path.resolve(here, '../../packages/dom/src'),
 			// In a real VuePress build this specifier is a generated temp file
 			// forwarding the user's .vuepress/styles/palette.scss — this repo
 			// has none, so the file is empty. Shim it for the theme's
-			// _variables.scss (see demo/styles/index.scss).
+			// _variables.scss (see styles/index.scss).
 			'@vuepress/plugin-palette/palette': path.resolve(
-				new URL('.', import.meta.url).pathname,
+				here,
 				'styles/_empty-palette.scss'
 			),
 		},

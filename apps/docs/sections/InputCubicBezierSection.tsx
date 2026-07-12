@@ -1,6 +1,5 @@
+import {type CubicBezierValue, InputCubicBezier} from '@tweeq/react'
 import {useState} from 'react'
-
-import {type CubicBezierValue, InputCubicBezier} from '../../../src/react'
 
 export default function InputCubicBezierSection() {
 	const [value, setValue] = useState<CubicBezierValue>([0.25, 0.1, 0.25, 1])

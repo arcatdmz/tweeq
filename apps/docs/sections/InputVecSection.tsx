@@ -1,6 +1,5 @@
+import {InputVec} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputVec} from '../../../src/react'
 
 export default function InputVecSection() {
 	const [value, setValue] = useState<readonly [number, number, number]>([

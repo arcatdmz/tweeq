@@ -1,4 +1,5 @@
-import type {Scheme} from '../../../src/react'
+import type {Scheme} from '@tweeq/react'
+
 import {ExampleContainer} from './ExampleContainer'
 
 export const numberScheme = {opacity: {type: 'number', min: 0, max: 100, suffix: '%'}} as Scheme<{opacity: number}>

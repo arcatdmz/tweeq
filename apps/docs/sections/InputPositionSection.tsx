@@ -1,7 +1,6 @@
+import {InputPosition} from '@tweeq/react'
 import {type vec2} from 'linearly'
 import {useState} from 'react'
-
-import {InputPosition} from '../../../src/react'
 
 export default function InputPositionSection() {
 	const [value, setValue] = useState<vec2>([10, 20])

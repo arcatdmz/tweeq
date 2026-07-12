@@ -1,6 +1,5 @@
+import {InputColor} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputColor} from '../../../src/react'
 
 export default function InputColorSection() {
 	const [value, setValue] = useState('#7c3aed')

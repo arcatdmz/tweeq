@@ -1,4 +1,4 @@
-import {GlslCanvas} from '../../../src/react'
+import {GlslCanvas} from '@tweeq/react'
 
 export default function GlslCanvasSection() {
 	return (

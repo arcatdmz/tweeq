@@ -1,4 +1,5 @@
-import {InputAngle, InputColor, InputNumber, InputPosition, InputTime} from '../../../src/react'
+import {InputAngle, InputColor, InputNumber, InputPosition, InputTime} from '@tweeq/react'
+
 import {DemoComponent} from './DemoComponent'
 
 export function UserStudyComponentsPage() {

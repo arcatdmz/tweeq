@@ -24,22 +24,47 @@
 	],
 	"scripts": {
 		"build": "rm -rf dist && vite build",
-		"test": "vitest run"
+		"test": "vitest run --passWithNoTests"
 	},
 	"peerDependencies": {
 		"react": ">=18.0.0",
 		"react-dom": ">=18.0.0"
 	},
 	"devDependencies": {
+		"@types/chroma-js": "^2.4.3",
+		"@types/lodash-es": "catalog:",
+		"@types/markdown-it": "^14.1.2",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
+		"stylus": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-dts": "catalog:",
 		"vite-plugin-glsl": "catalog:",
 		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@iconify/react": "^6.0.2",
+		"@monaco-editor/react": "^4.7.0",
+		"@tweeq/core": "workspace:^",
+		"@tweeq/dom": "workspace:^",
+		"@tweeq/styles": "workspace:^",
+		"bndr-js": "catalog:",
+		"case": "^1.6.3",
+		"chroma-js": "^3.1.1",
+		"colorjs.io": "^0.5.0",
+		"fast-fuzzy": "^1.12.0",
+		"linearly": "catalog:",
+		"lodash-es": "catalog:",
+		"markdown-it": "^14.0.0",
+		"markdown-it-anchor": "^9.0.1",
+		"markdown-it-deflist": "^3.0.0",
+		"markdown-it-footnote": "^4.0.0",
+		"markdown-it-toc-done-right": "^4.2.0",
+		"monaco-editor": "^0.54.0",
+		"zustand": "^5.0.14"
 	}
 }

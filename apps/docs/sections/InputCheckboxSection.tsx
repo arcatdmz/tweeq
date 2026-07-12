@@ -1,6 +1,5 @@
+import {InputCheckbox} from '@tweeq/react'
 import {useState} from 'react'
-
-import {InputCheckbox} from '../../../src/react'
 
 export default function InputCheckboxSection() {
 	const [value, setValue] = useState(false)

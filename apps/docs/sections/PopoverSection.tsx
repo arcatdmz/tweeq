@@ -1,6 +1,5 @@
+import {Popover} from '@tweeq/react'
 import {useState} from 'react'
-
-import {Popover} from '../../../src/react'
 
 export default function PopoverSection() {
 	const [reference, setReference] = useState<HTMLButtonElement | null>(null)

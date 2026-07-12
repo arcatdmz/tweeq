@@ -7,9 +7,9 @@ import '@vuepress/helper/normalize.css'
 import './styles/index.scss'
 import './demo.css'
 
+import {TweeqProvider} from '@tweeq/react'
 import {createRoot} from 'react-dom/client'
 
-import {TweeqProvider} from '../../src/react'
 import {DemoApp} from './DemoApp'
 
 // NOTE: no global <Viewport> — like the original docs, the page chrome is
