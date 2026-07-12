@@ -119,7 +119,6 @@ defineExpose({
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqPaneModalComplex
 	display flex

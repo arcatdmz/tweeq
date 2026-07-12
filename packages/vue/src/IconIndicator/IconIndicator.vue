@@ -20,7 +20,6 @@ defineEmits<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .IconIndicator
 	--size var(--tq-input-height)

@@ -494,7 +494,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 $right-arrow-width = 1em
 $chevron-width = calc(.7 * var(--tq-input-height))

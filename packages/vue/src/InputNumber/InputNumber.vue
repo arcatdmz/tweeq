@@ -659,7 +659,6 @@ const barStyle = computed<StyleValue>(() => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputNumber
 	position relative

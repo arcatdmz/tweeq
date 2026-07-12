@@ -228,7 +228,6 @@ function offsetStyle(offset: number) {
 </template>
 
 <style scoped lang="stylus">
-@import '../common.styl'
 
 .TqTimeline
 	position relative

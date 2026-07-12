@@ -157,7 +157,6 @@ function decompose(value?: number | vec2): vec2 | undefined {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputTranslate
 	z-index 1

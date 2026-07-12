@@ -21,7 +21,6 @@ defineEmits<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputCode
 	position relative

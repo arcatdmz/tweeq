@@ -76,7 +76,6 @@ const {xy, dragging} = useDrag($root, {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqMultiSelectPad
 	border-radius var(--tq-radius-input)

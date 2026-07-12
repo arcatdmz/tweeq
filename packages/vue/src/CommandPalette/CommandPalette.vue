@@ -144,13 +144,11 @@ function perform(action: ActionItemOptions) {
 	the UA serif font. Apply the reset here, unscoped — same as PaneModal.
 -->
 <style lang="stylus">
-@import '../common.styl'
 
 reset-viewport('.TqCommandPalette')
 </style>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqCommandPalette
 	width 400px

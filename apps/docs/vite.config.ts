@@ -4,12 +4,15 @@ import react from '@vitejs/plugin-react'
 import {defineConfig} from 'vite'
 import glsl from 'vite-plugin-glsl'
 
+import {tweeqStylusOptions} from '../../scripts/vite-stylus'
+
 const here = new URL('.', import.meta.url).pathname
 
 // Documentation playground for the React renderer. Serve with `pnpm dev`;
 // Playwright e2e boots this via the root `pnpm e2e`.
 export default defineConfig({
 	plugins: [glsl(), react()],
+	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	resolve: {
 		alias: {
 			// Compile the workspace packages from source so the playground gets

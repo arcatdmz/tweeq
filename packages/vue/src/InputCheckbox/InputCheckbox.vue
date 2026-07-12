@@ -54,7 +54,6 @@ const {tweakingValue, subfocus} = useInputSwitch({
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputCheckbox
 	display flex

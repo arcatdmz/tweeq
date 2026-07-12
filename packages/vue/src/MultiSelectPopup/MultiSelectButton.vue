@@ -20,7 +20,6 @@ function edit() {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqMultiSelectButton
 	border-radius var(--tq-radius-input)

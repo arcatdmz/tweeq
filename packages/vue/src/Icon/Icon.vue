@@ -64,7 +64,6 @@ defineOptions({
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqIcon
 	width var(--tq-icon-size)

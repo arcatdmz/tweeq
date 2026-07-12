@@ -109,7 +109,6 @@ onMounted(() => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqPaneSplit
 	position relative

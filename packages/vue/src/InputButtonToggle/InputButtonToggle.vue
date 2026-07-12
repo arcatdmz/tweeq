@@ -29,7 +29,6 @@ defineProps<InputButtonToggleProps>()
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputButtonToggle
 	border-radius var(--tq-radius-input)

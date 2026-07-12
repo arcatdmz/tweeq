@@ -112,7 +112,6 @@ function onPopoverUpdateOpen(value: boolean) {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 // Single root so a class / positioning from the consumer falls through cleanly
 // (the Popover is position:fixed, so it doesn't affect this box's size).

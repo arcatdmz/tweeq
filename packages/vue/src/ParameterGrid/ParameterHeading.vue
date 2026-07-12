@@ -16,7 +16,6 @@ defineSlots<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqParameterHeading
 	display flex

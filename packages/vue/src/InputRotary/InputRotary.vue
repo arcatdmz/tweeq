@@ -360,7 +360,6 @@ useCopyPaste({
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputRotary
 	position relative

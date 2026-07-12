@@ -130,7 +130,6 @@ watch(() => state.tabs.map(tab => tab.id), ensureActiveTab, {immediate: true})
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqTabs
 	display grid

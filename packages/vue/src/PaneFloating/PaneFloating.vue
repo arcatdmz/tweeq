@@ -208,7 +208,6 @@ watch(position, position => emit('update:position', position))
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqPaneFloating
 	pane-style()

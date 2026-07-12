@@ -11,7 +11,6 @@ initTweeq('viewport')
 </template>
 
 <style lang="stylus">
-@import '../common.styl'
 
 reset-viewport('.TqViewport')
 

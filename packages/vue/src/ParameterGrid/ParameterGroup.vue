@@ -58,7 +58,6 @@ function onTransitionEnd(e: TransitionEvent) {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 // Rows: heading (auto) + content (animatable 1fr↔0fr). Row spacing lives in the
 // content's padding so it collapses away too (no lingering gap when closed).

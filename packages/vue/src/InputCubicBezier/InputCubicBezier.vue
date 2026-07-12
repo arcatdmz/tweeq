@@ -48,7 +48,6 @@ const easingPath = computed(() => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputCubicBezier
 	position relative

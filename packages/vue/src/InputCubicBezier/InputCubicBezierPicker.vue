@@ -62,7 +62,6 @@ const draggingPoint = ref<number | null>(null)
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .pad
 	overflow visible

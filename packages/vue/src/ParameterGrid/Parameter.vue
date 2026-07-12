@@ -30,7 +30,6 @@ defineSlots<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqParameter
 	display grid

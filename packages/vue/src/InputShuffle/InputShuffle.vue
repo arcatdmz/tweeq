@@ -74,7 +74,6 @@ function shuffle() {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputShuffle
 	display block

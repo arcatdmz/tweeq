@@ -138,7 +138,6 @@ watchEffect(() => {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 reset-viewport('.TqMultiSelectPopup')
 

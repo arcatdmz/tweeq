@@ -68,7 +68,6 @@ const tooltipContent = computed(
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputButton
 	position relative

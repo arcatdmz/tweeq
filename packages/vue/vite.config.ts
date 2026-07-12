@@ -4,10 +4,13 @@ import dts from 'vite-plugin-dts'
 import glsl from 'vite-plugin-glsl'
 import {defineConfig} from 'vitest/config'
 
+import {tweeqStylusOptions} from '../../scripts/vite-stylus'
+
 // Mirrors the upstream baku89/tweeq build so Stage V1 stays a pure
 // relocation: same entry shape, same externals, same SSR settings.
 export default defineConfig({
 	plugins: [glsl(), vue(), dts({tsconfigPath: './tsconfig.build.json'})],
+	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	publicDir: false,
 	build: {
 		lib: {

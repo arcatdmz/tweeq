@@ -56,13 +56,11 @@ useEventListener('pointerdown', e => {
 	content — same approach as MultiSelectPopup.
 -->
 <style lang="stylus">
-@import '../common.styl'
 
 reset-viewport('.TqPaneModal')
 </style>
 
 <style scoped lang="stylus">
-@import '../common.styl'
 
 .TqPaneModal
 	popup-style()

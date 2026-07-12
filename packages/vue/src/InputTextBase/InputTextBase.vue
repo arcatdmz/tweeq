@@ -181,7 +181,6 @@ function onKeydown(e: KeyboardEvent) {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputTextBase
 	position relative

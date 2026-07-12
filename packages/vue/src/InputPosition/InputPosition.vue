@@ -36,7 +36,6 @@ const emit = defineEmits<InputEmits>()
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputPosition
 	gap 3px

@@ -67,7 +67,6 @@ function recordValueOnEdit() {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputSize
 	position relative

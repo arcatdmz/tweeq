@@ -300,7 +300,6 @@ onBeforeUnmount(endDrag)
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputRadio
 	position relative

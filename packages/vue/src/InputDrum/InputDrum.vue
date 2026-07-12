@@ -273,7 +273,6 @@ function onKeyDown(e: KeyboardEvent) {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqInputDrum
 	position relative

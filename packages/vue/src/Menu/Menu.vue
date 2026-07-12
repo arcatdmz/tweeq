@@ -203,7 +203,6 @@ function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqMenu
 	display flex

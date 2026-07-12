@@ -11,7 +11,6 @@ defineSlots<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .TqTooltip
 	padding .2em .5em

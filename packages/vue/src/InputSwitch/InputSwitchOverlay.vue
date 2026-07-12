@@ -23,7 +23,6 @@ defineProps<{
 </template>
 
 <style lang="stylus" scoped>
-@import '../common.styl'
 
 .overlay
 	position absolute
