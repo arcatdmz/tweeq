@@ -1,7 +1,8 @@
 import './CommandPalette.global.styl'
 
 import {
-	unsignedMod,
+	moveCommandSelection,
+	updateCommandHistory,
 } from '@tweeq/core'
 import {type ActionItem, actionsStore, appConfigStore} from '@tweeq/dom'
 import {search} from 'fast-fuzzy'
@@ -67,9 +68,9 @@ export function CommandPalette() {
 	}, [open])
 
 	const perform = (action: ActionItem) => {
-		setHistory(current => [...new Set([action.id, ...current])].slice(0, 10))
+		setHistory(current => updateCommandHistory(current, action.id))
 		root.current?.hidePopover()
-		void action.perform()
+		void actionsStore.getState().perform(action.id)
 	}
 
 	return (
@@ -97,8 +98,9 @@ export function CommandPalette() {
 						) {
 							event.preventDefault()
 							const index = filtered.indexOf(selected)
-							const next = unsignedMod(
-								index + (event.key === 'ArrowDown' ? 1 : -1),
+							const next = moveCommandSelection(
+								index,
+								event.key === 'ArrowDown' ? 1 : -1,
 								filtered.length
 							)
 							setSelectedId(filtered[next].id)

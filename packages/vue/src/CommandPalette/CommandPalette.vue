@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import {
+	moveCommandSelection,
+	updateCommandHistory,
+} from '@tweeq/core'
 import {useEventListener} from '@vueuse/core'
-import * as Bndr from 'bndr-js'
 import {search} from 'fast-fuzzy'
 import {computed, ref, useTemplateRef, watch} from 'vue'
 
@@ -8,8 +11,6 @@ import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
 import {type ActionItemOptions, useActionsStore} from '../stores/actions'
 import {useAppConfigStore} from '../stores/appConfig'
-import {useBndr} from '../use/useBndr'
-import {unsignedMod} from '@tweeq/core'
 
 const actions = useActionsStore()
 
@@ -62,25 +63,21 @@ watch(filteredActions, () => {
 	}
 })
 
-useBndr($popover, $popover => {
-	Bndr.keyboard()
-		.hotkey('command+p', {preventDefault: true, capture: true})
-		.on(() => $popover instanceof HTMLElement && $popover.togglePopover())
+useEventListener(typeof window === 'undefined' ? null : window, 'keydown', e => {
+	if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'p') return
+	e.preventDefault()
+	$popover.value?.togglePopover()
 })
 
 function onKeydown(e: KeyboardEvent) {
-	if (e.key === 'p' && e.metaKey) {
-		e.preventDefault()
-		$popover.value?.hidePopover()
-	}
-
 	if (selectedAction.value && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+		e.preventDefault()
 		const index = filteredActions.value.indexOf(selectedAction.value as any)
 		const length = filteredActions.value.length
 
 		const move = e.key === 'ArrowDown' ? 1 : -1
 
-		const newIndex = unsignedMod(index + move, length)
+		const newIndex = moveCommandSelection(index, move, length)
 		selectedAction.value = filteredActions.value[newIndex]
 	}
 
@@ -90,12 +87,13 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 function perform(action: ActionItemOptions) {
-	performedActionsHistory.value = [
-		...new Set([action.id, ...performedActionsHistory.value]),
-	].slice(0, 10)
+	performedActionsHistory.value = updateCommandHistory(
+		performedActionsHistory.value,
+		action.id
+	)
 
 	$popover.value?.hidePopover()
-	action.perform()
+	void actions.perform(action.id)
 }
 </script>
 
