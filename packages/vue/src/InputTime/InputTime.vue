@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {
+	compileTimeExpression,
 	formatTimecode,
 	mergeSvgPaths,
-	replaceTimecodeWithFrames,
+	quantizeTimeTweakValue,
 	svgLine,
 } from '@tweeq/core'
-import type {ValidateResult} from '@tweeq/core/validator'
 import {useElementBounding, useMagicKeys} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
@@ -91,22 +91,11 @@ const tweakSpeed = computed(() => {
 	return (fps * 60 * 60) / 100 // hours
 })
 
-const tweakSnapParams = computed<[step: number, offset: number]>(() => {
-	const scale = tweakScale.value
-	const fps = props.frameRate
-
-	if (!doSnap.value) return [1, 0]
-
-	if (scale === 0) return [1, 0]
-	if (scale === 1) return [fps, model.value % fps]
-	if (scale === 2) return [fps * 60, model.value % (fps * 60)]
-	return [fps * 60 * 60, model.value % (fps * 60 * 60)]
-})
-
 const tweakLocal = ref(0)
 let tweakAccumlated = 0
 
 const {dragging: tweaking} = useDrag($input, {
+	disabled: computed(() => props.disabled),
 	lockPointer: true,
 	onClick(_, e) {
 		const target = e.target as HTMLElement
@@ -158,7 +147,13 @@ watch(
 
 watchSyncEffect(() => {
 	const value = scalar.clamp(
-		scalar.quantize(tweakLocal.value, ...tweakSnapParams.value),
+		quantizeTimeTweakValue(
+			tweakLocal.value,
+			props.frameRate,
+			tweakScale.value,
+			doSnap.value,
+			model.value
+		),
 		props.min,
 		props.max
 	)
@@ -209,32 +204,9 @@ watch(
 
 let localAtFocus = 0
 
-type Parser = (
-	x: number,
-	context: {i: number; fps: number}
-) => ValidateResult<number>
-
-const parse = computed<Parser>(() => {
-	const code = replaceTimecodeWithFrames(display.value, props.frameRate)
-
-	try {
-		const fn = eval(`(x, {i, fps}) => {
-			try {
-				const value = (${code})
-				if (typeof value === 'number') {
-					return {value, log: []}
-				} else {
-					return {value, log: ['Value is not a number']}
-				}
-			} catch (e) {
-				return {log: [e.message]}
-			}
-		}`)
-		return fn
-	} catch (e) {
-		return () => ({value: undefined, log: [(e as Error).message]})
-	}
-})
+const parse = computed(() =>
+	compileTimeExpression(display.value, props.frameRate)
+)
 
 const parseResult = computed(() =>
 	parse.value(localAtFocus, {i: multi.index, fps: props.frameRate})
@@ -386,6 +358,8 @@ const hourTick = computed(() => {
 		:block-position="blockPosition"
 		:ignoreInput="!focused"
 		:active="multi.subfocus"
+		:disabled="props.disabled"
+		:invalid="props.invalid || parseResult.log.length > 0"
 		font="numeric"
 		leftIcon="mdi-clock"
 		align="center"
