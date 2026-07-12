@@ -1,4 +1,5 @@
-import {type InputEvents, type InputProps} from '../../core'
+import type {InputEvents, InputProps} from '@tweeq/core'
+
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'
 
@@ -17,7 +18,7 @@ function valueAt<T extends readonly number[]>(
 	value: T | number | undefined,
 	index: number
 ): number | undefined {
-	return Array.isArray(value) ? value[index] : value
+	return Array.isArray(value) ? value[index] : (value as number | undefined)
 }
 
 export function InputVec<T extends readonly number[]>({
