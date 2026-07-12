@@ -31,9 +31,13 @@ test('default route, clickable nav, theme toggle, and sidebar behave like docs c
 	await page.goto('/')
 	await expect(page.getByTestId('components-page')).toBeVisible()
 	await expect(page.getByRole('link', {name: 'Home', exact: true})).toHaveCSS('cursor', 'pointer')
-	const before = await page.locator('html').getAttribute('data-color-mode')
-	await page.getByRole('button', {name: /Switch to .* mode/}).click()
-	await expect(page.locator('html')).not.toHaveAttribute('data-color-mode', before ?? '')
+	// VuePress-style toggle: accessible name from title, drives html[data-theme]
+	const before = await page.locator('html').getAttribute('data-theme')
+	await page.getByRole('button', {name: 'toggle color mode'}).click()
+	await expect(page.locator('html')).not.toHaveAttribute(
+		'data-theme',
+		before ?? ''
+	)
 	await page.goto('/#/features')
 	const sidebarLink = page.getByRole('complementary').getByRole('link', {name: 'Expression Support'})
 	await sidebarLink.click()
