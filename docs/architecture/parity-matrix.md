@@ -94,10 +94,10 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | --- | --- | --- | --- |
 | `initTweeq` / `useTweeq` | plugin + composable | `initTweeq` + `useTweeq` hook | renderer adapters over shared store factories |
 | Stores: actions, appConfig, modal, multiSelect, theme | Pinia (`src/stores`) | zustand-vanilla factories (`src/core/stores`) | `@tweeq/core` interfaces + `@tweeq/dom` browser stores |
-| Theme generation | `src/theme` (Vue-flavored) | `src/core/theme` | `@tweeq/core` (+ `@tweeq/styles` tokens) |
+| Theme generation | ~~`src/theme`~~ → shared | `core/theme` | **done 2026-07-13**: both renderers compute via `@tweeq/core` `computeTheme` and apply via `@tweeq/dom` `applyThemeToDOM`; Vue keeps only the Pinia wrapper (Stage V3 store item) |
 | Composables/hooks: useBndr, useFlash, useDrag, useCursorStyle, … | `src/use` | `src/react/hooks` | thin adapters over `@tweeq/dom` controllers |
 | Gesture engine | bndr-js + `useDrag` | bndr-js + `useDrag` port | `@tweeq/dom` |
-| Validators/formatting | `src/validator.ts`, `src/util.ts` | `src/core/validator.ts`, `src/core/util.ts` | `@tweeq/core` |
+| Validators/formatting | ~~local copies~~ → shared | `core/validator`, `core/util` | **done 2026-07-13**: Vue's `util.ts`/`validator.ts` are re-export shims over `@tweeq/core`/`@tweeq/dom` |
 | Styling | scoped Stylus per SFC + `common.styl` | CSS Modules per component | `@tweeq/styles` parts (Phase 3+) |
 
 ## Known intentional differences
@@ -152,7 +152,7 @@ introduced-in, removal criteria, status.
 | `packages/react/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (React relocation) | React components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
 | `packages/vue/src/common.styl` stylus forwarder to `@tweeq/styles` | Phase 2 (Vue relocation) | Vue components consume shared style parts from `@tweeq/styles` directly (Stage V3 per family) | active |
 | Pinia stores in `packages/vue/src/stores/` duplicating `@tweeq/dom` store factories | upstream legacy, kept in Stage V1 | replaced one store at a time by injected shared instances behind a `useTweeq()` facade (Stage V3); no `from 'pinia'` outside the compatibility adapter | active |
-| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | **done 2026-07-13** for util, validator, theme, timecode, CubicBezierValue, InputShuffle generators (files are now re-export shims); remaining: `InputColor/utils.ts`, `InputSwitch/utils.ts`, `InputRotary/utils.ts` (composable/controller-shaped → Stage V3/Phase 4) |
+| Duplicated pure logic in `packages/vue/src/` (`util.ts`, `validator.ts`, `theme/`, per-component `utils.ts`) | upstream legacy, kept in Stage V1 | Stage V2 leaf replacement: shared fixtures written, Vue+React switched to `@tweeq/core`, both contract suites green | **done 2026-07-13** for util, validator, theme (incl. store computation via `computeTheme`/`applyThemeToDOM`), timecode, CubicBezierValue, InputShuffle generators, and InputColor channel math/types (files are now re-export shims); remaining: `InputSwitch/utils.ts` (composable) and `InputRotary/utils.ts` `clampPosWithinRect` variant — controller-shaped → Stage V3/Phase 4 |
 | Re-export shims left by Stage V2 (`packages/vue/src/{util,validator}.ts`, `InputTime/utils.ts` function re-exports, `InputCubicBezier/util.ts`, `InputShuffle/generators.ts`) | Phase 3 leaf replacement | Vue callers import `@tweeq/core` directly during Stage V3 family work; shim files deleted when `rg "from '\.\./(util|validator)'" packages/vue/src` is empty | active |
 | Legacy vue-tsc diagnostics in `@tweeq/vue` build (non-fatal, pre-existing upstream typing issues) | Stage V1 build restoration | resolved per family during Stage V2/V3 refactors | active |
 

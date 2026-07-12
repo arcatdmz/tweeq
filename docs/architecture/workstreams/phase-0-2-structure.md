@@ -1,6 +1,6 @@
-# Workstream status: Phases 0–2 (baseline, workspace, relocation)
+# Workstream status: Phases 0–2 (baseline, workspace, relocation) + Phase 3 leaf tier
 
-Status: **complete** (2026-07-13)  
+Status: **Phases 0–2 complete; Phase 3 leaf-utility tier complete** (2026-07-13)  
 Owner: integration worker  
 Plan: [../monorepo-migration.md](../monorepo-migration.md)
 
@@ -31,15 +31,27 @@ Plan: [../monorepo-migration.md](../monorepo-migration.md)
 suite are all green. The docs app compiles the React packages from source
 via Vite aliases; packed-artifact coverage is the examples' job.
 
-## Notes for Phase 3 workers
+## Phase 3 leaf tier (done 2026-07-13)
+
+`@tweeq/vue` now consumes the single shared implementation for: numeric
+formatting (`util.ts`), validators (via the new `@tweeq/core/validator`
+subpath), the theme (types/palette/radix deleted; the Pinia store computes
+through `computeTheme` and applies through `applyThemeToDOM` — 215→77
+lines), timecode (converging the hardcoded-24fps expression parsing, see
+parity matrix), `CubicBezierValue`/`TimeFormat`, InputShuffle generators
+(new core fixtures), and InputColor channel math + shared color types.
+The touched Vue modules are re-export shims so every legacy import path
+and public export is unchanged.
+
+## Notes for Phase 3/4 workers
 
 - Temporary compatibility items are tracked in the parity matrix's deletion
   checklist — extend it, don't add TODO comments.
-- The `packages/react/src/core/` barrel is the main Stage V2 seam: pick a
-  leaf family (util/validator/timecode/theme are already shared; dropdown,
-  menu, panes are shared logic with per-renderer adapters) and replace the
-  Vue-side duplicate (`packages/vue/src/util.ts`, `validator.ts`, `theme/`)
-  with `@tweeq/core` imports behind unchanged public exports.
+- Remaining Stage V2/V3 seams: `InputSwitch/utils.ts` (`useInputSwitch`
+  composable ↔ core `getSwitchTweakValue`), `InputRotary/utils.ts`
+  (`clampPosWithinRect` signature variant ↔ core `inputRotary`), the
+  gesture layer (`use/useDrag.ts` ↔ `@tweeq/dom` drag), and the four
+  remaining Pinia stores.
 - `@tweeq/vue` still bootstraps through Pinia (`useAppConfigStore` & co).
   Stage V3 replaces each store with the shared `@tweeq/dom` factory behind a
   compatibility `useTweeq()`; do it one store at a time with contract tests.
