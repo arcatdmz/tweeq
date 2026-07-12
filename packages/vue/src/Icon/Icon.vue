@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Icon as Iconify} from '@iconify/vue'
+import {parseIcon} from '@tweeq/core'
 import {computed, watchEffect} from 'vue'
 
 import {rememberIcon} from './iconCache'
@@ -8,26 +9,7 @@ const props = defineProps<{
 	icon: string
 }>()
 
-const icon = computed(() => {
-	if (props.icon.startsWith('char:')) {
-		return {
-			type: 'char',
-			value: props.icon.slice(5),
-		}
-	}
-
-	if (props.icon.startsWith('fill:')) {
-		return {
-			type: 'fill',
-			value: props.icon.slice(5),
-		}
-	}
-
-	return {
-		type: 'iconify',
-		value: props.icon,
-	}
-})
+const icon = computed(() => parseIcon(props.icon))
 
 // Persist iconify icons to localStorage so they're in memory (no async-resolve
 // flash) on the next reload.

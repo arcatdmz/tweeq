@@ -59,7 +59,7 @@ function PositionedChildren(): VNode[] {
 </script>
 
 <template>
-	<div class="TqInputGroup" :data-direction="direction">
+	<div class="TqInputGroup" :data-direction="direction" data-tq-part="root">
 		<PositionedChildren />
 	</div>
 </template>

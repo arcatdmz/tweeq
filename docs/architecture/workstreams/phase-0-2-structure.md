@@ -65,4 +65,6 @@ and public export is unchanged.
   invalid-state, stable-part, and `aria-pressed` coverage.
   InputButton shares action, native-disabled, invalid-state, and content-part
   coverage as the stateless button baseline.
+  InputGroup runs the same fragment/whitespace and horizontal/vertical child
+  position contract in both renderer harnesses.
 - Do not publish any package until ADR 0001's ownership question is settled.

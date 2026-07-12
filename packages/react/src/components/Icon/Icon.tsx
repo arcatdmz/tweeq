@@ -1,4 +1,5 @@
 import {Icon as Iconify, type IconProps as IconifyProps} from '@iconify/react'
+import {parseIcon} from '@tweeq/core'
 import {type HTMLAttributes, useEffect} from 'react'
 
 import {classNames} from '../../classNames'
@@ -7,17 +8,6 @@ import {rememberIcon} from './iconCache'
 
 export interface IconProps extends Omit<IconifyProps, 'icon'> {
 	icon: string
-}
-
-type ParsedIcon =
-	| {type: 'char'; value: string}
-	| {type: 'fill'; value: string}
-	| {type: 'iconify'; value: string}
-
-function parseIcon(icon: string): ParsedIcon {
-	if (icon.startsWith('char:')) return {type: 'char', value: icon.slice(5)}
-	if (icon.startsWith('fill:')) return {type: 'fill', value: icon.slice(5)}
-	return {type: 'iconify', value: icon}
 }
 
 export function Icon({icon: source, className, ...props}: IconProps) {

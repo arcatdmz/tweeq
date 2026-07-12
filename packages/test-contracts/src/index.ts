@@ -18,3 +18,7 @@ export {
 	type InputButtonToggleContractProps,
 	runInputButtonToggleContract,
 } from './inputButtonToggle'
+export {
+	type InputGroupContractProps,
+	runInputGroupContract,
+} from './inputGroup'

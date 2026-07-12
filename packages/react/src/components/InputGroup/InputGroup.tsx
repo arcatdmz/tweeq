@@ -77,6 +77,7 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 				ref={forwardedRef}
 				className={classNames(styles.tqInputGroup, className)}
 				data-direction={direction}
+				data-tq-part="root"
 			>
 				{positioned}
 			</div>

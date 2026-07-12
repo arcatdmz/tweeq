@@ -44,7 +44,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | ColorIcon | SFC | ✅ | — | — | |
 | CommandPalette | SFC | ✅ | — | dropdown-code | fuzzy search via `fast-fuzzy` in both |
 | GlslCanvas | SFC | ✅ | `glsl` | color-curves | regl-based; WebGL feature detection |
-| Icon | SFC | ✅ | — | — | `@iconify/vue` vs `@iconify/react` |
+| Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
 | IconIndicator | SFC | ✅ | — | — | |
 | InputAngle | SFC | ✅ | (`inputRotary`) | rotary-snap, temporal | wraps rotary semantics |
 | InputButton | SFC | ✅ | — | shared contract + text-toggles | action, native disabled state, invalid state, and stable content parts aligned in Phase 4 |
@@ -56,7 +56,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | InputCubicBezier | SFC | ✅ | `cubicBezier` | color-curves | |
 | InputDropdown | SFC | ✅ | `dropdown` | components-parity, dropdown-code | |
 | InputDrum | SFC | ✅ | `inputDrum` | temporal | |
-| InputGroup | SFC | ✅ | — | primitives | |
+| InputGroup | SFC | ✅ | — | shared contract + primitives | fragment/whitespace flattening and horizontal/vertical child positions aligned in Phase 4 |
 | InputNumber | SFC | ✅ | `inputNumber` | docs-pages, number-vectors | decimal precision + drag-scale fixtures protected |
 | InputPosition | SFC | ✅ | (`inputTranslate`) | number-vectors | |
 | InputRadio | SFC | ✅ | — | text-toggles | |
