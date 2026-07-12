@@ -178,3 +178,16 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - InputGroup: added fallback keys in the cloneElement pass (flattening children into an array made React warn on every group).
 
 **Known parity notes (not regressions):** Monaco logs `MonacoEnvironment.getWorkerUrl` errors in the dev demo and degrades to worker-less mode — the legacy Vue demo never configured workers either. A vite `?worker` MonacoEnvironment setup (demo-only) would silence it if desired.
+
+## 2026-07-12 · orchestrator (Claude) + 2 Codex agents — docs port & three UI bugs
+
+User-reported issues after manual `yarn dev` inspection, fixed via two parallel Codex agents (details in `status/bugfix-overlay-rotary-dropdown.md` and `status/docs-port.md`):
+
+- **Docs content ported** to the React demo behind a hash router: `#/components` (auto-discovered gallery, default), `#/examples` (all five scheme-driven forms from docs/example.md via a React ExampleContainer + live JSON readout), `#/colors` (scales/semantic/palette demos), `#/features`, `#/intro`. `mdi-*` icon names normalized to `mdi:*`. Research pages intentionally unported.
+- **TweakOverlay demo**: overlay now mounts only while holding a labelled trigger (was permanently in the top layer, read as stray text).
+- **InputRotary/InputAngle snapping**: port had quantized its accumulator (legacy keeps a pre-snap local value, InputRotary.vue:109) and measured a stale center. Now: pure `getRotaryDragValue` in core (unit-tested), live element-center per drag event.
+- **useKeys latency (orchestrator)**: modifier reads during drags went through render-synced refs, so a Shift keyup between pointermoves was invisible until the next render. useKeys now exposes getter-based reads over a synchronously-updated ref (zero call-site changes) — matches legacy useMagicKeys semantics. All scrub components benefit.
+- **InputDropdown gradation**: visibility conditions were already correct; the port had dropped legacy's rounded corners/color/pointer rules on the edge overlays (InputDropdown.vue:596-617), making fades read as detached bands. Restored.
+- e2e spec fixes discovered by running what the Codex sandboxes couldn't: raw mouse coords need scrollIntoViewIfNeeded; leaving the radial snap band (96–160px) is required to escape snapping (component was right, spec geometry wrong); getByText needs exact:true vs JSON readouts; InputNumber's input needs focus-then-type (inactive-content overlay intercepts clicks by design).
+
+Gates: tsc clean · eslint clean · 84 vitest · **13/13 Playwright** e2e pass.

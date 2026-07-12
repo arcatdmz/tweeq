@@ -26,11 +26,18 @@ test('React primitives render, enter the top layer, and interact', async ({
 	await expect(
 		page.getByTestId('InputGroup').locator('button').nth(2)
 	).toHaveAttribute('data-inline-position', 'end')
+	await expect(page.getByTestId('tweak-overlay')).toHaveCount(0)
+	await page.getByTestId('tweak-overlay-trigger').dispatchEvent('pointerdown')
 	expect(
 		await page
 			.getByTestId('tweak-overlay')
 			.evaluate(element => element.matches(':popover-open'))
 	).toBe(true)
+	await expect(page.getByTestId('tweak-overlay-content')).toHaveText(
+		'Intentional tweak gesture overlay'
+	)
+	await page.getByTestId('tweak-overlay-trigger').dispatchEvent('pointerup')
+	await expect(page.getByTestId('tweak-overlay')).toHaveCount(0)
 
 	await page.getByTestId('indicator-control').click()
 	await expect(page.getByTestId('indicator-value')).toHaveText('true')

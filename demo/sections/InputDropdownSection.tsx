@@ -2,7 +2,18 @@ import {useState} from 'react'
 
 import {InputDropdown} from '../../src/react'
 
-const options = ['alpha', 'beta', 'gamma']
+const options = [
+	'alpha',
+	'beta',
+	'gamma',
+	'delta',
+	'epsilon',
+	'zeta',
+	'eta',
+	'theta',
+	'iota',
+	'kappa',
+]
 
 export default function InputDropdownSection() {
 	const [value, setValue] = useState('alpha')
@@ -14,7 +25,9 @@ export default function InputDropdownSection() {
 				value={value}
 				onChange={setValue}
 				options={options}
-				labels={['Alpha', 'Beta', 'Gamma']}
+				labels={options.map(option =>
+					option.replace(/^./, letter => letter.toUpperCase())
+				)}
 			/>
 			<output data-testid="dropdown-value">{value}</output>
 		</section>
