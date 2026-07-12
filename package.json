@@ -5,16 +5,16 @@
 	"type": "module",
 	"packageManager": "pnpm@11.12.0",
 	"scripts": {
-		"dev": "vite serve demo --port 5174",
-		"dev:demo": "vite serve demo --port 5174",
-		"build:demo": "vite build demo",
+		"dev": "vite serve apps/docs --port 5174",
+		"dev:demo": "vite serve apps/docs --port 5174",
+		"build:demo": "vite build apps/docs",
 		"e2e": "LD_LIBRARY_PATH=$HOME/.cache/ms-playwright/local-libs playwright test",
 		"build:vite": "vite build",
 		"build": "rm -rf lib && npm run build:vite",
 		"build:packages": "pnpm -r --if-present build",
 		"test:packages": "pnpm -r --if-present test",
 		"check:boundaries": "node scripts/check-boundaries.mjs",
-		"lint": "eslint src/core src/react demo e2e",
+		"lint": "eslint src/core src/react apps/docs e2e",
 		"test": "vitest"
 	},
 	"files": [
@@ -77,6 +77,7 @@
 		"eslint": "^9.21.0",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"eslint-plugin-unused-imports": "^4.1.4",
+		"globals": "^17.7.0",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7",
 		"sass-embedded": "^1.100.0",

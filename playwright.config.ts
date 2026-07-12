@@ -16,7 +16,7 @@ export default defineConfig({
 		contextOptions: {reducedMotion: 'reduce'},
 	},
 	webServer: {
-		command: 'npx vite serve demo --port 5174 --strictPort',
+		command: 'npx vite serve apps/docs --port 5174 --strictPort',
 		url: 'http://localhost:5174',
 		reuseExistingServer: true,
 		stdout: 'ignore',
