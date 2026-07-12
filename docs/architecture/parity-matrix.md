@@ -78,7 +78,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | PaneModal | SFC | ✅ | — | layout-modals | native popover/top-layer |
 | PaneModalComplex | SFC | ✅ | — | — | |
 | PaneModalTabs | SFC | ✅ | — | — | |
-| PaneSplit | SFC | ✅ | `panes` | — | |
+| PaneSplit | SFC | ✅ | `panes` | shared contract + core resize controller + layout-modals | proportional/fixed first/fixed second movement, public minimum clamp, persistence, shared pointer lifecycle, and stable parts aligned in Phase 4 |
 | PaneZUI | SFC | ✅ | — | layout-modals | zoomable UI |
 | ParameterGrid | SFC | ✅ | — | — | grid layout + ParameterHeading |
 | Popover | SFC | ✅ | `popover` | shared contract + core geometry + overlay | CSS anchor/native lifecycle, controlled open state, coordinate placement, manual/auto mode, shift/arrow geometry, and stable parts aligned in Phase 4 |

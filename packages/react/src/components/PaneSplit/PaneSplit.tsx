@@ -1,4 +1,4 @@
-import {clampSplitSize} from '@tweeq/core'
+import {resizeSplitPane} from '@tweeq/core'
 import {appConfigStore, type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
@@ -9,7 +9,7 @@ import {
 } from 'react'
 
 import {classNames} from '../../classNames'
-import {useConfigRef, useDrag, useElementBounding} from '../../hooks'
+import {useConfigRef, useDrag} from '../../hooks'
 import styles from './PaneSplit.module.styl'
 
 export interface PaneSplitProps extends HTMLAttributes<HTMLDivElement> {
@@ -38,7 +38,6 @@ export function PaneSplit({
 }: PaneSplitProps) {
 	const root = useRef<HTMLDivElement>(null)
 	const divider = useRef<HTMLDivElement>(null)
-	const bounds = useElementBounding(root)
 	const entry = useMemo(
 		() =>
 			appConfigStore
@@ -48,8 +47,8 @@ export function PaneSplit({
 	)
 	const [size, setSize] = useConfigRef(entry)
 	const startSize = useRef(size)
-	const current = useRef({size, setSize, fixed, direction, bounds})
-	current.current = {size, setSize, fixed, direction, bounds}
+	const current = useRef({size, setSize, fixed, direction, min})
+	current.current = {size, setSize, fixed, direction, min}
 	const dragOptions = useMemo(
 		() => ({
 			dragDelaySeconds: 0,
@@ -62,18 +61,18 @@ export function PaneSplit({
 					state.direction === 'horizontal'
 						? drag.xy[0] - drag.initial[0]
 						: drag.xy[1] - drag.initial[1]
+				const bounds = root.current?.getBoundingClientRect()
 				const viewportSize =
 					state.direction === 'horizontal'
-						? state.bounds.width
-						: state.bounds.height
-				const raw = state.fixed
-					? startSize.current + (state.fixed === 'first' ? delta : -delta)
-					: startSize.current + (delta / viewportSize) * 100
+						? bounds?.width ?? 0
+						: bounds?.height ?? 0
 				state.setSize(
-					clampSplitSize({
-						value: raw,
-						fixed: Boolean(state.fixed),
+					resizeSplitPane({
+						start: startSize.current,
+						movement: delta,
+						fixed: state.fixed,
 						viewportSize,
+						minPixelSize: state.min,
 					})
 				)
 			},
@@ -96,6 +95,7 @@ export function PaneSplit({
 				className
 			)}
 			style={{...style, '--pane-min': `${min}px`} as CSSProperties}
+			data-tq-part="root"
 		>
 			<div
 				className={classNames(
@@ -103,18 +103,20 @@ export function PaneSplit({
 					sizedPane !== 'first' && styles.grow
 				)}
 				style={sizedPane === 'first' ? sizeStyle : undefined}
+				data-tq-part="first"
 			>
 				<div className={classNames(styles.wrapper, scroll[0] && styles.scroll)}>
 					{first}
 				</div>
 			</div>
-			<div ref={divider} className={styles.divider} />
+			<div ref={divider} className={styles.divider} data-tq-part="divider" />
 			<div
 				className={classNames(
 					styles.pane,
 					sizedPane !== 'second' && styles.grow
 				)}
 				style={sizedPane === 'second' ? sizeStyle : undefined}
+				data-tq-part="second"
 			>
 				<div className={classNames(styles.wrapper, scroll[1] && styles.scroll)}>
 					{second}

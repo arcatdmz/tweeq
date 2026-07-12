@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import {useElementSize} from '@vueuse/core'
-import * as Bndr from 'bndr-js'
-import {clamp} from 'lodash-es'
-import {computed, onMounted, useTemplateRef} from 'vue'
+import {resizeSplitPane} from '@tweeq/core'
+import {computed, useTemplateRef} from 'vue'
 
 import {useAppConfigStore} from '../stores/appConfig'
+import {useDrag} from '../use/useDrag'
 import {PaneSplitProps} from './types'
 
 const props = withDefaults(defineProps<PaneSplitProps>(), {
@@ -18,12 +17,11 @@ const appConfig = useAppConfigStore()
 const $root = useTemplateRef('$root')
 const $divider = useTemplateRef('$divider')
 
-const rootSize = useElementSize($root)
-
 const viewportSize = computed(() => {
+	const bounds = $root.value?.getBoundingClientRect()
 	return props.direction === 'horizontal'
-		? rootSize.width.value
-		: rootSize.height.value
+		? bounds?.width ?? 0
+		: bounds?.height ?? 0
 })
 
 // Which pane carries the stored size. In proportional mode it's always `first`
@@ -50,36 +48,25 @@ const secondStyle = computed(() =>
 	sizedPane.value === 'second' ? sizeStyle.value : null
 )
 
-// Smallest pixel size the divider can drag the fixed pane down to.
-const MIN_PX = 40
-
-onMounted(() => {
-	if (!$divider.value) return
-
-	let draggingSize = 0
-
-	Bndr.pointer($divider.value)
-		.drag({pointerCapture: true})
-		.on(({type, delta}) => {
-			if (type === 'down') draggingSize = size.value
-
-			const d = props.direction === 'horizontal' ? delta[0] : delta[1]
-
-			if (props.fixed) {
-				// Dragging toward the fixed pane grows it: +delta when it's on the
-				// near (first) side of the divider, −delta when it's on the far side.
-				const sign = props.fixed === 'first' ? 1 : -1
-				draggingSize += sign * d
-				size.value = clamp(
-					draggingSize,
-					MIN_PX,
-					Math.max(MIN_PX, viewportSize.value - MIN_PX)
-				)
-			} else {
-				draggingSize += (d / viewportSize.value) * 100
-				size.value = clamp(draggingSize, 10, 90)
-			}
+let sizeAtDragStart = size.value
+useDrag($divider, {
+	dragDelaySeconds: 0,
+	onDragStart() {
+		sizeAtDragStart = size.value
+	},
+	onDrag({xy, initial}) {
+		const movement =
+			props.direction === 'horizontal'
+				? xy[0] - initial[0]
+				: xy[1] - initial[1]
+		size.value = resizeSplitPane({
+			start: sizeAtDragStart,
+			movement,
+			fixed: props.fixed,
+			viewportSize: viewportSize.value,
+			minPixelSize: props.min,
 		})
+	},
 })
 </script>
 
@@ -89,17 +76,24 @@ onMounted(() => {
 		class="TqPaneSplit"
 		:class="[direction, {fixed: !!fixed}]"
 		:style="{'--pane-min': min + 'px'}"
+		data-tq-part="root"
 	>
-		<div class="pane" :class="{grow: sizedPane !== 'first'}" :style="firstStyle">
+		<div
+			class="pane"
+			:class="{grow: sizedPane !== 'first'}"
+			:style="firstStyle"
+			data-tq-part="first"
+		>
 			<div class="wrapper" :class="{scroll: scroll[0]}">
 				<slot name="first" />
 			</div>
 		</div>
-		<div ref="$divider" class="divider" />
+		<div ref="$divider" class="divider" data-tq-part="divider" />
 		<div
 			class="pane"
 			:class="{grow: sizedPane !== 'second'}"
 			:style="secondStyle"
+			data-tq-part="second"
 		>
 			<div class="wrapper" :class="{scroll: scroll[1]}">
 				<slot name="second" />

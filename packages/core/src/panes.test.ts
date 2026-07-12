@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 
-import {clampSplitSize, resizeFloatingPane} from './panes'
+import {clampSplitSize, resizeFloatingPane, resizeSplitPane} from './panes'
 
 describe('pane geometry', () => {
 	it('clamps proportional and fixed splits', () => {
@@ -29,5 +29,20 @@ describe('pane geometry', () => {
 				viewport: 800,
 			})
 		).toEqual({anchor: 'left-top', width: 240, height: 200})
+	})
+
+	it('resizes proportional and fixed splits from pointer movement', () => {
+		expect(
+			resizeSplitPane({start: 50, movement: 100, viewportSize: 400})
+		).toBe(75)
+		expect(
+			resizeSplitPane({
+				start: 200,
+				movement: 180,
+				fixed: 'second',
+				viewportSize: 500,
+				minPixelSize: 80,
+			})
+		).toBe(80)
 	})
 })

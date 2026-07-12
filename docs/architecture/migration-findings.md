@@ -35,6 +35,7 @@ phase that owns the follow-up.
 | MF-025 | InputColorPad | The copied multi-selection tweak transition treated any R/G/B channel whose initial value was zero as hue, so dragging that color channel changed related colors' hue instead of the requested RGB channel. | The transition now has one core implementation; zero-valued RGB channels use additive updates on the correct channel, while nonzero channels retain proportional scaling. |
 | MF-026 | Tabs | Vue ignored `options.storageKey`, used non-native anchor tabs that stayed focusable when disabled, and both renderers could initially activate a disabled persisted/default/first tab. | Both adapters use the core enabled-tab resolution order; Vue honors the custom storage key and renders native disabled buttons with matching tab ARIA semantics. |
 | MF-027 | Tab | Vue watched a changed `id` prop and tried to update the new id before registering it, indexing `-1` and dereferencing an absent tab. | Vue now unregisters the old id and registers the new descriptor atomically; same-id metadata changes continue through the update path. |
+| MF-028 | PaneSplit | Both adapters hard-coded a 40px drag clamp even when the public `min` prop requested another minimum. Vue also retained a second Bndr drag transition instead of using the shared drag lifecycle and core pane math. | The core split controller now owns proportional/fixed direction and clamping, receives `min`, and is consumed through the shared drag adapters in both renderers. |
 
 ## Open findings
 

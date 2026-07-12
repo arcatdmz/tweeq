@@ -29,6 +29,30 @@ export function clampSplitSize({
 	)
 }
 
+export function resizeSplitPane({
+	start,
+	movement,
+	fixed,
+	viewportSize,
+	minPixelSize = 40,
+}: {
+	start: number
+	movement: number
+	fixed?: 'first' | 'second'
+	viewportSize: number
+	minPixelSize?: number
+}): number {
+	const raw = fixed
+		? start + (fixed === 'first' ? movement : -movement)
+		: start + (viewportSize > 0 ? (movement / viewportSize) * 100 : 0)
+	return clampSplitSize({
+		value: raw,
+		fixed: Boolean(fixed),
+		viewportSize,
+		minPixelSize,
+	})
+}
+
 export function resizeFloatingPane({
 	position,
 	axis,

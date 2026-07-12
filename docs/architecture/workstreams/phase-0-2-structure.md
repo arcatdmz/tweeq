@@ -192,6 +192,9 @@ contain renderer markup only and no copied state transition.
 - Tabs uses core enabled-tab resolution and a shared renderer contract. Custom
   persistence keys, native disabled buttons, initial/change/re-click events,
   ARIA orientation, stable parts, and reactive id re-registration are aligned.
+- PaneSplit uses one core resize controller and the shared pointer lifecycle.
+  Its renderer contract covers proportional and fixed-second movement, public
+  minimum clamping, persistence-facing styles, and stable pane/divider parts.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 
