@@ -88,3 +88,8 @@ contain renderer markup only and no copied state transition.
   Its shared contract covers controlled labels, wrapping, empty options, option
   confirmation, and Escape rollback; it also caught and fixed React InputString
   swallowing consumer `onKeyDown` handlers.
+
+## Phase 4 family 3 (in progress)
+
+- InputNumber expression mode now uses the shared core compiler in both
+  renderers; the Vue-local `eval` implementation was removed.

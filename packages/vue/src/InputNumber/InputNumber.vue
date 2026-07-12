@@ -25,6 +25,7 @@ import {InputEmits} from '../types'
 import {useDrag} from '../use/useDrag'
 import {useValidator} from '../use/useValidator'
 import {
+	compileNumberExpression,
 	getNumberPresition,
 	precisionOf,
 	toFixed,
@@ -351,13 +352,7 @@ function onInput(e: Event) {
 	}
 
 	try {
-		const fn = eval(`(x, {i}) => {
-			const result = (${value})
-			if (typeof result === 'number') {
-				return result
-			}
-			throw new Error('Value is not a number')
-		}`)
+		const fn = compileNumberExpression(value)
 		local.value = fn(localAtFocus, {i: multi.index})
 		expressionError.value = undefined
 		multi.update(fn)
