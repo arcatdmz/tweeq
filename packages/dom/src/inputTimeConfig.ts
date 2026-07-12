@@ -1,6 +1,6 @@
 import type {TimeFormat} from '@tweeq/core'
 
-import {appConfigStore} from './stores/appConfig'
+import {appConfigStore} from './stores/appConfig.js'
 
 /**
  * Persisted display format for InputTime. Lives here rather than in core

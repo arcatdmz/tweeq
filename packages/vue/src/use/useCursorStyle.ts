@@ -18,6 +18,7 @@ const currentStyle = computed(() => {
 })
 
 watchEffect(() => {
+	if (typeof document === 'undefined') return
 	document.documentElement.style.cursor = currentStyle.value
 })
 

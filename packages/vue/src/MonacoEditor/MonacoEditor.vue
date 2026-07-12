@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import {vec2} from 'linearly'
+import type {editor} from 'monaco-editor'
+import {
+	markRaw,
+	nextTick,
+	onMounted,
+	shallowRef,
+	useTemplateRef,
+	watchEffect,
+} from 'vue'
 
 import type {MonacoEditorProps} from './types'
-import {CodeEditor} from 'monaco-editor-vue3'
-import * as monaco from 'monaco-editor'
 import {useThemeStore} from '../stores/theme'
-import {onMounted, useTemplateRef, watchEffect} from 'vue'
 
 withDefaults(defineProps<MonacoEditorProps>(), {})
 
@@ -17,7 +23,7 @@ defineEmits<{
 
 const theme = useThemeStore()
 
-const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
+const editorOptions: editor.IStandaloneEditorConstructionOptions = {
 	minimap: {enabled: false},
 	fontLigatures: true,
 	fontFamily: 'Geist Mono',
@@ -45,18 +51,28 @@ const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
 // global and safe to call before the editor mounts; setTheme re-applies it when
 // the palette/appearance changes.
 const THEME_NAME = 'tweeq'
+const codeEditor = shallowRef()
+const editorApi = shallowRef<typeof editor>()
 
 watchEffect(() => {
-	monaco.editor.defineTheme(
+	if (!editorApi.value) return
+	editorApi.value.defineTheme(
 		THEME_NAME,
-		theme.monacoTheme as monaco.editor.IStandaloneThemeData
+		theme.monacoTheme as editor.IStandaloneThemeData
 	)
-	monaco.editor.setTheme(THEME_NAME)
+	editorApi.value.setTheme(THEME_NAME)
 })
 
-const $editor = useTemplateRef('$editor')
+const $editor = useTemplateRef<{$el: HTMLElement}>('$editor')
 
-onMounted(() => {
+onMounted(async () => {
+	const [wrapper, monaco] = await Promise.all([
+		import('monaco-editor-vue3'),
+		import('monaco-editor'),
+	])
+	codeEditor.value = markRaw(wrapper.CodeEditor)
+	editorApi.value = monaco.editor
+	await nextTick()
 	if (!$editor.value) return
 
 	const el = $editor.value.$el as HTMLElement
@@ -163,7 +179,9 @@ onMounted(() => {
 </script>
 
 <template>
-	<CodeEditor
+	<component
+		:is="codeEditor"
+		v-if="codeEditor"
 		ref="$editor"
 		class="TqMonacoEditor"
 		:value="modelValue"

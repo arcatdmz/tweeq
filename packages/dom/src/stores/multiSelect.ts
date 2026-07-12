@@ -9,7 +9,7 @@ import {
 import {vec2} from 'linearly'
 import {createStore} from 'zustand/vanilla'
 
-import {nodeContains} from '../domUtil'
+import {nodeContains} from '../domUtil.js'
 
 export type MultiSelectType = 'number' | 'color' | 'string' | 'boolean'
 

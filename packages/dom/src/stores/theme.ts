@@ -7,8 +7,8 @@ import {
 } from '@tweeq/core'
 import {createStore} from 'zustand/vanilla'
 
-import {applyThemeToDOM} from '../applyThemeToDOM'
-import {appConfigStore} from './appConfig'
+import {applyThemeToDOM} from '../applyThemeToDOM.js'
+import {appConfigStore} from './appConfig.js'
 
 export interface ThemeDefaults {
 	colorMode?: ColorMode

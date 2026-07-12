@@ -1,6 +1,6 @@
 import {scalar, type vec2} from 'linearly'
 
-import {getNumberPresition, precisionOf} from './util'
+import {getNumberPresition, precisionOf} from './util.js'
 
 export const NUMBER_PX_PER_STEP = 20
 

@@ -31,3 +31,12 @@ export function rectsIntersect(a: Rect, b: Rect): boolean {
 		a[0][1] > b[1][1]
 	)
 }
+
+export function rectContainsPoint(rect: Rect, point: vec2): boolean {
+	return (
+		rect[0][0] <= point[0] &&
+		point[0] <= rect[1][0] &&
+		rect[0][1] <= point[1] &&
+		point[1] <= rect[1][1]
+	)
+}

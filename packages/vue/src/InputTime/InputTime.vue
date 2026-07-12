@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import {Path} from '@baku89/pave'
-import {formatTimecode, replaceTimecodeWithFrames} from '@tweeq/core'
+import {
+	formatTimecode,
+	mergeSvgPaths,
+	replaceTimecodeWithFrames,
+	svgLine,
+} from '@tweeq/core'
 import type {ValidateResult} from '@tweeq/core/validator'
 import {useElementBounding, useMagicKeys} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
@@ -326,7 +330,7 @@ function increment(inc: number) {
 
 function radialLine(t: number, innerRadius: number, outerRadius: number) {
 	const deg = t * 360 - 90
-	return Path.line(
+	return svgLine(
 		vec2.dir(deg, innerRadius, [50, 50]),
 		vec2.dir(deg, outerRadius, [50, 50])
 	)
@@ -345,30 +349,30 @@ const meters = computed(() => {
 
 	const lines = angles.map(a => radialLine(a, 48, 49))
 
-	return Path.toD(Path.merge(lines))
+	return mergeSvgPaths(lines)
 })
 
 const frameTick = computed(() => {
 	const f = model.value % props.frameRate
-	return Path.toD(radialLine(f / props.frameRate, 48, 48))
+	return radialLine(f / props.frameRate, 48, 48)
 })
 
 const secondTick = computed(() => {
 	const s = Math.floor(model.value / props.frameRate) % 60
-	return Path.toD(radialLine(s / 60, -15, 45))
+	return radialLine(s / 60, -15, 45)
 })
 
 const minuteTick = computed(() => {
 	const m = Math.floor(model.value / (props.frameRate * 60)) % 60
-	return Path.toD(radialLine(m / 60, 0, 40))
+	return radialLine(m / 60, 0, 40)
 })
 
 const hourTick = computed(() => {
 	const h = Math.floor(model.value / (props.frameRate * 60 * 60)) % 24
 
-	if (h === 0) return Path.toD(Path.empty)
+	if (h === 0) return ''
 
-	return Path.toD(radialLine(h / 12, 0, 20))
+	return radialLine(h / 12, 0, 20)
 })
 </script>
 

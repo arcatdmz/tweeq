@@ -1,6 +1,6 @@
 import {type vec2} from 'linearly'
 
-import {type BalloonArrowSide} from './balloon'
+import {type BalloonArrowSide} from './balloon.js'
 
 export type PopoverPlacement =
 	| 'top'

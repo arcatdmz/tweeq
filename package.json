@@ -12,6 +12,7 @@
 		"e2e": "LD_LIBRARY_PATH=$HOME/.cache/ms-playwright/local-libs playwright test",
 		"lint": "eslint packages apps/docs e2e",
 		"test": "pnpm -r --if-present test",
+		"test:ssr": "node scripts/test-ssr-imports.mjs",
 		"check:boundaries": "node scripts/check-boundaries.mjs",
 		"test:packed": "node scripts/test-packed.mjs"
 	},

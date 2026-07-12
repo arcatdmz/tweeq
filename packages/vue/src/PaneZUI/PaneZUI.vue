@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Rect} from '@baku89/pave'
+import type {Rect} from '@tweeq/core'
 import {useElementBounding} from '@vueuse/core'
 import {mat2d, scalar, vec2} from 'linearly'
 import {computed, shallowRef, useTemplateRef, watch, watchEffect} from 'vue'

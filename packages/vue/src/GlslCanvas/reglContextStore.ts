@@ -95,8 +95,14 @@ function createReglContext() {
 	}
 }
 
-const reglContext = createReglContext()
+type ReglContext = ReturnType<typeof createReglContext>
+
+let reglContext: ReglContext | undefined
+const ssrContext: ReglContext = {
+	createDraw: () => () => undefined,
+}
 
 export function useReglContext() {
-	return reglContext
+	if (typeof document === 'undefined') return ssrContext
+	return (reglContext ??= createReglContext())
 }

@@ -1,7 +1,7 @@
 import chroma from 'chroma-js'
 
-import type {HSV, HSVA, RGB} from './types'
-import {unsignedMod} from './util'
+import type {HSV, HSVA, RGB} from './types.js'
+import {unsignedMod} from './util.js'
 
 export type ColorChannel = 'r' | 'g' | 'b' | 'a' | 'h' | 's' | 'v'
 export type ColorPicker = ColorChannel | `${ColorChannel}${ColorChannel}`

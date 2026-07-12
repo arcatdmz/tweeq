@@ -1,6 +1,6 @@
 import {scalar} from 'linearly'
 
-import {type ValidateResult} from './validator'
+import {type ValidateResult} from './validator.js'
 
 export type TimeFormat = 'frames' | 'timecode'
 

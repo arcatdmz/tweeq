@@ -1,7 +1,7 @@
 import Color from 'colorjs.io'
 
-import {generateRadixScale, type RadixScale} from './radix'
-import type {ColorMode} from './types'
+import {generateRadixScale, type RadixScale} from './radix.js'
+import type {ColorMode} from './types.js'
 
 /**
  * A base16-style curated hue palette — the single source of truth for both the

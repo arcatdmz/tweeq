@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import {Rect} from '@baku89/pave'
+import {rectContainsPoint, type Rect, toPercent} from '@tweeq/core'
 import {scalar} from 'linearly'
 import {computed, useTemplateRef} from 'vue'
 
 import {GlslCanvas} from '../GlslCanvas'
 import {useDrag} from '../use/useDrag'
-import {toPercent} from '@tweeq/core'
 import SliderFragmentString from '@tweeq/dom/shaders/slider.frag'
 import {type ColorChannel, colorChannelToIndex, type HSVA} from './types'
 import {
@@ -68,7 +67,7 @@ const tweakingInside = computed(() => {
 		[right.value, bottom.value],
 	]
 
-	return sliderTweaking.value && Rect.containsPoint(bound, xy.value)
+	return sliderTweaking.value && rectContainsPoint(bound, xy.value)
 })
 
 const uniforms = computed(() => {

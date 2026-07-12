@@ -1,8 +1,8 @@
 import {checkIntersection} from 'line-intersect'
 import {type vec2} from 'linearly'
 
-import {type Rect} from './geometry'
-import {unsignedMod} from './util'
+import {type Rect} from './geometry.js'
+import {unsignedMod} from './util.js'
 
 export interface RotaryDragValue {
 	/** The continuously accumulated, pre-quantization value. */

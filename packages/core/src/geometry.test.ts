@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 
-import {rectCenter, rectsIntersect, uniteRects} from './geometry'
+import {rectCenter, rectContainsPoint, rectsIntersect, uniteRects} from './geometry'
 import {svgArc, svgLine} from './svgPath'
 
 describe('geometry and SVG paths', () => {
@@ -9,6 +9,8 @@ describe('geometry and SVG paths', () => {
 		expect(united).toEqual([[0, 0], [8, 5]])
 		expect(rectCenter(united)).toEqual([4, 2.5])
 		expect(rectsIntersect([[0, 0], [2, 2]], [[3, 3], [4, 4]])).toBe(false)
+		expect(rectContainsPoint([[0, 0], [2, 2]], [1, 2])).toBe(true)
+		expect(rectContainsPoint([[0, 0], [2, 2]], [3, 1])).toBe(false)
 	})
 
 	it('creates line and arc path data', () => {

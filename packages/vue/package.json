@@ -46,7 +46,6 @@
 		"vue-tsc": "^2.1.10"
 	},
 	"dependencies": {
-		"@baku89/pave": "^0.6.2",
 		"@iconify/vue": "^4.1.2",
 		"@radix-ui/colors": "^3.0.0",
 		"@tweeq/core": "workspace:^",

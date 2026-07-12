@@ -2,9 +2,9 @@ import {
 	buildMonacoTheme,
 	buildSemanticColors,
 	type MonacoThemeData,
-} from './palette'
-import {generateThemeColorsRadix} from './radix'
-import type {ColorMode, Theme} from './types'
+} from './palette.js'
+import {generateThemeColorsRadix} from './radix.js'
+import type {ColorMode, Theme} from './types.js'
 
 /** The four user-tweakable inputs every other theme token derives from. */
 export interface ThemeSettings {

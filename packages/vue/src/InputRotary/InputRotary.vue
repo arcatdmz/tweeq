@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import {Path, Rect} from '@baku89/pave'
+import {
+	mergeSvgPaths,
+	type Rect,
+	svgArc,
+	svgCircle,
+	svgLine,
+	unsignedMod,
+} from '@tweeq/core'
 import {useFocus, useMagicKeys, useWindowSize} from '@vueuse/core'
 import {scalar, vec2} from 'linearly'
 import {range} from 'lodash-es'
@@ -16,7 +23,6 @@ import {useCopyPaste} from '../use/useCopyPaste'
 import {useCursorStyle} from '../use/useCursorStyle'
 import {useDrag} from '../use/useDrag'
 import {useElementCenter} from '../use/useElementCenter'
-import {unsignedMod} from '@tweeq/core'
 import * as V from '@tweeq/core/validator'
 import type {InputRotaryProps} from './types'
 import {clampPosWithinRect} from './utils'
@@ -186,26 +192,22 @@ const overlayArrowStyles = computed(() => {
 
 function radialLine(angle: number, innerRadius: number, outerRadius: number) {
 	const a = angle + props.angleOffset
-	return Path.line(
+	return svgLine(
 		vec2.dir(a, innerRadius, center.value),
 		vec2.dir(a, outerRadius, center.value)
 	)
 }
 
 const metersPath = computed(() =>
-	Path.toSVGString(
-		Path.merge(
-			range(0, 360, props.snap).map(a => radialLine(a, ...snapMeterRadii))
-		)
+	mergeSvgPaths(
+		range(0, 360, props.snap).map(a => radialLine(a, ...snapMeterRadii))
 	)
 )
 
 const activeMeterPath = computed(() => {
-	return Path.toSVGString(
-		doSnap.value && model.value % props.snap === 0
-			? radialLine(model.value, ...snapMeterRadii)
-			: Path.empty
-	)
+	return doSnap.value && model.value % props.snap === 0
+		? radialLine(model.value, ...snapMeterRadii)
+		: ''
 })
 
 const overlayPath = computed(() => {
@@ -218,7 +220,7 @@ const overlayPath = computed(() => {
 		const innerRadius = theme.inputHeight
 		const outerRadius = dist
 
-		return Path.toSVGString(radialLine(angle, innerRadius, outerRadius))
+		return radialLine(angle, innerRadius, outerRadius)
 	} else {
 		const baseRadius = theme.inputHeight * 4
 		const radiusStep = theme.inputHeight * 0.25
@@ -231,7 +233,7 @@ const overlayPath = computed(() => {
 
 		// Create revolutions
 		const revolutions = range(0, turns).map(i =>
-			Path.circle(c, baseRadius + i * radiusStep)
+			svgCircle(c, baseRadius + i * radiusStep)
 		)
 
 		// Create arc
@@ -245,9 +247,9 @@ const overlayPath = computed(() => {
 		const startInTurn = unsignedMod(start, 360)
 		const endInTurn = startInTurn + offsetInTurn
 
-		const arc = Path.arc(c, arcRadius, startInTurn, endInTurn)
+		const arc = svgArc(c, arcRadius, startInTurn, endInTurn)
 
-		return Path.toSVGString(Path.merge([...revolutions, arc]))
+		return mergeSvgPaths([...revolutions, arc])
 	}
 })
 
