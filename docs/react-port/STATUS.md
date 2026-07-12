@@ -191,3 +191,7 @@ User-reported issues after manual `yarn dev` inspection, fixed via two parallel 
 - e2e spec fixes discovered by running what the Codex sandboxes couldn't: raw mouse coords need scrollIntoViewIfNeeded; leaving the radial snap band (96–160px) is required to escape snapping (component was right, spec geometry wrong); getByText needs exact:true vs JSON readouts; InputNumber's input needs focus-then-type (inactive-content overlay intercepts clicks by design).
 
 Gates: tsc clean · eslint clean · 84 vitest · **13/13 Playwright** e2e pass.
+
+## 2026-07-12 · orchestrator (Claude) — Examples page visual parity
+
+Compared against the published legacy docs (https://baku89.github.io/tweeq/example.html) via screenshots. The ported Examples page had diverged: bordered two-column cards with a visible JSON readout and a purple accent. Reworked to mirror the legacy ExampleContainer + DemoContainer pair (docs/.vuepress/*.vue): 18rem centered chrome-less sandbox, subtle Full Screen toggle top-right (position absolute needs !important vs the InputButton module, same as legacy), fullscreen = fixed 640×480 overlay, VuePress-style underlined h2. JSON readout is now sr-only (kept as the e2e hook). Demo no longer overrides accentColor — tweeq's default blue matches the published site. Gates: tsc/eslint clean, 84 vitest, 13/13 e2e.

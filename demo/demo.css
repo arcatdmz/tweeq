@@ -81,17 +81,71 @@ main section {
 	line-height: 1.6;
 }
 
-.example-container {
-	display: grid;
-	grid-template-columns: minmax(18rem, 1fr) minmax(15rem, 0.8fr);
-	gap: 32px;
-	align-items: start;
-	padding: 20px;
-	border: 1px solid var(--tq-color-border, #ddd);
-	border-radius: var(--tq-radius-pane, 8px);
+/* Legacy docs demo chrome (docs/.vuepress/DemoContainer.vue +
+   ExampleContainer.vue): chrome-less, narrow centered sandbox, subtle
+   Full Screen toggle pinned to the top-right. */
+.example-demo {
+	--demo-margin: 1rem;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: calc(var(--demo-margin) * 2 + var(--tq-input-height, 24px)) 0 2rem;
 }
 
-.example-readout pre,
+.example-demo.fullscreen {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	background: var(--tq-color-background, #fff);
+}
+
+/* !important like the legacy DemoContainer: the InputButton module's own
+   position: relative loads later and would win the specificity tie. */
+.example-fullscreen-button {
+	position: absolute !important;
+	top: var(--demo-margin);
+	right: 0;
+}
+
+.example-demo.fullscreen .example-fullscreen-button {
+	right: var(--demo-margin);
+}
+
+.example-sandbox {
+	display: flex;
+	gap: 2rem;
+	align-items: start;
+	min-width: 18rem;
+	max-width: 18rem;
+}
+
+.example-demo.fullscreen .example-sandbox {
+	width: 640px;
+	max-width: 640px;
+	height: 480px;
+	align-items: center;
+}
+
+.example-sandbox > :first-child {
+	flex-grow: 1;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* VuePress-default-theme-style underlined section headings. */
+.docs-page h2 {
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--tq-color-border, #ddd);
+}
+
 .intro-page pre {
 	margin: 8px 0 0;
 	white-space: pre-wrap;
@@ -175,5 +229,4 @@ main section {
 
 @media (max-width: 640px) {
 	.demo-header { align-items: flex-start; flex-direction: column; }
-	.example-container { grid-template-columns: 1fr; }
 }
