@@ -5,6 +5,10 @@ the maintained Vue 3 renderer. The renderer keeps Vue conventions: components
 use `v-model`, named slots remain slots, and application setup uses
 `initTweeq`.
 
+The complete [`examples/vue-vite`](../../examples/vue-vite) consumer is the
+executable form of these snippets. CI installs packed package artifacts,
+typechecks that application, and builds it outside the workspace.
+
 > The `@tweeq/*` package names are workspace names until npm ownership is
 > settled. Follow ADR 0001 before using them from the public registry.
 
@@ -78,4 +82,3 @@ Run the application's typecheck and browser tests. Pay particular attention to
 controlled modal flows, disabled controls, persisted tabs, and initial ZUI
 transforms; these areas now use the cross-renderer behavior contracts recorded
 in the parity matrix.
-

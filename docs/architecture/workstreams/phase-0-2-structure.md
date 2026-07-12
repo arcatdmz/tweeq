@@ -215,7 +215,7 @@ contain renderer markup only and no copied state transition.
 - Family gate: all workspace tests/builds, lint, boundaries, SSR/CJS imports
   and renders, packed React/Vue consumers, and all 21 Playwright tests pass.
 
-## Phase 5 documentation and compatibility (in progress)
+## Phase 5 documentation and compatibility (complete)
 
 - The documentation home switcher now presents current, renderer-specific
   `@tweeq/react` and `@tweeq/vue` installation and component APIs; it no longer
@@ -232,8 +232,12 @@ contain renderer markup only and no copied state transition.
 - The Vue playground now has strict template typechecking and full lint
   coverage; enabling that gate exposed and fixed InputComplex's invalid
   descriptor requirement for an internally supplied `modelValue`.
-- Remaining Phase 5 work: executable snippet and general documentation-link
-  validation.
+- Renderer migration snippets point to their complete packed React/Vue
+  consumers. CI typechecks and builds both outside the workspace, while
+  `docs:check` rejects stale API inventories and broken Markdown links.
+- Phase gate: both renderer/docs production builds, strict Vue template
+  checking, Vue renderer tests, workspace lint, API/link validation, packed
+  consumers, and all 21 Playwright tests pass.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

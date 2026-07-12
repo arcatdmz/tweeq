@@ -4,6 +4,10 @@ This guide moves an application from the pre-monorepo React fork to the
 maintained React renderer. React keeps controlled `value` / `onChange`
 semantics and provider-based application setup.
 
+The complete [`examples/react-vite`](../../examples/react-vite) consumer is
+the executable form of these snippets. CI installs packed package artifacts,
+typechecks that application, and builds it outside the workspace.
+
 > The `@tweeq/*` package names are workspace names until npm ownership is
 > settled. Follow ADR 0001 before using them from the public registry.
 
@@ -53,4 +57,3 @@ Run the application's typecheck and browser tests. The public renderer entry
 continues to re-export shared value types and stores for compatibility, while
 framework-neutral implementation imports should use `@tweeq/core` or
 `@tweeq/dom` directly in new library code.
-

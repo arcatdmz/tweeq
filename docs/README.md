@@ -18,4 +18,5 @@ Renderer migration guides:
 
 [`api-exports.md`](api-exports.md) is generated from the built public package
 entries. Refresh it with `pnpm docs:generate`; CI validates it after building
-the workspace.
+the workspace. The same `pnpm docs:check` gate validates local Markdown links;
+the migration guides link to packed consumers used as executable snippets.
