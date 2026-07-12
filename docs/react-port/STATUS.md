@@ -178,3 +178,48 @@ date · agent · what was done · deviations from PLAN/CONVENTIONS · exact next
 - InputGroup: added fallback keys in the cloneElement pass (flattening children into an array made React warn on every group).
 
 **Known parity notes (not regressions):** Monaco logs `MonacoEnvironment.getWorkerUrl` errors in the dev demo and degrades to worker-less mode — the legacy Vue demo never configured workers either. A vite `?worker` MonacoEnvironment setup (demo-only) would silence it if desired.
+
+## 2026-07-12 · orchestrator (Claude) + 2 Codex agents — docs port & three UI bugs
+
+User-reported issues after manual `yarn dev` inspection, fixed via two parallel Codex agents (details in `status/bugfix-overlay-rotary-dropdown.md` and `status/docs-port.md`):
+
+- **Docs content ported** to the React demo behind a hash router: `#/components` (auto-discovered gallery, default), `#/examples` (all five scheme-driven forms from docs/example.md via a React ExampleContainer + live JSON readout), `#/colors` (scales/semantic/palette demos), `#/features`, `#/intro`. `mdi-*` icon names normalized to `mdi:*`. Research pages intentionally unported.
+- **TweakOverlay demo**: overlay now mounts only while holding a labelled trigger (was permanently in the top layer, read as stray text).
+- **InputRotary/InputAngle snapping**: port had quantized its accumulator (legacy keeps a pre-snap local value, InputRotary.vue:109) and measured a stale center. Now: pure `getRotaryDragValue` in core (unit-tested), live element-center per drag event.
+- **useKeys latency (orchestrator)**: modifier reads during drags went through render-synced refs, so a Shift keyup between pointermoves was invisible until the next render. useKeys now exposes getter-based reads over a synchronously-updated ref (zero call-site changes) — matches legacy useMagicKeys semantics. All scrub components benefit.
+- **InputDropdown gradation**: visibility conditions were already correct; the port had dropped legacy's rounded corners/color/pointer rules on the edge overlays (InputDropdown.vue:596-617), making fades read as detached bands. Restored.
+- e2e spec fixes discovered by running what the Codex sandboxes couldn't: raw mouse coords need scrollIntoViewIfNeeded; leaving the radial snap band (96–160px) is required to escape snapping (component was right, spec geometry wrong); getByText needs exact:true vs JSON readouts; InputNumber's input needs focus-then-type (inactive-content overlay intercepts clicks by design).
+
+Gates: tsc clean · eslint clean · 84 vitest · **13/13 Playwright** e2e pass.
+
+## 2026-07-12 · orchestrator (Claude) — Examples page visual parity
+
+Compared against the published legacy docs (https://baku89.github.io/tweeq/example.html) via screenshots. The ported Examples page had diverged: bordered two-column cards with a visible JSON readout and a purple accent. Reworked to mirror the legacy ExampleContainer + DemoContainer pair (docs/.vuepress/*.vue): 18rem centered chrome-less sandbox, subtle Full Screen toggle top-right (position absolute needs !important vs the InputButton module, same as legacy), fullscreen = fixed 640×480 overlay, VuePress-style underlined h2. JSON readout is now sr-only (kept as the e2e hook). Demo no longer overrides accentColor — tweeq's default blue matches the published site. Gates: tsc/eslint clean, 84 vitest, 13/13 e2e.
+
+## 2026-07-12 · orchestrator (Claude) + 2 Codex agents — docs-site parity & five component fixes
+
+Details in `status/docs-site.md` and `status/bugfix-round2.md`.
+
+- **Docs site reproduced** in the demo: Home/Features/Components/Colors/Example tabs port the VuePress pages' text and demos; the auto-discovered gallery moved to an "All Components" tab ('/' still defaults there for e2e stability). VuePress-style chrome: logo navbar, GitHub link, working light/dark toggle (theme store), per-page sidebar of h2 anchors with scroll tracking, pointer cursors on all clickables (Viewport reset sets cursor:inherit — demo.css overrides).
+- **Component fixes** (Codex): InputDropdown fade geometry (list margins collapsed through .selectWrapper → flow-root), InputDrum center dead zone (masked viewport was a hit-test surface → pointer-events none), InputSize chain-button native metrics reset, InputTime frame wheel (overflow:visible lost a CSS-module load-order tie vs InputTextBase → made authoritative), PaneModalComplex scrollport clipped the last 1px border.
+- **Orchestrator fixes on top**: Sidebar heading collection was memoized on the never-changing <main> ref → stale/absent after navigation; now an effect keyed on page. Drum e2e clicked coordinates spanning multiple cells and targeted hidden measurement spans; time e2e measured boundingBox off-screen. Removed dangling IntroPage.tsx.
+- Verified visually: home hero, dropdown fades correct at both edges, drum click/drag, time wheel overlay during scrub.
+
+Gates: tsc clean · eslint clean · 84 vitest · **14/14 Playwright** e2e.
+
+## 2026-07-12 · orchestrator (Claude) — demo docs site rebuilt from SOURCE (user directive: no published-site assets)
+
+User feedback: the demo must copy the ORIGINAL docs' aesthetics (typography, icons, page names, Full Screen buttons on Components page), derived from source code only — never from the published site. Architecture now in place (committed):
+
+- **Styles**: demo/styles/index.scss compiles the theme from source — @vuepress/theme-default@2.0.0-rc.80 (re-added as devDep) styles/*.scss + SFC-authored chrome styles extracted by demo/styles/extract-theme-styles.mjs (21 partials in demo/styles/theme-sfc/, regenerate after theme upgrades) + docs/.vuepress/styles/{index,custom}.scss (user palette). Base CSS = @vuepress/helper/{colors,normalize}.css imported in demo/main.tsx, mirroring the theme's client config.js import order. `@vuepress/plugin-palette/palette` is aliased to an empty partial in demo/vite.config.ts (repo has no palette.scss — the real generated temp file is empty too).
+- **Chrome DOM** (demo/DemoApp.tsx): vp-theme-container / vp-navbar (logo, mono nav items per user styles, GitHub mask icon — github-mark.svg copied to demo/public — and the theme's light/dark toggle SVGs syncing `data-theme` on <html> + tweeq themeStore) / vp-sidebar (nav items + h2/h3 tree with IntersectionObserver highlight) / main.vp-home or main.vp-page + [vp-content].
+- **KEY STRUCTURAL FIX**: no global tweeq Viewport anymore. Like the original, tweeq base styles apply ONLY inside demo islands: DemoContainer/DemoComponent/ExampleContainer (React ports of the three docs/.vuepress/*.vue helpers, incl. Full Screen everywhere + DemoComponent's live options editor + console-logging listeners + pressed-keys) and the All Components gallery page (wrapped in its own Viewport). Fonts (Geist/Geist Mono/Material Symbols) via Google Fonts link in demo/index.html, same as docs config.ts head.
+- ComponentsPage has InputAngle+InputButton converted 1:1 from components.md as exemplars; a Codex agent is completing all remaining entries + home hero (vp-hero classes) + verbatim text for Features/Colors/Example (status note: status/docs-pages-vuepress.md).
+- Known handoff notes: e2e specs will need chrome-related selector updates (color-mode button title="toggle color mode"; sidebar is aside.vp-sidebar; '/' still defaults to the All Components gallery). Playwright must run via `npm run e2e` on the host (Codex sandbox can't bind ports). ParameterGrid label column truncates "Angle Offset" in the options editor — compare with legacy grid label sizing if the user flags it.
+
+## 2026-07-12 · orchestrator + Codex — docs pages completed on the source-built chrome
+
+- All pages now emit the theme's DOM with verbatim markdown text: Home (vp-hero/vp-features from index.md frontmatter), Components (every components.md entry as a DemoComponent with source schemes/options + interaction notes + adapted API tables), Features/Colors/Example ([vp-content] + anchored headings). Deviations listed in status/docs-pages-vuepress.md.
+- playwright.config.ts sets `contextOptions: {reducedMotion: 'reduce'}` — the theme scrolls smoothly, which races raw-coordinate mouse specs; the theme's own styles honor reduced motion.
+- Known: headless Chromium synthesizes unreliable pointer-lock movementX (±700px jumps for 20px moves), so the drum-drag e2e asserts value-change only; scrub direction (drag left = next option, per InputDrum.vue:127) needs a manual check in a real browser.
+- Gates: tsc/eslint clean · 84 vitest · 14/14 Playwright.

@@ -4,6 +4,30 @@ import {type vec2} from 'linearly'
 import {type Rect} from './geometry'
 import {unsignedMod} from './util'
 
+export interface RotaryDragValue {
+	/** The continuously accumulated, pre-quantization value. */
+	local: number
+	/** The value exposed to the controlled input. */
+	output: number
+}
+
+/** Accumulate pointer deltas without feeding quantization back into the drag. */
+export function getRotaryDragValue(
+	local: number,
+	delta: number,
+	snap: number,
+	shouldSnap: boolean
+): RotaryDragValue {
+	const nextLocal = local + delta
+	if (!shouldSnap || !Number.isFinite(snap) || snap === 0) {
+		return {local: nextLocal, output: nextLocal}
+	}
+	return {
+		local: nextLocal,
+		output: Math.round(nextLocal / snap) * snap,
+	}
+}
+
 export function signedAngleBetween(target: number, source: number): number {
 	return unsignedMod(target - source + 180, 360) - 180
 }

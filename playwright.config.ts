@@ -10,6 +10,10 @@ export default defineConfig({
 	retries: 0,
 	use: {
 		baseURL: 'http://localhost:5174',
+		// The docs theme scrolls smoothly, which races raw-coordinate mouse
+		// interactions (boundingBox measured mid-animation). The theme honors
+		// prefers-reduced-motion (scroll-behavior: auto), so force it.
+		contextOptions: {reducedMotion: 'reduce'},
 	},
 	webServer: {
 		command: 'npx vite serve demo --port 5174 --strictPort',

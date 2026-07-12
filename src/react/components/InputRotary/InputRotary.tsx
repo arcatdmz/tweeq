@@ -13,6 +13,7 @@ import {useStore} from 'zustand'
 import {
 	clampPosWithinRect,
 	type DragState,
+	getRotaryDragValue,
 	type InputBoxProps,
 	type InputEvents,
 	mergeSvgPaths,
@@ -148,26 +149,32 @@ export function InputRotary({
 			},
 			onDrag(state: DragState) {
 				dragRef.current = state
-				const point = vec2.sub(state.xy, centerRef.current)
-				const previous = vec2.sub(state.previous, centerRef.current)
-				let next = localRef.current + vec2.angle(previous, point)
-				const radius = vec2.dist(centerRef.current, state.xy)
+				const rect = root.current?.getBoundingClientRect()
+				const liveCenter: vec2 = rect
+					? [rect.left + rect.width / 2, rect.top + rect.height / 2]
+					: centerRef.current
+				const point = vec2.sub(state.xy, liveCenter)
+				const previous = vec2.sub(state.previous, liveCenter)
+				const deltaAngle = vec2.angle(previous, point)
+				const radius = vec2.dist(liveCenter, state.xy)
 				const shouldSnap =
 					keysRef.current.Shift ||
 					keysRef.current.q ||
 					(snapRadiiRef.current[0] <= radius &&
 						radius <= snapRadiiRef.current[1])
-				const result = shouldSnap
-					? scalar.quantize(next, callbacksRef.current.snap)
-					: next
-				next = Number.isFinite(result) ? result : next
-				setLocal(next)
-				localRef.current = next
-				callbacksRef.current.onChange?.(next)
+				const next = getRotaryDragValue(
+					localRef.current,
+					deltaAngle,
+					callbacksRef.current.snap,
+					shouldSnap
+				)
+				setLocal(next.local)
+				localRef.current = next.local
+				callbacksRef.current.onChange?.(next.output)
 				if (modeRef.current === 'absolute') {
-					multiRef.current.update(() => next)
+					multiRef.current.update(() => next.output)
 				} else {
-					const delta = next - initialValue.current
+					const delta = next.output - initialValue.current
 					multiRef.current.update(other => {
 						const updated = Number(other) + delta
 						return shouldSnap

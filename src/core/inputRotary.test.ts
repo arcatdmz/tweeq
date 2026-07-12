@@ -1,6 +1,10 @@
 import {describe, expect, it} from 'vitest'
 
-import {clampPosWithinRect, signedAngleBetween} from './inputRotary'
+import {
+	clampPosWithinRect,
+	getRotaryDragValue,
+	signedAngleBetween,
+} from './inputRotary'
 
 describe('InputRotary geometry', () => {
 	it('finds the shortest signed angle', () => {
@@ -19,5 +23,16 @@ describe('InputRotary geometry', () => {
 				]
 			)
 		).toEqual([100, 50])
+	})
+
+	it('keeps relative accumulation unsnapped while toggling 45 degree snap', () => {
+		let result = getRotaryDragValue(30, 8, 45, true)
+		expect(result).toEqual({local: 38, output: 45})
+
+		result = getRotaryDragValue(result.local, 2, 45, true)
+		expect(result).toEqual({local: 40, output: 45})
+
+		result = getRotaryDragValue(result.local, 2, 45, false)
+		expect(result).toEqual({local: 42, output: 42})
 	})
 })

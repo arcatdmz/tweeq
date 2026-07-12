@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react'
+import {useMemo, useRef, useState} from 'react'
 
 import {useEventListener} from './useEventListener'
 
@@ -6,10 +6,31 @@ function normalize(key: string): string {
 	return key.toLowerCase()
 }
 
-/** Track a small requested set of keyboard keys, clearing them on window blur. */
+/**
+ * Track a small requested set of keyboard keys, clearing them on window blur.
+ *
+ * The returned object's identity changes with React state (so renders react to
+ * key changes), but its properties are getters over a ref that the key
+ * handlers update synchronously. Callbacks that fire between a key event and
+ * the next render (pointermove during a drag, bndr emitters) therefore read
+ * fresh values — matching the legacy `useMagicKeys` refs, which updated in the
+ * same tick as the DOM event.
+ */
 export function useKeys<const T extends readonly string[]>(keys: T) {
-	const [pressed, setPressed] = useState<ReadonlySet<string>>(() => new Set())
+	const [, setRevision] = useState(0)
+	const pressedRef = useRef<ReadonlySet<string>>(new Set())
 	const requested = useMemo(() => new Set(keys.map(normalize)), [keys])
+
+	function update(next: ReadonlySet<string>) {
+		if (
+			next.size === pressedRef.current.size &&
+			[...next].every(key => pressedRef.current.has(key))
+		) {
+			return
+		}
+		pressedRef.current = next
+		setRevision(revision => revision + 1)
+	}
 
 	useEventListener<KeyboardEvent>(
 		typeof window === 'undefined' ? null : window,
@@ -17,10 +38,7 @@ export function useKeys<const T extends readonly string[]>(keys: T) {
 		event => {
 			const key = normalize(event.key)
 			if (!requested.has(key)) return
-			setPressed(current => {
-				if (current.has(key)) return current
-				return new Set([...current, key])
-			})
+			update(new Set([...pressedRef.current, key]))
 		}
 	)
 	useEventListener<KeyboardEvent>(
@@ -28,23 +46,26 @@ export function useKeys<const T extends readonly string[]>(keys: T) {
 		'keyup',
 		event => {
 			const key = normalize(event.key)
-			setPressed(current => {
-				if (!current.has(key)) return current
-				const next = new Set(current)
-				next.delete(key)
-				return next
-			})
+			if (!pressedRef.current.has(key)) return
+			const next = new Set(pressedRef.current)
+			next.delete(key)
+			update(next)
 		}
 	)
 	useEventListener(typeof window === 'undefined' ? null : window, 'blur', () =>
-		setPressed(new Set())
+		update(new Set())
 	)
 
-	return useMemo(
-		() =>
-			Object.fromEntries(
-				keys.map(key => [key, pressed.has(normalize(key))])
-			) as {[K in T[number]]: boolean},
-		[keys, pressed]
-	)
+	return useMemo(() => {
+		const out = {} as {[K in T[number]]: boolean}
+		for (const key of keys) {
+			Object.defineProperty(out, key, {
+				enumerable: true,
+				get: () => pressedRef.current.has(normalize(key)),
+			})
+		}
+		return out
+		// pressedRef.current is intentionally read through getters; the ref dep
+		// only refreshes the object identity so renders re-run on key changes.
+	}, [keys, pressedRef.current])
 }
