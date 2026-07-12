@@ -2,20 +2,29 @@
 
 import {
 	type HarnessEvent,
+	type InputButtonToggleContractProps,
 	type InputSwitchContractProps,
 	type KeyAction,
 	type PointerAction,
 	type RendererHarness,
+	runInputButtonToggleContract,
 	runInputCheckboxContract,
 	runInputSwitchContract,
 } from '@tweeq/test-contracts'
 import {createApp, defineComponent, h, nextTick, reactive, ref} from 'vue'
 
+import {InputButtonToggle} from './InputButtonToggle'
 import {InputCheckbox} from './InputCheckbox'
 import {InputSwitch} from './InputSwitch'
 
 const createHarness = async (component: string, initialProps: InputSwitchContractProps) => {
-	const Component = component === 'InputSwitch' ? InputSwitch : component === 'InputCheckbox' ? InputCheckbox : null
+	const Component = component === 'InputSwitch'
+		? InputSwitch
+		: component === 'InputCheckbox'
+			? InputCheckbox
+			: component === 'InputButtonToggle'
+				? InputButtonToggle
+				: null
 	if (!Component) throw new Error(`Unsupported: ${component}`)
 
 	const container = document.createElement('div')
@@ -32,9 +41,13 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 					currentValue.value = value
 					captured.push({name: 'change', payload: [value]})
 				},
-				onConfirm() {
-					captured.push({name: 'confirm', payload: []})
-				},
+				...(component === 'InputButtonToggle'
+					? {}
+					: {
+							onConfirm() {
+								captured.push({name: 'confirm', payload: []})
+							},
+						}),
 			})
 		)
 	)
@@ -66,6 +79,12 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 			}
 			await nextTick()
 		},
+		async activate(part) {
+			const target = harness.part(part ?? 'root') as HTMLElement | null
+			if (!target) throw new Error(`Missing part: ${part ?? 'root'}`)
+			target.click()
+			await nextTick()
+		},
 		value: () => currentValue.value,
 		events: () => captured,
 		unmount() {
@@ -79,3 +98,8 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 
 runInputSwitchContract(createHarness)
 runInputCheckboxContract(createHarness)
+
+runInputButtonToggleContract(async (component, initialProps) => {
+	if (component !== 'InputButtonToggle') throw new Error(`Unsupported: ${component}`)
+	return createHarness(component, initialProps as InputSwitchContractProps) as Promise<RendererHarness<InputButtonToggleContractProps>>
+})

@@ -10,3 +10,7 @@ export {
 	runInputCheckboxContract,
 	runInputSwitchContract,
 } from './inputSwitch'
+export {
+	type InputButtonToggleContractProps,
+	runInputButtonToggleContract,
+} from './inputButtonToggle'

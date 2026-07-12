@@ -61,4 +61,6 @@ and public export is unchanged.
 - Phase 4 family 1 is in progress: InputSwitch and InputCheckbox expose
   identical stable `data-tq-part` names in both renderers and run the same
   controlled-value, keyboard/confirm, disabled, and label contract.
+  InputButtonToggle additionally shares controlled activation, native disabled,
+  invalid-state, stable-part, and `aria-pressed` coverage.
 - Do not publish any package until ADR 0001's ownership question is settled.

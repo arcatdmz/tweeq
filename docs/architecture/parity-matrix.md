@@ -48,7 +48,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | IconIndicator | SFC | ✅ | — | — | |
 | InputAngle | SFC | ✅ | (`inputRotary`) | rotary-snap, temporal | wraps rotary semantics |
 | InputButton | SFC | ✅ | — | text-toggles | stateless; types/styles sharing only |
-| InputButtonToggle | SFC | ✅ | — | — | |
+| InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
 | InputCode | SFC | ✅ | — | dropdown-code | Monaco integration differs by wrapper lib |
 | InputColor | SFC | ✅ | `color` | color-curves | popover + channel sliders/pad |

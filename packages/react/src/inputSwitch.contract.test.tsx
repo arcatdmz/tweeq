@@ -2,16 +2,19 @@
 
 import {
 	type HarnessEvent,
+	type InputButtonToggleContractProps,
 	type InputSwitchContractProps,
 	type KeyAction,
 	type PointerAction,
 	type RendererHarness,
+	runInputButtonToggleContract,
 	runInputCheckboxContract,
 	runInputSwitchContract,
 } from '@tweeq/test-contracts'
 import {act, type ComponentType, createElement} from 'react'
 import {createRoot} from 'react-dom/client'
 
+import {InputButtonToggle} from './components/InputButtonToggle'
 import {InputCheckbox} from './components/InputCheckbox'
 import {InputSwitch} from './components/InputSwitch'
 
@@ -19,7 +22,13 @@ import {InputSwitch} from './components/InputSwitch'
 	.IS_REACT_ACT_ENVIRONMENT = true
 
 const createHarness = async (component: string, initialProps: InputSwitchContractProps) => {
-	const Component = (component === 'InputSwitch' ? InputSwitch : component === 'InputCheckbox' ? InputCheckbox : null) as ComponentType<Record<string, unknown>> | null
+	const Component = (component === 'InputSwitch'
+		? InputSwitch
+		: component === 'InputCheckbox'
+			? InputCheckbox
+			: component === 'InputButtonToggle'
+				? InputButtonToggle
+				: null) as ComponentType<Record<string, unknown>> | null
 	if (!Component) throw new Error(`Unsupported: ${component}`)
 
 	const container = document.createElement('div')
@@ -39,9 +48,13 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 						currentValue = value
 						captured.push({name: 'change', payload: [value]})
 					},
-					onConfirm() {
-						captured.push({name: 'confirm', payload: []})
-					},
+					...(component === 'InputButtonToggle'
+						? {}
+						: {
+								onConfirm() {
+									captured.push({name: 'confirm', payload: []})
+								},
+							}),
 				})
 			)
 		})
@@ -78,6 +91,12 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 			})
 			await render()
 		},
+		async activate(part) {
+			const target = harness.part(part ?? 'root') as HTMLElement | null
+			if (!target) throw new Error(`Missing part: ${part ?? 'root'}`)
+			await act(async () => target.click())
+			await render()
+		},
 		value: () => currentValue,
 		events: () => captured,
 		unmount() {
@@ -91,3 +110,8 @@ const createHarness = async (component: string, initialProps: InputSwitchContrac
 
 runInputSwitchContract(createHarness)
 runInputCheckboxContract(createHarness)
+
+runInputButtonToggleContract(async (component, initialProps) => {
+	if (component !== 'InputButtonToggle') throw new Error(`Unsupported: ${component}`)
+	return createHarness(component, initialProps as InputSwitchContractProps) as Promise<RendererHarness<InputButtonToggleContractProps>>
+})

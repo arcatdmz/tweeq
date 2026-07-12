@@ -40,6 +40,8 @@ export function InputButtonToggle({
 			block-position={blockPosition}
 			disabled={Boolean(disabled)}
 			aria-invalid={invalid || undefined}
+			aria-pressed={value}
+			data-tq-part="root"
 			onMouseDown={event => {
 				onMouseDown?.(event)
 				if (!event.defaultPrevented) event.preventDefault()
@@ -49,8 +51,8 @@ export function InputButtonToggle({
 				if (!event.defaultPrevented) onChange?.(!value)
 			}}
 		>
-			{icon && <Icon className={styles.icon} icon={icon} />}
-			{label && <span className={styles.label}>{label}</span>}
+			{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
+			{label && <span className={styles.label} data-tq-part="label">{label}</span>}
 		</button>
 	)
 }

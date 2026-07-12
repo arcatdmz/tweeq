@@ -44,6 +44,8 @@ export interface RendererHarness<Props = Record<string, unknown>> {
 	pointer(action: PointerAction, part?: string): Promise<void>
 	/** Dispatch a keyboard interaction onto a part (or the focused element). */
 	key(action: KeyAction, part?: string): Promise<void>
+	/** Invoke the element's native activation behavior (normally `click()`). */
+	activate(part?: string): Promise<void>
 	/** The component's current public value, as reported to the consumer. */
 	value(): unknown
 	/** Events captured since mount, in emission order. */

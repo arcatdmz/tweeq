@@ -20,11 +20,14 @@ defineProps<InputButtonToggleProps>()
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
 		:disabled="!!disabled"
+		:aria-invalid="invalid || undefined"
+		:aria-pressed="model"
+		data-tq-part="root"
 		@mousedown.prevent
 		@click="model = !model"
 	>
-		<Icon v-if="icon" class="icon" :icon="icon" />
-		<span v-if="label" class="label">{{ label }}</span>
+		<Icon v-if="icon" class="icon" :icon="icon" data-tq-part="icon" />
+		<span v-if="label" class="label" data-tq-part="label">{{ label }}</span>
 	</button>
 </template>
 
