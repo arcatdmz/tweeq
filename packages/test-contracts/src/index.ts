@@ -11,6 +11,10 @@ export {
 	runInputSwitchContract,
 } from './inputSwitch'
 export {
+	type InputButtonContractProps,
+	runInputButtonContract,
+} from './inputButton'
+export {
 	type InputButtonToggleContractProps,
 	runInputButtonToggleContract,
 } from './inputButtonToggle'

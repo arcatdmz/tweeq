@@ -47,6 +47,8 @@ const tooltipContent = computed(
 		:inline-position="inlinePosition"
 		:block-position="blockPosition"
 		:disabled="disabled"
+		:aria-invalid="invalid || undefined"
+		data-tq-part="root"
 		v-tooltip="tooltipContent"
 		@mousedown.prevent
 	>
@@ -61,9 +63,11 @@ const tooltipContent = computed(
 			later Enter/Space re-activates it unexpectedly. Keyboard (Tab) focus is
 			unaffected, so keyboard activation still works — matching :focus-visible.
 		-->
-		<Icon v-if="icon" class="icon" :icon="icon" />
-		<span v-if="label" ref="$label" class="label">{{ label }}</span>
-		<span v-if="chevron" class="chevron"><Icon icon="mdi:chevron-down" /></span>
+		<Icon v-if="icon" class="icon" :icon="icon" data-tq-part="icon" />
+		<span v-if="label" ref="$label" class="label" data-tq-part="label">{{ label }}</span>
+		<span v-if="chevron" class="chevron" data-tq-part="chevron">
+			<Icon icon="mdi:chevron-down" />
+		</span>
 	</button>
 </template>
 

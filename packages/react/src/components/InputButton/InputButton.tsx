@@ -86,19 +86,20 @@ export const InputButton = forwardRef<InputButtonHandle, InputButtonProps>(
 				inline-position={inlinePosition}
 				block-position={blockPosition}
 				aria-invalid={invalid || undefined}
+				data-tq-part="root"
 				onMouseDown={event => {
 					onMouseDown?.(event)
 					if (!event.defaultPrevented) event.preventDefault()
 				}}
 			>
-				{icon && <Icon className={styles.icon} icon={icon} />}
+				{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
 				{label && (
-					<span ref={labelElement} className={styles.label}>
+					<span ref={labelElement} className={styles.label} data-tq-part="label">
 						{label}
 					</span>
 				)}
 				{chevron && (
-					<span className={styles.chevron}>
+					<span className={styles.chevron} data-tq-part="chevron">
 						<Icon icon="mdi:chevron-down" />
 					</span>
 				)}

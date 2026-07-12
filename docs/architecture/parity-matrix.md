@@ -47,7 +47,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Icon | SFC | ✅ | — | — | `@iconify/vue` vs `@iconify/react` |
 | IconIndicator | SFC | ✅ | — | — | |
 | InputAngle | SFC | ✅ | (`inputRotary`) | rotary-snap, temporal | wraps rotary semantics |
-| InputButton | SFC | ✅ | — | text-toggles | stateless; types/styles sharing only |
+| InputButton | SFC | ✅ | — | shared contract + text-toggles | action, native disabled state, invalid state, and stable content parts aligned in Phase 4 |
 | InputButtonToggle | SFC | ✅ | — | shared contract | controlled activation, native disabled state, `aria-pressed`, and stable parts aligned in Phase 4 |
 | InputCheckbox | SFC | ✅ | — | components-parity, text-toggles | |
 | InputCode | SFC | ✅ | — | dropdown-code | Monaco integration differs by wrapper lib |
