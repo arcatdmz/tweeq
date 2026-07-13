@@ -12,7 +12,6 @@ import {
 
 import {classNames} from '../../classNames'
 import {useConfigRef} from '../../hooks'
-import styles from './Tabs.module.styl'
 import {type TabRegistration, TabsContext} from './TabsContext'
 
 export interface TabsProps extends HTMLAttributes<HTMLDivElement> {
@@ -95,30 +94,25 @@ export function Tabs({
 		<TabsContext.Provider value={context}>
 			<div
 				{...props}
-				className={classNames(
-					'TqTabs',
-					styles.tabs,
-					vertical && styles.vertical,
-					className
-				)}
+				className={classNames('TqTabs', className)}
+				data-tq-component="tabs"
+				data-tq-orientation={vertical ? 'vertical' : 'horizontal'}
 				data-tq-part="root"
 			>
-				<div className={styles.tablistWrapper}>
-					{beforeTablist && <div>{beforeTablist}</div>}
+				<div data-tq-part="tablist-wrapper">
+					{beforeTablist && <div data-tq-part="before-tablist">{beforeTablist}</div>}
 					<ul
 						role="tablist"
 						aria-orientation={vertical ? 'vertical' : 'horizontal'}
-						className={styles.tablist}
+						data-tq-part="tablist"
 					>
 						{tabs.map(tab => (
 							<li
 								key={tab.id}
 								role="presentation"
-								className={classNames(
-									styles.tablistItem,
-									tab.isDisabled && styles.disabled,
-									tab.id === activeId && styles.active
-								)}
+								data-tq-part="tablist-item"
+								data-tq-disabled={tab.isDisabled ? '' : undefined}
+								data-tq-active={tab.id === activeId ? '' : undefined}
 							>
 								<button
 									type="button"
@@ -126,7 +120,7 @@ export function Tabs({
 									aria-controls={tab.paneId}
 									aria-selected={tab.id === activeId}
 									disabled={tab.isDisabled}
-									className={styles.tablistLink}
+									data-tq-tab=""
 									data-tq-part={`tab-${tab.id}`}
 									onClick={event => select(tab.id, event)}
 								>
@@ -136,7 +130,7 @@ export function Tabs({
 						))}
 					</ul>
 				</div>
-				<div className={styles.panelsWrapper}>{children}</div>
+				<div data-tq-part="panels-wrapper">{children}</div>
 			</div>
 		</TabsContext.Provider>
 	)

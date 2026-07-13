@@ -104,15 +104,26 @@ watch(
 </script>
 
 <template>
-	<div class="TqTabs" :class="{vertical}" data-tq-part="root">
-		<div class="tablist-wrapper">
-			<div v-if="$slots['before-tablist']" class="before-tablist">
+	<div
+		class="TqTabs"
+		:class="{vertical}"
+		data-tq-component="tabs"
+		:data-tq-orientation="vertical ? 'vertical' : 'horizontal'"
+		data-tq-part="root"
+	>
+		<div class="tablist-wrapper" data-tq-part="tablist-wrapper">
+			<div
+				v-if="$slots['before-tablist']"
+				class="before-tablist"
+				data-tq-part="before-tablist"
+			>
 				<slot name="before-tablist" />
 			</div>
 			<ul
 				role="tablist"
 				:aria-orientation="vertical ? 'vertical' : 'horizontal'"
 				class="tablist"
+				data-tq-part="tablist"
 			>
 				<li
 					v-for="(tab, i) in state.tabs"
@@ -120,6 +131,9 @@ watch(
 					class="tablist-item"
 					:class="{disabled: tab.isDisabled, active: tab.isActive}"
 					role="presentation"
+					data-tq-part="tablist-item"
+					:data-tq-disabled="tab.isDisabled ? '' : undefined"
+					:data-tq-active="tab.isActive ? '' : undefined"
 				>
 					<button
 						type="button"
@@ -129,6 +143,7 @@ watch(
 						:aria-controls="tab.paneId"
 						:aria-selected="tab.isActive"
 						:disabled="tab.isDisabled"
+						data-tq-tab=""
 						:data-tq-part="`tab-${tab.id}`"
 						@click="selectTab(tab.id, $event)"
 						>{{ tab.name }}</button
@@ -136,115 +151,9 @@ watch(
 				</li>
 			</ul>
 		</div>
-		<div class="panels-wrapper">
+		<div class="panels-wrapper" data-tq-part="panels-wrapper">
 			<slot />
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqTabs
-	display grid
-	gap calc(0.5 * var(--tq-rem))
-	grid-template-columns 1fr
-	grid-template-rows min-content 1fr
-
-.tablist-wrapper
-	display flex
-	gap var(--tq-rem)
-
-.tablist
-	display flex
-	gap calc(0.2 * var(--tq-rem))
-	list-style-type none
-	user-select none
-
-.tablist-item
-	line-height calc(2 * var(--tq-rem))
-	padding 2px calc(0.4 * var(--tq-rem)) 0
-	font-weight bold
-	border-bottom 3px solid transparent
-	hover-transition(border-bottom-color)
-
-	&.active
-		border-bottom-color var(--tq-color-text)
-
-		&:hover
-			border-bottom-color var(--tq-color-accent)
-
-.tablist-link
-	text-decoration none
-	color var(--tq-color-text)
-	opacity .4
-	// Transition colour too: with only opacity animated, un-hovering snaps the
-	// colour back to text (white) while opacity is still high — a white flash
-	// before it dims.
-	hover-transition(opacity, color)
-
-	&:hover
-		color var(--tq-color-accent)
-		opacity 1
-
-	&.active
-		opacity 1
-
-.panels-wrapper
-	position relative
-	// Stack every panel in a single cell so the wrapper is as tall as the tallest
-	// tab and the height stays put when switching (Tab.vue hides the inactive ones).
-	display grid
-
-	:deep(.TqTab)
-		grid-column 1
-		grid-row 1
-
-// Vertical (left tab list, panels on the right) — AE/Resolve-style.
-.TqTabs.vertical
-	grid-template-columns min-content 1fr
-	grid-template-rows 1fr
-	gap var(--tq-rem)
-	min-height 0
-
-	.tablist
-		flex-direction column
-		gap 2px
-
-	.tablist-item
-		border-bottom 0
-		border-left 3px solid transparent
-		// No padding here — it lives on the link below so the whole row (full
-		// column width × tab height), not just the label text, is the hover /
-		// click target. The flex column already stretches each item to the column
-		// width.
-		padding 0
-		white-space nowrap
-		// Transition the LEFT border (the base only transitions border-bottom-color,
-		// used by the horizontal layout), so it fades in step with the label colour.
-		hover-transition(border-left-color)
-
-		&.active
-			border-left-color var(--tq-color-text)
-
-			// Hovering anywhere on the active item (incl. the border sliver outside
-			// the link) accents the border — so accent the label in lockstep.
-			&:hover
-				border-left-color var(--tq-color-accent)
-
-				.tablist-link
-					color var(--tq-color-accent)
-
-	// Fill the whole item so the entire row is clickable / hoverable.
-	.tablist-link
-		display block
-		padding calc(0.2 * var(--tq-rem)) calc(0.6 * var(--tq-rem))
-
-	// Divider between the tab list (left) and the panels (right).
-	.panels-wrapper
-		min-height 0
-		overflow-y auto
-		border-left 1px solid var(--tq-color-border)
-		padding-left var(--tq-rem)
-		scroll-fade-mask()
-</style>
 ../stores/useAppStorage

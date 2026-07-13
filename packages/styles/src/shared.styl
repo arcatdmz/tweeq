@@ -1256,3 +1256,91 @@ reset-viewport('[data-tq-component="viewport"]')
 			bottom -8px
 			background-image linear-gradient(to bottom, var(--tq-color-accent), var(--tq-color-accent))
 			background-size 100% 5px
+
+[data-tq-component='tabs']
+	display grid
+	gap calc(.5 * var(--tq-rem))
+	grid-template-columns 1fr
+	grid-template-rows min-content 1fr
+
+	> [data-tq-part='tablist-wrapper']
+		display flex
+		gap var(--tq-rem)
+
+		> [data-tq-part='tablist']
+			display flex
+			gap calc(.2 * var(--tq-rem))
+			list-style none
+			user-select none
+
+			> [data-tq-part='tablist-item']
+				line-height calc(2 * var(--tq-rem))
+				padding 2px calc(.4 * var(--tq-rem)) 0
+				font-weight bold
+				border-bottom 3px solid transparent
+				hover-transition(border-bottom-color)
+
+				&[data-tq-active]
+					border-bottom-color var(--tq-color-text)
+
+					&:hover
+						border-bottom-color var(--tq-color-accent)
+
+				> [data-tq-tab]
+					text-decoration none
+					color var(--tq-color-text)
+					opacity .4
+					hover-transition(opacity, color)
+
+					&:not(:disabled):hover
+						color var(--tq-color-accent)
+						opacity 1
+
+					&[aria-selected='true']
+						opacity 1
+
+	> [data-tq-part='panels-wrapper']
+		position relative
+		display grid
+
+		> [data-tq-component='tab']
+			grid-column 1
+			grid-row 1
+
+	&[data-tq-orientation='vertical']
+		grid-template-columns min-content 1fr
+		grid-template-rows 1fr
+		gap var(--tq-rem)
+		min-height 0
+
+		> [data-tq-part='tablist-wrapper'] > [data-tq-part='tablist']
+			flex-direction column
+			gap 2px
+
+			> [data-tq-part='tablist-item']
+				border-bottom 0
+				border-left 3px solid transparent
+				padding 0
+				white-space nowrap
+				hover-transition(border-left-color)
+
+				&[data-tq-active]
+					border-left-color var(--tq-color-text)
+
+					&:hover
+						border-left-color var(--tq-color-accent)
+
+						> [data-tq-tab]
+							color var(--tq-color-accent)
+
+		> [data-tq-part='tablist-wrapper'] > [data-tq-part='tablist'] > [data-tq-part='tablist-item'] > [data-tq-tab]
+			display block
+			padding calc(.2 * var(--tq-rem)) calc(.6 * var(--tq-rem))
+			width 100%
+
+		> [data-tq-part='panels-wrapper']
+			min-height 0
+			overflow-y auto
+			border-left 1px solid var(--tq-color-border)
+			padding-left var(--tq-rem)
+			scroll-fade-mask()
