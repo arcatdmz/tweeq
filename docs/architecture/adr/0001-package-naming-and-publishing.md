@@ -66,6 +66,16 @@ verified commit only after both downstream registry consumers pass. Revoke the
 fallback token after configuring `prerelease.yml` as the trusted publisher for
 all packages.
 
+As of 2026-07-14, the external approval boundary is intentionally not yet
+provisioned: the repository has no `npm-release` environment and no
+repository-level secrets or variables, while all five intended registry names
+remain unpublished. After ownership is confirmed, create the protected
+environment explicitly—with required reviewers and an allowed release
+branch—and put `NPM_SCOPE_APPROVED`, the first-publication `NPM_TOKEN`, and the
+later stable-version approval there rather than at repository scope. Do this
+before the first workflow dispatch so GitHub cannot implicitly create an
+unprotected environment for the job.
+
 ### Version preparation (no local publication)
 
 Prepare the first prerelease in a reviewed release change:

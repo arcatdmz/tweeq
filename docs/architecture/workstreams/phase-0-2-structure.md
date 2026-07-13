@@ -284,6 +284,11 @@ contain renderer markup only and no copied state transition.
   protected first-publication token after trusted publishers are configured.
 - No local publish command is part of the workflow; publication is GitHub
   Actions-only, as required by repository policy.
+- Registry and repository configuration remain deliberately unmodified while
+  npm ownership is unresolved: all five intended names return 404, the
+  `npm-release` environment does not yet exist, and repository-level secrets
+  and variables are empty. MF-131 requires the protected environment and its
+  environment-only approvals to be configured before the first dispatch.
 - Active Markdown setup snippets now reject the removed upstream/Pinia install
   path. All four workspace consumers import the canonical renderer stylesheet
   and render an `App`/`Viewport` style root; the clean packed examples exercise
