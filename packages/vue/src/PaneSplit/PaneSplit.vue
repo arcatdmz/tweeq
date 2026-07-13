@@ -76,6 +76,9 @@ useDrag($divider, {
 		class="TqPaneSplit"
 		:class="[direction, {fixed: !!fixed}]"
 		:style="{'--pane-min': min + 'px'}"
+		data-tq-component="pane-split"
+		:data-tq-direction="direction"
+		:data-tq-fixed="fixed ? '' : undefined"
 		data-tq-part="root"
 	>
 		<div
@@ -83,8 +86,14 @@ useDrag($divider, {
 			:class="{grow: sizedPane !== 'first'}"
 			:style="firstStyle"
 			data-tq-part="first"
+			:data-tq-grow="sizedPane !== 'first' ? '' : undefined"
 		>
-			<div class="wrapper" :class="{scroll: scroll[0]}">
+			<div
+				class="wrapper"
+				:class="{scroll: scroll[0]}"
+				data-tq-part="wrapper"
+				:data-tq-scroll="scroll[0] ? '' : undefined"
+			>
 				<slot name="first" />
 			</div>
 		</div>
@@ -94,105 +103,16 @@ useDrag($divider, {
 			:class="{grow: sizedPane !== 'second'}"
 			:style="secondStyle"
 			data-tq-part="second"
+			:data-tq-grow="sizedPane !== 'second' ? '' : undefined"
 		>
-			<div class="wrapper" :class="{scroll: scroll[1]}">
+			<div
+				class="wrapper"
+				:class="{scroll: scroll[1]}"
+				data-tq-part="wrapper"
+				:data-tq-scroll="scroll[1] ? '' : undefined"
+			>
 				<slot name="second" />
 			</div>
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqPaneSplit
-	position relative
-	display flex
-	width 100%
-	height 100%
-
-	&.vertical
-		flex-direction column
-
-.pane
-	position relative
-	width 100%
-	height 100%
-	// Kill the default `min-size: auto` so a pane can shrink below its content
-	// (otherwise a tall/wide grow pane overflows and clips the sized pane to 0).
-	min-width 0
-	min-height 0
-	// Sized pane: the inline style sets its main-axis size. It holds that size
-	// and never grows…
-	flex-grow 0
-	flex-shrink 0
-
-	// …but in fixed mode it yields once the grow pane would drop below --pane-min,
-	// so the filling pane never disappears when the split gets small.
-	.fixed > &:not(.grow)
-		flex-shrink 1
-
-	// Filling pane: basis 0 + grow takes whatever the sized pane leaves, and
-	// keeps at least --pane-min on the main axis so it stays visible.
-	&.grow
-		flex-grow 1
-		flex-shrink 1
-		flex-basis 0
-
-	.horizontal > &.grow
-		min-width var(--pane-min)
-
-	.vertical > &.grow
-		min-height var(--pane-min)
-
-.wrapper
-	width 100%
-	height 100%
-	overflow hidden
-
-	&.scroll
-		overflow-y scroll
-		scroll-fade-mask()
-
-.divider
-	position relative
-	background var(--tq-color-border)
-	hover-transition(background)
-	z-index 10
-
-	.horizontal > &
-		cursor col-resize
-		width 1px
-		height 100%
-
-	.vertical > &
-		cursor row-resize
-		width 100%
-		height 1px
-
-	&:hover
-		background var(--tq-color-accent)
-
-	&:before
-		content ''
-		position absolute
-		inset 0
-		opacity 0
-		background-position 50% 50%
-		background-repeat no-repeat
-		hover-transition(opacity)
-
-		.horizontal > &
-			left -8px
-			right -8px
-			background-image linear-gradient(to left, var(--tq-color-accent),  var(--tq-color-accent))
-			background-size 5px 100%
-
-		.vertical > &
-			top -8px
-			bottom -8px
-			background-image linear-gradient(to bottom, var(--tq-color-accent),  var(--tq-color-accent))
-			background-size 100% 5px
-
-	&:hover:before
-		opacity 1
-</style>

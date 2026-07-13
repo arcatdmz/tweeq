@@ -8,9 +8,7 @@ import {
 	useRef,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {useConfigRef, useDrag} from '../../hooks'
-import styles from './PaneSplit.module.styl'
 
 export interface PaneSplitProps extends HTMLAttributes<HTMLDivElement> {
 	name: string
@@ -88,37 +86,35 @@ export function PaneSplit({
 		<div
 			{...props}
 			ref={root}
-			className={classNames(
-				styles.split,
-				styles[direction],
-				fixed && styles.fixed,
-				className
-			)}
+			className={className}
 			style={{...style, '--pane-min': `${min}px`} as CSSProperties}
+			data-tq-component="pane-split"
+			data-tq-direction={direction}
+			data-tq-fixed={fixed ? '' : undefined}
 			data-tq-part="root"
 		>
 			<div
-				className={classNames(
-					styles.pane,
-					sizedPane !== 'first' && styles.grow
-				)}
 				style={sizedPane === 'first' ? sizeStyle : undefined}
 				data-tq-part="first"
+				data-tq-grow={sizedPane !== 'first' ? '' : undefined}
 			>
-				<div className={classNames(styles.wrapper, scroll[0] && styles.scroll)}>
+				<div
+					data-tq-part="wrapper"
+					data-tq-scroll={scroll[0] ? '' : undefined}
+				>
 					{first}
 				</div>
 			</div>
-			<div ref={divider} className={styles.divider} data-tq-part="divider" />
+			<div ref={divider} data-tq-part="divider" />
 			<div
-				className={classNames(
-					styles.pane,
-					sizedPane !== 'second' && styles.grow
-				)}
 				style={sizedPane === 'second' ? sizeStyle : undefined}
 				data-tq-part="second"
+				data-tq-grow={sizedPane !== 'second' ? '' : undefined}
 			>
-				<div className={classNames(styles.wrapper, scroll[1] && styles.scroll)}>
+				<div
+					data-tq-part="wrapper"
+					data-tq-scroll={scroll[1] ? '' : undefined}
+				>
 					{second}
 				</div>
 			</div>
