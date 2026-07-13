@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 import {execFileSync} from 'node:child_process'
-import {readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs'
+import {
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	statSync,
+	writeFileSync,
+} from 'node:fs'
+import {tmpdir} from 'node:os'
 import {dirname, extname, join, relative, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {gzipSync} from 'node:zlib'
@@ -116,31 +124,53 @@ function walk(directory) {
 }
 
 function countVitestTests(packageName) {
-	const report = JSON.parse(
+	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-vitest-report-'))
+	const output = join(scratch, 'report.json')
+	try {
 		execFileSync(
 			'pnpm',
-			['--filter', packageName, 'exec', 'vitest', 'run', '--reporter=json'],
-			{cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit']},
+			[
+				'--filter',
+				packageName,
+				'exec',
+				'vitest',
+				'run',
+				'--reporter=json',
+				`--outputFile=${output}`,
+			],
+			{cwd: root, stdio: ['ignore', 'inherit', 'inherit']},
 		)
-	)
-	if (!report.success || report.numPassedTests !== report.numTotalTests) {
-		throw new Error(`${packageName} tests are not all passing`)
+		const report = JSON.parse(readFileSync(output, 'utf8'))
+		if (!report.success || report.numPassedTests !== report.numTotalTests) {
+			throw new Error(`${packageName} tests are not all passing`)
+		}
+		return report.numTotalTests
+	} finally {
+		rmSync(scratch, {recursive: true, force: true})
 	}
-	return report.numTotalTests
 }
 
 function countPlaywrightTests() {
-	const report = JSON.parse(
+	const scratch = mkdtempSync(join(tmpdir(), 'tweeq-playwright-report-'))
+	const output = join(scratch, 'report.json')
+	try {
 		execFileSync(
 			'pnpm',
 			['exec', 'playwright', 'test', '--list', '--reporter=json'],
-			{cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit']},
+			{
+				cwd: root,
+				env: {...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: output},
+				stdio: ['ignore', 'inherit', 'inherit'],
+			},
 		)
-	)
-	if (report.errors.length > 0) {
-		throw new Error('Playwright could not enumerate the browser suite')
+		const report = JSON.parse(readFileSync(output, 'utf8'))
+		if (report.errors.length > 0) {
+			throw new Error('Playwright could not enumerate the browser suite')
+		}
+		return countSpecs(report.suites)
+	} finally {
+		rmSync(scratch, {recursive: true, force: true})
 	}
-	return countSpecs(report.suites)
 }
 
 function countSpecs(suites) {
