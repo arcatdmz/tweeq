@@ -4,6 +4,6 @@
 '@tweeq/vue': patch
 ---
 
-Move the button/switch primitives and IconIndicator styling to stable
+Move the button/switch primitives, InputShuffle, and IconIndicator styling to stable
 renderer-neutral component rules owned by `@tweeq/styles`, with matching
 component, part, and state selectors emitted by React and Vue.

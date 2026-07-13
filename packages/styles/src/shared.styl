@@ -281,3 +281,31 @@
 		display block
 		height calc(var(--size) - 2px)
 		width calc(var(--size) - 2px)
+
+[data-tq-component='input-shuffle']
+	display block
+	padding 0
+	width var(--tq-input-height)
+	height var(--tq-input-height)
+	border-radius var(--tq-radius-input)
+	background-size 100% 100%
+	color var(--tq-color-accent)
+	text-align center
+	cursor pointer
+	hover-transition(background, color)
+
+	&:focus-visible
+		background var(--tq-color-accent-hover)
+
+	&:not(:disabled):hover
+		background var(--tq-color-accent)
+		color var(--tq-color-on-accent)
+
+	&:disabled
+		opacity .4
+		cursor not-allowed
+
+	[data-tq-part='icon']
+		width var(--tq-input-height)
+		height var(--tq-input-height)
+		transition transform .3s cubic-bezier(.19, 1.6, .42, 1)

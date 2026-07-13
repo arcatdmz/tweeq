@@ -1,9 +1,7 @@
 import {type ButtonHTMLAttributes, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {SvgIcon} from '../SvgIcon'
-import styles from './InputShuffle.module.styl'
 
 export interface InputShuffleProps<T>
 	extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onChange' | 'value'> {
@@ -28,7 +26,9 @@ export function InputShuffle<T>({
 	return (
 		<button
 			{...props}
-			className={classNames(styles.tqInputShuffle, className)}
+			className={className}
+			data-tq-component="input-shuffle"
+			data-tq-part="root"
 			onClick={event => {
 				onClick?.(event)
 				if (event.defaultPrevented) return
@@ -39,8 +39,8 @@ export function InputShuffle<T>({
 		>
 			{icon ? (
 				<Icon
-					className={styles.icon}
 					icon={icon}
+					data-tq-part="icon"
 					style={{transform: `rotate(${rotation}deg)`}}
 				/>
 			) : (
@@ -88,7 +88,7 @@ function Dice({face, rotation}: {face: number; rotation: number}) {
 	return (
 		<SvgIcon
 			mode="block"
-			className={styles.icon}
+			data-tq-part="icon"
 			style={{transform: `rotate(${rotation}deg)`}}
 		>
 			{dots[face].map(([cx, cy]) => (

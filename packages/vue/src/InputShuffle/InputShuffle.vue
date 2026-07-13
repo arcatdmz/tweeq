@@ -22,17 +22,27 @@ function shuffle() {
 </script>
 
 <template>
-	<button class="TqInputShuffle" @click="shuffle">
+	<button
+		class="TqInputShuffle"
+		type="button"
+		:disabled="disabled"
+		:aria-invalid="invalid || undefined"
+		data-tq-component="input-shuffle"
+		data-tq-part="root"
+		@click="shuffle"
+	>
 		<Icon
 			v-if="icon"
 			class="icon"
 			:icon="icon"
+			data-tq-part="icon"
 			:style="{transform: `rotate(${iconRot}deg)`}"
 		/>
 		<SvgIcon
 			v-else
 			mode="block"
 			class="icon"
+			data-tq-part="icon"
 			:style="{transform: `rotate(${iconRot}deg)`}"
 		>
 			<circle v-show="iconNum === 1" cx="16" cy="16" r="1" />
@@ -72,31 +82,3 @@ function shuffle() {
 		</SvgIcon>
 	</button>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputShuffle
-	display block
-	padding 0
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	border-radius var(--tq-radius-input)
-	background-size 100% 100%
-	color var(--tq-color-accent)
-	text-align center
-	cursor pointer
-
-	hover-transition(background, color)
-
-	&:focus
-		background var(--tq-color-accent-hover)
-
-	&:hover
-		background var(--tq-color-accent)
-		color var(--tq-color-on-accent)
-
-.icon
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	transition transform 0.3s cubic-bezier(0.19, 1.6, 0.42, 1)
-</style>

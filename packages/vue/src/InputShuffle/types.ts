@@ -1,4 +1,6 @@
-export interface InputShuffleProps<T> {
+import type {InputProps} from '../types'
+
+export interface InputShuffleProps<T> extends InputProps {
 	/**
 	 * Produce the next value when the button is pressed. Receives the current
 	 * value (e.g. so a generator can avoid repeating it). Pair with one of the
