@@ -120,6 +120,15 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 		.locator('[data-tq-component="title-bar"]')
 		.evaluateAll(elements => elements.map(element => getComputedStyle(element).position))
 	expect(titlePositions).toEqual(['absolute', 'relative'])
+	const titleIconMasks = await page
+		.locator(
+			'[data-tq-component="title-bar"] [data-tq-component="color-icon"]',
+		)
+		.evaluateAll(elements =>
+			elements.map(element => getComputedStyle(element).maskImage),
+		)
+	expect(titleIconMasks).toHaveLength(2)
+	for (const mask of titleIconMasks) expect(mask).toContain('data:image/svg+xml')
 
 	const color = page.locator(
 		'[data-gallery-component="InputColor"] [data-tq-component="input-color"]',

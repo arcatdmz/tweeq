@@ -135,7 +135,7 @@ const homeHref = docsBase
 const reactGalleryHref = `${docsBase}#/all-components`
 
 const colorMask =
-	'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="12" r="10" fill="black"/%3E%3C/svg%3E'
+	'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%2210%22%20fill=%22black%22/%3E%3C/svg%3E'
 </script>
 
 <template>
@@ -156,7 +156,7 @@ const colorMask =
 		<section data-gallery-component="App">
 			<h2>App</h2>
 			<App app-id="vue-gallery-embedded" :with-provider="false" embedded>
-				<template #title><TitleBar name="Embedded App" icon="★" style="position: absolute" /></template>
+				<template #title><TitleBar name="Embedded App" :icon="colorMask" style="position: absolute" /></template>
 				Embedded application content
 			</App>
 		</section>
@@ -178,12 +178,12 @@ const colorMask =
 
 		<section data-gallery-component="Icon">
 			<h2>Icon</h2>
-			<Icon icon="★" />
+			<Icon icon="char:★" />
 		</section>
 
 		<section data-gallery-component="IconIndicator">
 			<h2>IconIndicator</h2>
-			<IconIndicator v-model:active="iconActive" icon="★" />
+			<IconIndicator v-model:active="iconActive" icon="char:★" />
 		</section>
 
 		<section data-gallery-component="InputAngle">
@@ -193,7 +193,7 @@ const colorMask =
 
 		<section data-gallery-component="InputButton">
 			<h2>InputButton</h2>
-			<InputButton label="Action" icon="★" />
+			<InputButton label="Action" icon="char:★" />
 		</section>
 
 		<section data-gallery-component="InputButtonToggle">
@@ -394,7 +394,7 @@ const colorMask =
 
 		<section data-gallery-component="TitleBar">
 			<h2>TitleBar</h2>
-			<TitleBar name="Vue gallery" icon="★" style="position: relative" />
+			<TitleBar name="Vue gallery" :icon="colorMask" style="position: relative" />
 		</section>
 
 		<section data-gallery-component="Tooltip">
