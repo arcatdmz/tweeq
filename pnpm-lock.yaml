@@ -92,15 +92,9 @@ importers:
 
   apps/docs:
     dependencies:
-      '@iconify/react':
-        specifier: ^6.0.2
-        version: 6.0.2(react@19.2.7)
       '@tweeq/react':
         specifier: workspace:*
         version: link:../../packages/react
-      linearly:
-        specifier: 'catalog:'
-        version: 0.33.0
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -126,6 +120,46 @@ importers:
       sass-embedded:
         specifier: ^1.100.0
         version: 1.100.0
+      stylus:
+        specifier: 'catalog:'
+        version: 0.63.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0)
+      vite-plugin-glsl:
+        specifier: 'catalog:'
+        version: 1.6.0(@rollup/pluginutils@5.4.0(rollup@4.62.2))(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
+
+  apps/playground-react:
+    dependencies:
+      '@iconify/react':
+        specifier: ^6.0.2
+        version: 6.0.2(react@19.2.7)
+      '@tweeq/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      linearly:
+        specifier: 'catalog:'
+        version: 0.33.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 4.7.0(vite@5.4.21(@types/node@26.1.1)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0))
       stylus:
         specifier: 'catalog:'
         version: 0.63.0

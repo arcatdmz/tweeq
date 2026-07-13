@@ -187,6 +187,9 @@ now emit Node-resolvable `.js` specifiers; Vue defers WebGL and Monaco browser
 initialization, no longer imports the SSR-unsafe Pave package, and excludes
 contract tests from declarations. CI now runs plain-Node entry imports, the
 full Playwright suite, and representative light/dark/mobile screenshots.
+The explicit `apps/playground-react` target now owns the React gallery that the
+docs route embeds; coverage gates and browser smokes compare both renderer
+playgrounds with their current public component-module barrels.
 
 ## Stage V1 completion note (2026-07-13)
 

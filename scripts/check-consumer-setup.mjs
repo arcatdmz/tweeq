@@ -5,6 +5,7 @@ import {extname, join, resolve} from 'node:path'
 const root = resolve(new URL('..', import.meta.url).pathname)
 const consumers = [
 	['apps/docs', 'apps/docs', 'react'],
+	['apps/playground-react', 'apps/playground-react/src', 'react'],
 	['apps/playground-vue', 'apps/playground-vue/src', 'vue'],
 	['examples/react-vite', 'examples/react-vite/src', 'react'],
 	['examples/vue-vite', 'examples/vue-vite/src', 'vue'],

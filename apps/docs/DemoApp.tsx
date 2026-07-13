@@ -1,12 +1,12 @@
-import {useTweeq, Viewport} from '@tweeq/react'
+import {useTweeq} from '@tweeq/react'
 import {
-	type ComponentType,
 	Fragment,
 	type ReactNode,
 	useEffect,
 	useState,
 } from 'react'
 
+import {ComponentGallery} from '../playground-react/src/ComponentGallery'
 import {assetPath} from './assetPath'
 import {ColorsPage} from './pages/ColorsPage'
 import {ComponentsPage} from './pages/ComponentsPage'
@@ -17,19 +17,6 @@ import {PresentationPage} from './pages/PresentationPage'
 import {UIST2025Page} from './pages/UIST2025Page'
 import {UserStudyComponentsPage} from './pages/UserStudyComponentsPage'
 import {UserStudyPage} from './pages/UserStudyPage'
-
-const sectionModules = import.meta.glob<{default: ComponentType}>(
-	'./sections/*Section.tsx',
-	{eager: true}
-)
-
-export const sections: [name: string, Component: ComponentType][] =
-	Object.entries(sectionModules)
-		.sort(([a], [b]) => a.localeCompare(b))
-		.map(([path, mod]) => [
-			path.replace('./sections/', '').replace('Section.tsx', ''),
-			mod.default,
-		])
 
 type Page =
 	| 'home'
@@ -78,16 +65,7 @@ function AllComponentsPage() {
 				the documented, selected set with usage notes, see the{' '}
 				<a href="#/components">Components page</a>.
 			</p>
-			<Viewport appId="react-demo" className="all-components">
-				{sections.length === 0 && (
-					<p data-testid="placeholder">
-						No components ported yet — sections appear here per batch.
-					</p>
-				)}
-				{sections.map(([name, Section]) => (
-					<Section key={name} />
-				))}
-			</Viewport>
+			<ComponentGallery withProvider={false} />
 		</div>
 	)
 }

@@ -29,5 +29,12 @@ export default defineConfig({
 			reuseExistingServer: true,
 			stdout: 'ignore',
 		},
+		{
+			command:
+				'pnpm --filter @tweeq/playground-react exec vite --port 5176 --strictPort',
+			url: 'http://localhost:5176',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
 	],
 })
