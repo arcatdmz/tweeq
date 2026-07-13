@@ -1,9 +1,7 @@
 import {type BalloonArrowSide, getBalloonGeometry} from '@tweeq/core'
 import {type HTMLAttributes, useMemo, useRef} from 'react'
 
-import {classNames} from '../../classNames'
 import {useElementBounding} from '../../hooks'
-import styles from './Balloon.module.styl'
 
 export interface BalloonProps extends HTMLAttributes<HTMLDivElement> {
 	arrowSide?: BalloonArrowSide | null
@@ -39,8 +37,10 @@ export function Balloon({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.tqBalloon, flash && styles.flash, className)}
+			className={className}
+			data-tq-component="balloon"
 			data-tq-balloon=""
+			data-tq-flash={flash ? '' : undefined}
 			style={{
 				...style,
 				...geometry.wrapperPadding,
@@ -48,20 +48,20 @@ export function Balloon({
 			}}
 		>
 			<div
-				className={styles.fill}
+				data-tq-part="fill"
 				style={{
 					clipPath: geometry.path ? `path('${geometry.path}')` : undefined,
 				}}
 			/>
 			<svg
-				className={styles.stroke}
+				data-tq-part="stroke"
 				viewBox={`0 0 ${geometry.layerWidth} ${geometry.layerHeight}`}
 				width={geometry.layerWidth}
 				height={geometry.layerHeight}
 			>
 				<path d={geometry.path} />
 			</svg>
-			<div ref={content} className={styles.content} style={{padding}}>
+			<div ref={content} data-tq-part="content" style={{padding}}>
 				{children}
 			</div>
 		</div>

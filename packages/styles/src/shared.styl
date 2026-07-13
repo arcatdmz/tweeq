@@ -1057,3 +1057,67 @@ reset-viewport('[data-tq-component="viewport"]')
 	[data-tq-part='group-icon']
 		width var(--tq-icon-size)
 		height var(--tq-icon-size)
+
+// The fill and SVG stroke share one generated outline so arbitrary arrows keep
+// both backdrop blur and a crisp border. Keep the shadow on the fill: a filter
+// on the wrapper would create a backdrop root and blank the blur behind it.
+[data-tq-component='balloon']
+	position relative
+	display inline-block
+	transform scale(1)
+	transition transform var(--tq-active-transition-duration) ease-out
+
+	[data-tq-part='fill']
+		position absolute
+		inset 0
+		background var(--tq-color-surface)
+		backdrop-filter blur(var(--tq-popup-blur))
+		filter drop-shadow(0 2px 12px var(--tq-color-shadow))
+
+	[data-tq-part='stroke']
+		position absolute
+		inset 0
+		overflow visible
+		pointer-events none
+
+		path
+			fill none
+			stroke var(--tq-color-border)
+			stroke-width 1
+
+	[data-tq-part='content']
+		position relative
+		color var(--tq-color-text)
+
+	&[data-tq-flash]
+		animation tq-balloon-flash-scale .6s ease-in-out 2
+
+		[data-tq-part='fill']
+			animation tq-balloon-flash-fill .6s ease-in-out 2
+
+		[data-tq-part='stroke'] path
+			animation tq-balloon-flash-stroke .6s ease-in-out 2
+
+@starting-style
+	[data-tq-component='balloon']
+		transform scale(.96)
+
+@keyframes tq-balloon-flash-scale
+	0%, 100%
+		transform scale(1)
+	50%
+		transform scale(1.03)
+
+@keyframes tq-balloon-flash-fill
+	0%, 100%
+		filter drop-shadow(0 2px 12px var(--tq-color-shadow))
+	50%
+		filter drop-shadow(0 2px 12px var(--tq-color-shadow)) drop-shadow(0 0 9px var(--tq-color-accent))
+
+@keyframes tq-balloon-flash-stroke
+	0%, 100%
+		stroke var(--tq-color-border)
+		filter none
+	50%
+		stroke var(--tq-color-accent)
+		filter drop-shadow(0 0 3px var(--tq-color-accent))
