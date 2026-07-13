@@ -15,10 +15,19 @@ export default defineConfig({
 		// prefers-reduced-motion (scroll-behavior: auto), so force it.
 		contextOptions: {reducedMotion: 'reduce'},
 	},
-	webServer: {
-		command: 'pnpm --filter @tweeq/docs exec vite --port 5174 --strictPort',
-		url: 'http://localhost:5174',
-		reuseExistingServer: true,
-		stdout: 'ignore',
-	},
+	webServer: [
+		{
+			command: 'pnpm --filter @tweeq/docs exec vite --port 5174 --strictPort',
+			url: 'http://localhost:5174',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+		{
+			command:
+				'pnpm --filter @tweeq/playground-vue exec vite --port 5175 --strictPort',
+			url: 'http://localhost:5175',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
+	],
 })

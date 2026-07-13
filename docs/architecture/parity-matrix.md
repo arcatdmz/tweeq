@@ -191,7 +191,9 @@ full Playwright suite, and representative light/dark/mobile screenshots.
 ## Stage V1 completion note (2026-07-13)
 
 The Vue renderer builds again as `@tweeq/vue` (ES + CJS + browser UMD + `style.css` +
-declarations). The original relocation baseline was verified with shared-asset
+declarations). Its playground now renders all 48 public component modules and
+is browser-smoked for live DOM coverage, controlled input, Monaco readiness,
+and console/page errors. The original relocation baseline was verified with shared-asset
 seams for InputColor shaders and Stylus; later stages replaced those temporary
 seams with owned package imports and shared Vite injection. Verified by
 `apps/playground-vue` booting with zero console errors and by the packed

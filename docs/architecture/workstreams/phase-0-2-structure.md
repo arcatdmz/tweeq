@@ -26,14 +26,18 @@ and deliberately deferred follow-ups.
   `scripts/check-boundaries.mjs` enforces architecture rule 3;
   `scripts/test-packed.mjs` packs all public packages and builds
   `examples/{react,vue}-vite` from tarballs (CI gate 9);
-  `apps/playground-vue` added.
+  `apps/playground-vue` added. Its default exhaustive gallery is mechanically
+  checked against all 48 public Vue component modules and browser-smoked;
+  `apps/docs#/all-components` is the exhaustive React gallery in the
+  documentation shell.
 
 ## Verification state
 
 `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm check:boundaries`,
-`pnpm test:ssr`, `pnpm test:packed`, and the full 21-test Playwright suite are
+`pnpm test:ssr`, `pnpm test:packed`, and the full 22-test Playwright suite are
 CI gates. The browser suite includes representative light/dark/mobile visual
-baselines. The docs app compiles the React packages from source via Vite
+baselines plus a live exhaustive Vue-gallery smoke with console/page-error
+monitoring. The docs app compiles the React packages from source via Vite
 aliases; packed-artifact coverage is the examples' job.
 
 ## Phase 3 leaf tier (done 2026-07-13)
