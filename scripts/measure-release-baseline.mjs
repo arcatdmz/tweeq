@@ -20,7 +20,9 @@ import {
 } from '../packages/core/dist/index.js'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const output = join(root, 'docs', 'architecture', 'release-baseline.md')
+const output = process.env.TWEEQ_RELEASE_BASELINE_OUTPUT
+	? resolve(process.env.TWEEQ_RELEASE_BASELINE_OUTPUT)
+	: join(root, 'docs', 'architecture', 'release-baseline.md')
 const artifacts = [
 	['@tweeq/core JavaScript', 'packages/core/dist', new Set(['.js'])],
 	['@tweeq/dom JavaScript', 'packages/dom/dist', new Set(['.js'])],

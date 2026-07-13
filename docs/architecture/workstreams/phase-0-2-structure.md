@@ -249,7 +249,9 @@ contain renderer markup only and no copied state transition.
 
 - A generated release baseline records emitted raw/gzip artifact sizes, core
   transition throughput, renderer contract counts, browser coverage, and the
-  packed downstream-consumer evidence.
+  packed downstream-consumer evidence. Normal CI uploads this as a
+  non-blocking per-commit artifact; the release workflow regenerates it as a
+  blocking release-runner artifact.
 - Docs now use Sass's modern compiler API; the legacy API warning is closed.
 - CI enforces that all public packages remain private before npm ownership is
   approved. The manual `npm-release` environment additionally requires an

@@ -32,3 +32,19 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Run browser parity tests
         run: pnpm e2e
+
+      - name: Record non-blocking release baseline
+        id: release-baseline
+        continue-on-error: true
+        env:
+          TWEEQ_RELEASE_BASELINE_OUTPUT: ${{ runner.temp }}/release-baseline.md
+        run: pnpm baseline:record
+
+      - name: Upload non-blocking release baseline
+        if: steps.release-baseline.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-baseline-${{ github.sha }}
+          path: ${{ runner.temp }}/release-baseline.md
+          retention-days: 14
