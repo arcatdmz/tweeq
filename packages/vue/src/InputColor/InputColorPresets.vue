@@ -21,10 +21,14 @@ const presetsMerged = computed(() => [...injectedPresets, ...props.presets])
 </script>
 
 <template>
-	<div class="TqInputColorPresets" data-tq-part="presets">
+	<div
+		class="TqInputColorPresets"
+		data-tq-component="input-color-presets"
+		data-tq-part="presets"
+	>
 		<button
 			v-for="(preset, index) in presetsMerged"
-			:key="preset"
+			:key="`${preset}-${index}`"
 			type="button"
 			:disabled="props.disabled"
 			:aria-label="`Use ${preset}`"
@@ -34,17 +38,4 @@ const presetsMerged = computed(() => [...injectedPresets, ...props.presets])
 		/>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-.TqInputColorPresets
-	display flex
-	gap var(--tq-gap-related)
-
-button
-	width var(--tq-input-height)
-	height var(--tq-input-height)
-	border-radius var(--tq-radius-input)
-</style>
 ./useInputColor

@@ -35,16 +35,21 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 </script>
 
 <template>
-	<InputGroup class="InputColorChannelValues">
+	<InputGroup
+		class="InputColorChannelValues"
+		data-tq-component="input-color-channel-values"
+		data-tq-part="root"
+	>
 		<InputDropdown
 			v-model="colorSpace"
 			class="color-space"
+			data-tq-part="color-space"
 			theme="minimal"
 			:disabled="props.disabled"
 			:options="['rgb', 'hsv', 'hex']"
 			:labelizer="s => s.toUpperCase()"
 		/>
-		<InputGroup v-if="colorSpace === 'rgb'" class="channel">
+		<InputGroup v-if="colorSpace === 'rgb'" class="channel" data-tq-part="channel">
 			<InputNumber
 				:modelValue="rgb.r * 255"
 				:min="0"
@@ -88,7 +93,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 				@update:modelValue="onUpdateChannel('a', $event / 100)"
 			/>
 		</InputGroup>
-		<InputGroup v-else-if="colorSpace === 'hsv'" class="channel">
+		<InputGroup v-else-if="colorSpace === 'hsv'" class="channel" data-tq-part="channel">
 			<InputNumber
 				:modelValue="hsva.h * 360"
 				:min="0"
@@ -139,6 +144,7 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 			v-else-if="colorSpace === 'hex'"
 			font="monospace"
 			class="channel"
+			data-tq-part="channel"
 			:modelValue="colorCode"
 			:validator="V.colorCode"
 			:disabled="props.disabled"
@@ -146,15 +152,3 @@ function onUpdateChannel(channel: ColorChannel, value: number) {
 		/>
 	</InputGroup>
 </template>
-
-<style lang="stylus" scoped>
-
-// Double class to outweigh InputDropdown's own `.TqInputDropdown { flex-grow: 1 }`
-// (same element, equal specificity otherwise). Without flex-grow:0 the dropdown
-// keeps filling the group and width is ignored.
-.color-space.color-space
-	flex 0 0 5rem
-
-.channel
-	flex-grow 1
-</style>

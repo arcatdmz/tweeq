@@ -6,12 +6,10 @@ import {
 } from '@tweeq/core'
 import {type HTMLAttributes, useEffect, useMemo, useState} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {InputColorChannelPad} from './InputColorChannelPad'
 import {InputColorChannelSlider} from './InputColorChannelSlider'
 import {InputColorChannelValues} from './InputColorChannelValues'
-import styles from './InputColorPicker.module.styl'
 import {InputColorPresets} from './InputColorPresets'
 
 interface EyeDropperResult {
@@ -63,7 +61,8 @@ export function InputColorPicker({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.picker, className)}
+			className={className}
+			data-tq-component="input-color-picker"
 			data-tq-part="picker"
 		>
 			{pickers.map((picker, index) => {
@@ -117,7 +116,6 @@ export function InputColorPicker({
 				<button
 					type="button"
 					disabled={disabled}
-					className={styles.eyeDropper}
 					aria-label="Pick a color from the screen"
 					data-tq-part="eye-dropper"
 					onClick={async () => {

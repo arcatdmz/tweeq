@@ -56,7 +56,11 @@ async function pickColor() {
 </script>
 
 <template>
-	<div class="TqInputColorPicker" data-tq-part="picker">
+	<div
+		class="TqInputColorPicker"
+		data-tq-component="input-color-picker"
+		data-tq-part="picker"
+	>
 		<template v-for="([type, ch], i) in pickers">
 			<InputColorChannelPad
 				v-if="type === 'pad'"
@@ -103,17 +107,3 @@ async function pickColor() {
 		</button>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-@import './common.styl'
-
-.TqInputColorPicker
-	padding 0
-	display grid
-	gap var(--tq-gap-control)
-
-
-.eyeDropper
-	display block
-	margin 0 auto
-</style>

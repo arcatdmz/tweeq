@@ -1,8 +1,6 @@
 import {type HTMLAttributes} from 'react'
 
-import {classNames} from '../../classNames'
 import {useInputColorContext} from './InputColorContext'
-import styles from './InputColorPresets.module.styl'
 
 export interface InputColorPresetsProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -24,7 +22,8 @@ export function InputColorPresets({
 	return (
 		<div
 			{...props}
-			className={classNames(styles.presets, className)}
+			className={className}
+			data-tq-component="input-color-presets"
 			data-tq-part="presets"
 		>
 			{merged.map((preset, index) => (

@@ -11,7 +11,6 @@ import {InputDropdown} from '../InputDropdown'
 import {InputGroup} from '../InputGroup'
 import {InputNumber} from '../InputNumber'
 import {InputString} from '../InputString'
-import styles from './InputColorChannelValues.module.styl'
 import {useInputColorContext} from './InputColorContext'
 
 const COLOR_SPACES: ColorSpace[] = ['rgb', 'hsv', 'hex']
@@ -39,9 +38,12 @@ export function InputColorChannelValues({
 		onChange?.(setHSVAChannel(value, channel, next))
 
 	return (
-		<InputGroup className={styles.values}>
+		<InputGroup
+			data-tq-component="input-color-channel-values"
+			data-tq-part="root"
+		>
 			<InputDropdown
-				className={styles.colorSpace}
+				data-tq-part="color-space"
 				theme="minimal"
 				disabled={disabled}
 				value={colorSpace}
@@ -50,7 +52,7 @@ export function InputColorChannelValues({
 				labelizer={space => space.toUpperCase()}
 			/>
 			{colorSpace === 'rgb' && (
-				<InputGroup className={styles.channel}>
+				<InputGroup data-tq-part="channel">
 					<InputNumber
 						value={rgb.r * 255}
 						min={0}
@@ -93,7 +95,7 @@ export function InputColorChannelValues({
 				</InputGroup>
 			)}
 			{colorSpace === 'hsv' && (
-				<InputGroup className={styles.channel}>
+				<InputGroup data-tq-part="channel">
 					<InputNumber
 						value={value.h * 360}
 						min={0}
@@ -140,7 +142,7 @@ export function InputColorChannelValues({
 			)}
 			{colorSpace === 'hex' && (
 				<InputString
-					className={styles.channel}
+					data-tq-part="channel"
 					font="monospace"
 					value={colorCode}
 					validator={validator.colorCode}
