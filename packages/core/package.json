@@ -3,6 +3,14 @@
 	"version": "0.0.0",
 	"private": true,
 	"description": "Framework-neutral value semantics, validation, formatting, and state transitions for Tweeq",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arcatdmz/tweeq.git",
+		"directory": "packages/core"
+	},
+	"homepage": "https://arcatdmz.github.io/tweeq/",
+	"bugs": "https://github.com/arcatdmz/tweeq/issues",
 	"type": "module",
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",

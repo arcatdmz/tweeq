@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-	initTweeq,
 	InputCheckbox,
 	InputColor,
 	InputNumber,
@@ -8,12 +7,12 @@ import {
 	InputSwitch,
 	InputTime,
 	ParameterGrid,
+	TweeqProvider,
+	Viewport,
 } from '@tweeq/vue'
 import {ref} from 'vue'
 
 import ResearchApp from './ResearchApp.vue'
-
-initTweeq('com.tweeq.playground-vue')
 
 const size = ref(1)
 const name = ref('tweeq')
@@ -25,16 +24,20 @@ const research = window.location.hash === '#/research'
 </script>
 
 <template>
-	<ResearchApp v-if="research" />
-	<main v-else style="max-width: 24rem; padding: 2rem">
-		<h1>Tweeq Vue playground</h1>
-		<ParameterGrid>
-			<InputNumber v-model="size" :min="0" :max="10" />
-			<InputString v-model="name" />
-			<InputColor v-model="color" />
-			<InputSwitch v-model="enabled" />
-			<InputCheckbox v-model="flag" />
-			<InputTime v-model="time" />
-		</ParameterGrid>
-	</main>
+	<TweeqProvider app-id="com.tweeq.playground-vue">
+		<Viewport>
+			<ResearchApp v-if="research" />
+			<main v-else style="max-width: 24rem; padding: 2rem">
+				<h1>Tweeq Vue playground</h1>
+				<ParameterGrid>
+					<InputNumber v-model="size" :min="0" :max="10" />
+					<InputString v-model="name" />
+					<InputColor v-model="color" />
+					<InputSwitch v-model="enabled" />
+					<InputCheckbox v-model="flag" />
+					<InputTime v-model="time" />
+				</ParameterGrid>
+			</main>
+		</Viewport>
+	</TweeqProvider>
 </template>

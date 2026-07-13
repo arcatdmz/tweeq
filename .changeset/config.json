@@ -6,7 +6,7 @@
 		["@tweeq/core", "@tweeq/dom", "@tweeq/styles", "@tweeq/react", "@tweeq/vue"]
 	],
 	"linked": [],
-	"access": "restricted",
+	"access": "public",
 	"baseBranch": "feat/react",
 	"updateInternalDependencies": "patch",
 	"privatePackages": {

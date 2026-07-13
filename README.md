@@ -3,7 +3,7 @@
 <img src="./docs/.vuepress/public/logo.svg" width="200" />
 <h1>Tweeq</h1>
 
-<a href="https://arcatdmz.github.io/tweeq/">React Documentation</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Vue Version</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
+<a href="https://arcatdmz.github.io/tweeq/">React and Vue Documentation</a> ⌇ <a href="https://arcatdmz.github.io/tweeq/vue/">Vue Demo</a> ⌇ <a href="https://github.com/baku89/tweeq">Original Project</a> ⌇ <a href="https://github.com/sponsors/baku89">Sponsor Baku</a>
 
 </div>
 
@@ -13,9 +13,9 @@
 > [!NOTE]
 > For the React live demo of [the UIST paper](https://dl.acm.org/doi/10.1145/3746059.3747723), see [the UIST 2025 page](https://arcatdmz.github.io/tweeq/#/uist2025). The [original Vue demo](https://baku89.github.io/tweeq/uist2025.html) remains available as the source reference.
 
-Tweeq is a collection of [React](https://react.dev) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. It supports the precise micro-interactions used by creative professionals.
+Tweeq is a collection of maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) components for design tools. The components range from fundamental UIs such as numeric sliders and color pickers to advanced, niche controls such as a cubic-bezier editor. Both renderers share the precise micro-interactions used by creative professionals.
 
-The original project has been continuously developed by Baku Hashimoto. This fork preserves the Vue implementation as its upstream reference while providing the React API documented below.
+The original project has been continuously developed by Baku Hashimoto. This fork preserves that implementation as its upstream reference while maintaining both framework adapters over one shared core.
 
 ## Project Setup
 

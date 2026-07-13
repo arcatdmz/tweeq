@@ -16,11 +16,11 @@ import '@tweeq/vue/style.css'
 import {App, InputNumber, TweeqProvider} from '@tweeq/vue'
 ```
 
-`App`, `TweeqProvider`, and a standalone `Viewport` each establish an isolated
-application runtime; do not nest them unless the inner application is
-intentionally independent. Pass `appId` and theme defaults to the component
-that owns the runtime. `initTweeq()` remains available for explicitly
-provider-less legacy roots.
+`App` owns an isolated runtime and its viewport. For a custom shell, place one
+`Viewport` inside `TweeqProvider`; that viewport reuses the provider runtime. A
+viewport without an ancestor provider creates its own runtime. Pass `appId` and
+theme defaults to the component that owns the runtime. `initTweeq()` remains
+available for explicitly provider-less legacy roots.
 
 `@tweeq/core` and `@tweeq/dom` are normal dependencies of this renderer and do
 not need to be installed separately unless an application imports them

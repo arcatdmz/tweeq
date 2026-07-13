@@ -250,10 +250,17 @@ contain renderer markup only and no copied state transition.
 - CI enforces that all public packages remain private before npm ownership is
   approved. The manual `npm-prerelease` environment additionally requires an
   explicit confirmation, approved-scope secret, non-private next/rc versions,
-  restricted npm publish configuration, all reproducibility gates, provenance,
-  and registry-installed React/Vue downstream builds.
+  public npm publish configuration, all reproducibility gates, provenance,
+  browser parity, an uploaded release-runner baseline, exact uploaded tarballs,
+  and registry-installed React/Vue downstream builds. Public manifests carry
+  npm's required matching repository metadata; OIDC publishing supersedes the
+  protected first-publication token after trusted publishers are configured.
 - No local publish command is part of the workflow; publication is GitHub
   Actions-only, as required by repository policy.
+- Active Markdown setup snippets now reject the removed upstream/Pinia install
+  path. All four workspace consumers import the canonical renderer stylesheet
+  and render an `App`/`Viewport` style root; the clean packed examples exercise
+  provider-owned React and Vue runtimes rather than a provider-less facade.
 - DOM stores now come only from explicit factories. Each React/Vue provider or
   standalone viewport owns an isolated runtime, theme binding, and listener
   disposal; provider-less legacy calls resolve a lazy compatibility runtime.
@@ -303,6 +310,9 @@ contain renderer markup only and no copied state transition.
   It no longer rewrites live package manifests while creating artifacts.
 - A generated Vite timestamp config with machine-local absolute paths was
   removed and is now ignored; the dormant legacy Vue docs alias points at the
-  relocated Vue package instead of the deleted root `src/` entry.
+  relocated Vue package instead of the deleted root `src/` entry. Phase 6
+  subsequently removed that unscoped alias entirely; retained authoring
+  components now name `@tweeq/vue`, while current docs still reuse their logo,
+  research assets, and user SCSS.
 - Core now compiles without the DOM library; its remaining `DOMRectReadOnly`
   adapter moved to `@tweeq/dom`, enforcing ADR 0002 at the type-system level.

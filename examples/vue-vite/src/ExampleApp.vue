@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import {initTweeq, InputNumber, InputString} from '@tweeq/vue'
+import {
+	InputNumber,
+	InputString,
+	TweeqProvider,
+	Viewport,
+} from '@tweeq/vue'
 import {ref} from 'vue'
-
-initTweeq('com.tweeq.example-vue-vite')
 
 const size = ref(1)
 const name = ref('tweeq')
 </script>
 
 <template>
-	<div style="max-width: 20rem; padding: 2rem">
-		<InputNumber v-model="size" :min="0" :max="10" />
-		<InputString v-model="name" />
-	</div>
+	<TweeqProvider app-id="com.tweeq.example-vue-vite">
+		<Viewport>
+			<div style="max-width: 20rem; padding: 2rem">
+				<InputNumber v-model="size" :min="0" :max="10" />
+				<InputString v-model="name" />
+			</div>
+		</Viewport>
+	</TweeqProvider>
 </template>

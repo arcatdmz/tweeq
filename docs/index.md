@@ -36,7 +36,7 @@ features:
 	</p>
 </div>
 
-Tweeq is a collection of [Vue.js](https://vuejs.org) components for creative professionals. The components range from fundamental UIs such as numeric sliders, color pickers, to advanced and niche controls like a cubic-bezier editor. It also supports various micro-interactions suitable for professional use.
+Tweeq provides maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) renderers for creative professionals. Both use the same parameter semantics, interaction controllers, and visual system.
 
 It is continuously developed by the visual artist [Baku Hashimoto](https://baku89.com).
 
@@ -44,48 +44,45 @@ It is continuously developed by the visual artist [Baku Hashimoto](https://baku8
 
 ### Installation
 
-```bash
-yarn add baku89/tweeq pinia
+```sh
+npm install @tweeq/vue vue
 ```
 
-### index.ts 
+`@tweeq/core` and `@tweeq/dom` are transitive renderer dependencies. Install
+them explicitly only when application code imports their APIs directly.
+
+### main.ts
 
 ```ts
-import {createPinia} from 'pinia'
-import {initTweeq} from 'baku89/tweeq'
+import {createApp} from 'vue'
+import '@tweeq/vue/style.css'
+import Root from './App.vue'
 
-app.use(pinia)
-
-initTweeq('com.yourid.yourapp', {
-	colorMode: 'dark',
-	accentColor: '#ff0000',
-})
+createApp(Root).mount('#app')
 ```
 
 ### App.vue
 
-```ts
-import {useTweeq} from 'baku89/tweeq'
+```vue
+<script setup lang="ts">
+import {ref} from 'vue'
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/vue'
 
-const Tq = useTweeq()
+const opacity = ref(1)
+</script>
 
-const projectName = Tq.config.ref('projectName', 'Untitled')
-const accentColor = Tq.theme.accentColor
+<template>
+  <App
+    app-id="com.yourid.yourapp"
+    color-mode="dark"
+    accent-color="#ff0000"
+  >
+    <template #title><TitleBar name="My App" icon="favicon.svg" /></template>
+    <ParameterGrid>
+      <Parameter label="Opacity">
+        <InputNumber v-model="opacity" :min="0" :max="1" />
+      </Parameter>
+    </ParameterGrid>
+  </App>
+</template>
 ```
-
-```html
-<Tq.App>
-  <template #title>
-    <Tq.TitleBar name="My App" icon="favicon.svg">
-  </template>
-  <template #default>
-    <Tq.ParameterGrid>
-      <Tq.Parameter label="Opacity">
-        <Tq.InputNumber v-model="opacity" :min="0" :max="1" />
-      </Tq.Parameter>
-    </Tq.ParameterGrid>
-  </template>
-</Tq.App>
-```
-
-

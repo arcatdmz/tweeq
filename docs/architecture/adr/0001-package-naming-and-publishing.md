@@ -46,11 +46,16 @@ release change:
 
 1. confirmed ownership of the selected npm scope;
 2. removal of `private` from only the five public packages;
-3. restricted npm registry `publishConfig` on those packages;
+3. public npm registry `publishConfig` on those packages, so the documented
+   unauthenticated install commands work;
 4. a Changesets-generated `next` or `rc` version; and
 5. an `NPM_SCOPE_APPROVED` secret in the protected `npm-prerelease` GitHub
    environment.
 
-Publishing locally remains prohibited. The workflow publishes with npm
-provenance and then tests clean React and Vue applications installed from the
-registry at the exact prerelease version.
+Publishing locally remains prohibited. Each public manifest records the exact
+GitHub repository URL required by npm trusted publishing. The workflow uses a
+GitHub-hosted OIDC runner and a compatible npm CLI, retains a protected token
+only as a first-publication fallback, publishes the exact archived tarballs
+with provenance, and then tests clean React and Vue applications installed
+from the registry at the exact prerelease version. Revoke the fallback token
+after configuring `prerelease.yml` as the trusted publisher for all packages.

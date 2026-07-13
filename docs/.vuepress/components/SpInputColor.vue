@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import chroma from 'chroma-js'
-import {InputColorProps, InputEmits, Popover} from 'tweeq'
+import {InputColorProps, InputEmits, Popover} from '@tweeq/vue'
 import {computed, ref, useTemplateRef} from 'vue'
 
 const model = defineModel<string>({required: true})

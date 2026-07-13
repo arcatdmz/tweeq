@@ -16,13 +16,22 @@ for (const {directory, manifest} of manifests) {
 	if (manifest.name !== `@tweeq/${directory}`) {
 		failures.push(`${directory}: unexpected package name ${manifest.name}`)
 	}
+	if (manifest.license !== 'MIT') {
+		failures.push(`${manifest.name}: license must be MIT`)
+	}
+	if (manifest.repository?.url !== 'https://github.com/arcatdmz/tweeq.git') {
+		failures.push(`${manifest.name}: repository URL must match the GitHub repository`)
+	}
+	if (manifest.repository?.directory !== `packages/${directory}`) {
+		failures.push(`${manifest.name}: repository directory must identify its package`)
+	}
 	if (releaseMode) {
 		if (manifest.private === true) failures.push(`${manifest.name}: still private`)
 		if (!/^\d+\.\d+\.\d+-(?:next|rc)\.\d+$/.test(manifest.version)) {
 			failures.push(`${manifest.name}: ${manifest.version} is not a next/rc prerelease`)
 		}
-		if (manifest.publishConfig?.access !== 'restricted') {
-			failures.push(`${manifest.name}: publishConfig.access must be restricted`)
+		if (manifest.publishConfig?.access !== 'public') {
+			failures.push(`${manifest.name}: publishConfig.access must be public`)
 		}
 		if (manifest.publishConfig?.registry !== 'https://registry.npmjs.org/') {
 			failures.push(`${manifest.name}: publishConfig.registry must be the npm registry`)

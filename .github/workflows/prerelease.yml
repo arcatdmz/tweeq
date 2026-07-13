@@ -26,6 +26,9 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      - name: Verify trusted-publishing npm CLI
+        run: node -e "const v = require('node:child_process').execFileSync('npm', ['--version'], {encoding:'utf8'}).trim(); const [major, minor, patch] = v.split('.').map(Number); if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) throw new Error('npm 11.5.1 or newer is required for OIDC publishing; found ' + v)"
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -37,9 +40,45 @@ jobs:
       - name: Run reproducibility gates
         run: pnpm lint && pnpm check:boundaries && pnpm build && pnpm docs:check && pnpm test:ssr && pnpm test && pnpm test:packed
 
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser parity tests
+        run: pnpm e2e
+
+      - name: Record release-runner baseline
+        run: pnpm baseline:record
+
+      - name: Upload release baseline
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-baseline
+          path: docs/architecture/release-baseline.md
+
+      - name: Pack exact release artifacts
+        shell: bash
+        run: |
+          mkdir release-artifacts
+          for package in core dom styles react vue; do
+            pnpm --dir "packages/$package" pack --pack-destination ../../release-artifacts
+          done
+
+      - name: Upload exact release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-next-artifacts
+          path: release-artifacts/*.tgz
+
       - name: Publish provenance-enabled next artifacts
-        run: pnpm -r --filter @tweeq/core --filter @tweeq/dom --filter @tweeq/styles --filter @tweeq/react --filter @tweeq/vue publish --tag next --provenance --access restricted --no-git-checks
+        shell: bash
+        run: |
+          for package in core dom styles react vue; do
+            npm publish release-artifacts/tweeq-$package-*.tgz --tag next --provenance --access public
+          done
         env:
+          # npm 11.5.1+ prefers the workflow's OIDC identity. This protected
+          # fallback is needed only to bootstrap packages before npm trusted
+          # publishers can be configured, and should then be revoked.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Read published version

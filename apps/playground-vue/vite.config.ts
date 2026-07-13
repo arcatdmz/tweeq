@@ -4,8 +4,6 @@ import vue from '@vitejs/plugin-vue'
 import {defineConfig} from 'vite'
 import glsl from 'vite-plugin-glsl'
 
-import {tweeqStylusOptions} from '../../scripts/vite-stylus'
-
 const here = new URL('.', import.meta.url).pathname
 
 // Vue behavior playground. Compiles @tweeq/vue from source so it always
@@ -13,7 +11,6 @@ const here = new URL('.', import.meta.url).pathname
 // examples/vue-vite instead).
 export default defineConfig({
 	plugins: [glsl(), vue()],
-	css: {preprocessorOptions: {styl: tweeqStylusOptions}},
 	resolve: {
 		alias: [
 			{

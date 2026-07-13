@@ -47,22 +47,49 @@ try {
 		const packedFiles = execSync(`tar -tf ${JSON.stringify(tarball)}`, {
 			encoding: 'utf8',
 		}).trim().split('\n')
+		const packedManifest = JSON.parse(
+			execFileSync('tar', ['-xOf', tarball, 'package/package.json'], {
+				encoding: 'utf8',
+			}),
+		)
+		if (packedManifest.license !== 'MIT') {
+			throw new Error(`@tweeq/${name} packed manifest is missing the MIT license`)
+		}
+		if (
+			packedManifest.repository?.url !==
+			'https://github.com/arcatdmz/tweeq.git'
+		) {
+			throw new Error(`@tweeq/${name} packed manifest has the wrong repository URL`)
+		}
 		const packedTests = packedFiles.filter(file => /\.test\.[^/]+$/.test(file))
 		if (packedTests.length > 0) {
 			throw new Error(
 				`@tweeq/${name} packed test files:\n${packedTests.join('\n')}`,
 			)
 		}
+		const requiredFiles = ['package/README.md']
 		if (name === 'react' || name === 'vue') {
-			for (const required of [
-				'package/README.md',
+			requiredFiles.push(
 				'package/dist/index.es.js.map',
 				'package/dist/index.cjs.map',
-			]) {
-				if (!packedFiles.includes(required)) {
-					throw new Error(`@tweeq/${name} packed artifact is missing ${required}`)
-				}
+			)
+		}
+		if (name === 'core' || name === 'dom') {
+			requiredFiles.push(
+				'package/dist/index.js.map',
+				'package/dist/index.d.ts.map',
+			)
+		}
+		for (const required of requiredFiles) {
+			if (!packedFiles.includes(required)) {
+				throw new Error(`@tweeq/${name} packed artifact is missing ${required}`)
 			}
+		}
+		if (
+			name === 'styles' &&
+			packedFiles.some(file => file.startsWith('package/src/'))
+		) {
+			throw new Error('@tweeq/styles packed artifact leaks Stylus sources')
 		}
 		console.log(`packed @tweeq/${name} -> ${tarball}`)
 	}
