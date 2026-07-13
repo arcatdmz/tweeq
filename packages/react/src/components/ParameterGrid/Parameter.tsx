@@ -3,7 +3,6 @@ import {type HTMLAttributes, type ReactNode, useRef} from 'react'
 import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {type TooltipValue, useTooltip} from '../Tooltip'
-import styles from './Parameter.module.styl'
 
 export interface ParameterProps extends HTMLAttributes<HTMLLIElement> {
 	label?: string
@@ -26,17 +25,19 @@ export function Parameter({
 	return (
 		<li
 			{...props}
-			className={classNames('TqParameter', styles.parameter, className)}
+			className={classNames('TqParameter', className)}
+			data-tq-component="parameter"
+			data-tq-part="root"
 		>
-			<div ref={labelElement} className={styles.label}>
+			<div ref={labelElement} data-tq-part="label">
 				{labelContent ?? (
 					<>
-						{icon && <Icon className={styles.icon} icon={icon} />}
+						{icon && <Icon data-tq-part="icon" icon={icon} />}
 						{label}
 					</>
 				)}
 			</div>
-			<div className={styles.input}>{children}</div>
+			<div data-tq-part="input">{children}</div>
 		</li>
 	)
 }

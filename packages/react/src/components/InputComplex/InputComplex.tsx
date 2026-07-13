@@ -8,7 +8,6 @@ import {
 	useRef,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {InputAngle, type InputAngleProps} from '../InputAngle'
 import {InputCheckbox, type InputCheckboxProps} from '../InputCheckbox'
 import {InputCode, type InputCodeProps} from '../InputCode'
@@ -20,7 +19,6 @@ import {InputSwitch, type InputSwitchProps} from '../InputSwitch'
 import {InputTime, type InputTimeProps} from '../InputTime'
 import {InputVec, type InputVecProps} from '../InputVec'
 import {Parameter, ParameterGrid, ParameterHeading} from '../ParameterGrid'
-import styles from './InputComplex.module.styl'
 
 type ControlProps<P> = Omit<P, 'onChange' | 'value'>
 type ParameterBase = {label?: string; icon?: string}
@@ -140,7 +138,8 @@ export function InputComplex<T extends Record<string, unknown>>({
 	return (
 		<ParameterGrid
 			{...props}
-			className={classNames(styles.inputComplex, className)}
+			className={className}
+			data-tq-variant="input-complex"
 		>
 			{title && <ParameterHeading>{title}</ParameterHeading>}
 			{Object.entries(scheme).map(([name, descriptor]) => {
