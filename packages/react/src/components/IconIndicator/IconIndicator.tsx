@@ -1,8 +1,6 @@
 import {type HTMLAttributes, type MouseEvent} from 'react'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
-import styles from './IconIndicator.module.styl'
 
 export interface IconIndicatorProps
 	extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -31,13 +29,7 @@ export function IconIndicator({
 	return (
 		<div
 			{...props}
-			className={classNames(
-				styles.iconIndicator,
-				active === true && styles.active,
-				active === false && styles.inactive,
-				inline && styles.inline,
-				className
-			)}
+			className={className}
 			onClick={handleClick}
 			onKeyDown={event => {
 				onKeyDown?.(event)
@@ -52,9 +44,11 @@ export function IconIndicator({
 			role="button"
 			tabIndex={0}
 			aria-pressed={active}
+			data-tq-component="icon-indicator"
+			data-inline={inline || undefined}
 			data-tq-part="root"
 		>
-			{icon && <Icon className={styles.icon} icon={icon} data-tq-part="icon" />}
+			{icon && <Icon icon={icon} data-tq-part="icon" />}
 		</div>
 	)
 }

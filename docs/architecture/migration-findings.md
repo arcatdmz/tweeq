@@ -61,7 +61,7 @@ phase that owns the follow-up.
 
 | ID | Area | Current evidence and impact | Disposition |
 | --- | --- | --- | --- |
-| MF-044 | shared style artifact | The first Phase 6 baseline found `@tweeq/styles/style.css` contained only a 38-byte placeholder, while React and Vue independently emitted roughly 333 KiB and 320 KiB stylesheets from CSS Modules and scoped SFC styles. The public renderer stylesheet exports therefore did not alias one canonical artifact as required by the package strategy, despite shared mixin ownership. | Keep open for the remaining style-part migration. InputButton, InputButtonToggle, InputCheckbox, and InputSwitch are the first completed family: stable component/part/state selectors now have shared rules and all eight local copies were deleted. Continue family-by-family, then make both renderer export paths resolve to the completed artifact; do not paper over the ownership gap by concatenating renderer outputs. |
+| MF-044 | shared style artifact | The first Phase 6 baseline found `@tweeq/styles/style.css` contained only a 38-byte placeholder, while React and Vue independently emitted roughly 333 KiB and 320 KiB stylesheets from CSS Modules and scoped SFC styles. The public renderer stylesheet exports therefore did not alias one canonical artifact as required by the package strategy, despite shared mixin ownership. | Keep open for the remaining style-part migration. The button/switch primitives and IconIndicator now have stable shared component/part/state rules and their ten local copies were deleted. Continue family-by-family, then make both renderer export paths resolve to the completed artifact; do not paper over the ownership gap by concatenating renderer outputs. |
 
 ## Recording rule
 

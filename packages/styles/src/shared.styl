@@ -256,3 +256,28 @@
 
 		&:focus
 			pointer-events auto
+
+[data-tq-component='icon-indicator']
+	--size var(--tq-input-height)
+	height var(--size)
+	width var(--size)
+	display flex
+	align-items center
+	justify-content center
+	hover-transition(color)
+	border-radius 9999px
+	color var(--tq-color-text)
+
+	&[data-inline='true']
+		--size var(--tq-icon-size)
+
+	&[aria-pressed='false']
+		color var(--tq-color-text-mute)
+
+	&[aria-pressed='true']
+		color var(--tq-color-accent)
+
+	[data-tq-part='icon']
+		display block
+		height calc(var(--size) - 2px)
+		width calc(var(--size) - 2px)
