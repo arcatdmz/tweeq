@@ -2477,3 +2477,166 @@ reset-viewport('[data-tq-component="command-palette"]')
 	[data-tq-component='input-time-overlay']
 		opacity 0
 		scale .5
+
+[data-tq-input-number]
+	position relative
+
+	&:before
+		content ''
+		position absolute
+		display block
+		width 0
+		height 0
+		border-top 4px solid transparent
+		border-bottom 4px solid transparent
+		top 50%
+		margin-top -4px
+		pointer-events none
+		z-index 100
+		opacity 0
+
+	&[data-tq-range='below']:before
+		left 0
+		border-right 4px solid var(--tq-color-accent)
+		opacity .3
+
+	&[data-tq-range='above']:before
+		right 0
+		border-left 4px solid var(--tq-color-accent)
+		opacity .3
+
+	&[data-tq-tweaking][data-tq-range]:before
+		opacity 1
+
+	&:has([data-tq-part='input']:disabled) [data-tq-part='number-bar']
+		background var(--tq-color-input)
+
+	> [data-tq-part='inactive-content'] > [data-tq-part='number-display']
+		pointer-events none
+		position absolute
+		inset 0
+		display flex
+		align-items center
+		justify-content center
+
+		> [data-tq-part='prefix'],
+		> [data-tq-part='suffix']
+			color var(--tq-color-text-mute)
+
+		> [data-tq-part='prefix']
+			margin-right .1em
+
+		> [data-tq-part='suffix']
+			margin-left .1em
+
+	> [data-tq-part='number-bar'],
+	> [data-tq-part='number-handle']
+		position absolute
+		height 100%
+
+	> [data-tq-part='number-bar']
+		pointer-events none
+		background var(--tq-color-accent-soft)
+		hover-transition(background)
+
+	&:hover:not(:has([data-tq-part='input']:disabled))
+		> [data-tq-part='number-bar']
+			background var(--tq-color-accent-soft-hover)
+
+	> [data-tq-part='number-handle']
+		width 1px
+		background var(--tq-color-accent)
+		opacity .3
+
+		&:before
+			content ''
+			position absolute
+			display block
+			height 100%
+			left calc(var(--tq-input-height) / -2)
+			right @left
+
+	> [data-tq-part='number-handle']:hover,
+	&[data-tq-tweaking] > [data-tq-part='number-handle'],
+	&:focus-within:has(> [data-tq-part='scrub-zone']:not([data-tq-wide]):hover) > [data-tq-part='number-handle']
+		width 3px
+		margin-left -1px
+
+	&:hover > [data-tq-part='number-handle'],
+	&[data-tq-tweaking] > [data-tq-part='number-handle']
+		opacity 1
+
+	&:focus-within > [data-tq-part='number-handle']
+		pointer-events none
+
+	&[data-tq-range]
+		> [data-tq-part='number-handle']
+			pointer-events none
+
+	> [data-tq-part='scrub-zone']
+		position absolute
+		width var(--tq-input-height)
+		pointer-events none
+
+		&[data-tq-zone='top']
+			top 0
+
+		&[data-tq-zone='bottom']
+			bottom 0
+
+		&[data-tq-zone='top'],
+		&[data-tq-zone='bottom']
+			height 'max((var(--tq-input-height) - 1em) / 2, 4px)' % ()
+
+		&[data-tq-zone='edge']
+			top 0
+			bottom 0
+
+		&[data-tq-wide]
+			left 0
+			right 0
+			width auto
+
+	&:focus-within > [data-tq-part='scrub-zone']
+		pointer-events auto
+		cursor ew-resize
+
+	> [data-tq-part='scrub-grip']
+		position absolute
+		left 0
+		top 0
+		bottom 0
+		width var(--tq-input-height)
+		display flex
+		align-items center
+		justify-content center
+		pointer-events none
+
+		> [data-tq-part='scrub-grip-hint']
+			color var(--tq-color-text-mute)
+			transform scale(.7)
+			opacity 0
+
+	&:focus-within > [data-tq-part='scrub-grip']
+		pointer-events auto
+		cursor ew-resize
+
+		> [data-tq-part='scrub-grip-hint']
+			opacity .5
+
+	> [data-tq-part='scrub-scale-overlay']
+		position absolute
+		overflow visible
+		pointer-events none
+		top 50%
+		left 50%
+
+		> [data-tq-part='scrub-scale']
+			--offset-weight 1
+			--gesture-precision 0
+			fill none
+			stroke 'color-mix(in srgb, var(--tq-color-accent), var(--tq-color-text-subtle) calc(var(--offset-weight) * 100%))' % ()
+			stroke-linecap round
+			stroke-width calc(4px + var(--offset-weight) * -1px)
+			stroke-dasharray 0 calc(pow(10, var(--gesture-precision)))
+			hover-transition(stroke-width)

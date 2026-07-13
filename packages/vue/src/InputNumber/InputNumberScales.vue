@@ -41,7 +41,6 @@ const style = computed(() => {
 <template>
 	<div
 		ref="$el"
-		class="TqInputNumberScales"
 		data-tq-component="input-number-scales"
 		data-tq-part="root"
 		:style="style"

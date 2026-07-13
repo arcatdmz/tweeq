@@ -267,7 +267,8 @@ contain renderer markup only and no copied state transition.
   InputSize, TitleBar, ParameterGroup, Balloon, Menu, PaneSplit, Tabs, and
   InputTextBase, InputDropdown, InputTranslate, InputRadio,
   InputSwitchOverlay, InputDrum, InputRotary, PaneFloating, InputColorPad,
-  MultiSelectPopup, CommandPalette, and InputTime. Both renderers emit the same
+  MultiSelectPopup, CommandPalette, InputTime, and InputNumber. Both renderers
+  emit the same
   stable component/part/state attributes, consume one shared rule set, and
   deleted their scoped/CSS-module copies. The styles package now emits real
   component CSS rather than only the initial placeholder.

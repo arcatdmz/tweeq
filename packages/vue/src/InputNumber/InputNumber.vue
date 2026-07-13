@@ -5,7 +5,7 @@ import {
 	useMagicKeys,
 	whenever,
 } from '@vueuse/core'
-import {scalar, vec2} from 'linearly'
+import {scalar} from 'linearly'
 import {
 	Component,
 	computed,
@@ -26,10 +26,12 @@ import {useDrag} from '../use/useDrag'
 import {useValidator} from '../use/useValidator'
 import {
 	compileNumberExpression,
-	getNumberPresition,
+	getInputNumberPrecision,
+	type NumberScrubState,
 	precisionOf,
 	toFixed,
 	toPercent,
+	updateNumberScrub,
 } from '@tweeq/core'
 import * as V from '@tweeq/core/validator'
 import InputNumberScales from './InputNumberScales.vue'
@@ -94,48 +96,18 @@ const speed = computed(() => {
 	return speedMultiplierKey.value * speedMultiplierGesture.value
 })
 
-// Precision
-const stepPrecision = computed(() => {
-	return props.step ? precisionOf(props.step) : null
-})
-
-const displayPrecision = computed(() => {
-	return getNumberPresition(display.value)
-})
-
-const sliderPrecision = computed(() => {
-	if (
-		props.min !== Number.MIN_SAFE_INTEGER &&
-		props.max !== Number.MAX_SAFE_INTEGER &&
-		width.value > 0
-	) {
-		const stepPerPx = Math.abs(props.max - props.min) / width.value
-		return precisionOf(stepPerPx)
-	} else {
-		return 0
-	}
-})
-
-const tweakPrecision = computed(() =>
-	tweaking.value ? precisionOf(speed.value) : null
+const precision = computed(() =>
+	getInputNumberPrecision({
+		step: props.step,
+		display: display.value,
+		width: width.value,
+		min: props.min,
+		max: props.max,
+		tweaking: tweaking.value,
+		speed: speed.value,
+		precision: props.precision,
+	})
 )
-
-const precision = computed(() => {
-	if (stepPrecision.value !== null) return stepPrecision.value
-
-	if (tweakPrecision.value !== null) {
-		return Math.max(
-			displayPrecision.value,
-			sliderPrecision.value,
-			tweakPrecision.value
-		)
-	}
-
-	return Math.min(
-		props.precision,
-		Math.max(displayPrecision.value, sliderPrecision.value)
-	)
-})
 
 const minSpeed = computed(() => {
 	let prec = props.precision
@@ -154,17 +126,15 @@ const maxSpeed = computed(() => {
 	return barVisible.value ? 1 : 1000
 })
 
-// Unranged drag sensitivity, in pixels of movement per `step`. Fixed so the feel
-// is independent of the step's magnitude (otherwise a step of 0.1 scrubs hyper-
-// fine and a step of 100 sluggishly). Smaller than InputDrum's DRAG_STEP_PX (40):
-// a number field is unbounded and traversed in larger sweeps, with the y-axis
-// acceleration and Alt (0.1×) / Shift (snap) modifiers covering big/fine moves.
-const PX_PER_STEP = 20
-
 let deltaAccumulated = 0
-
-let dirAverage: vec2 = vec2.unitX
 let offsetWeight = 1
+let scrubState: NumberScrubState & {deltaValue: number} = {
+	local: local.value,
+	directionAverage: [1, 0],
+	offsetWeight: 1,
+	gestureSpeed: 1,
+	deltaValue: 0,
+}
 
 // Whether the value currently sits within [min, max]. Out of range there's no
 // in-bar handle to grab, so the over-range strips take over as the scrub grip.
@@ -180,18 +150,22 @@ let dragStartedFocused = false
 const {dragging: tweaking} = useDrag($input, {
 	lockPointer: computed(() => !barVisible.value),
 	disabled: computed(() => props.disabled),
-	// While focused, only the grab affordances (.scrub) start a drag; pressing the
+	// While focused, only the stable grab affordances start a drag; pressing the
 	// text area falls through to the <input> to place a caret / edit. `closest` so
 	// a press on a child (e.g. the grip's hint icon / its inner SVG) still counts.
 	shouldDrag(event) {
 		if (!focused.value) return true
-		return !!(event.target as Element | null)?.closest('.scrub')
+		return !!(event.target as Element | null)?.closest(
+			'[data-tq-number-scrub]'
+		)
 	},
 	onClick() {
 		$input.value?.select()
 	},
 	onDragStart(state, event) {
-		const grabbed = !!(event.target as Element).closest('.scrub')
+		const grabbed = !!(event.target as Element).closest(
+			'[data-tq-number-scrub]'
+		)
 		dragStartedFocused = focused.value
 
 		if (barVisible.value && insideRange.value && !grabbed) {
@@ -209,62 +183,38 @@ const {dragging: tweaking} = useDrag($input, {
 		}
 
 		deltaAccumulated = 0
+		scrubState = {
+			local: local.value,
+			directionAverage: [1, 0],
+			offsetWeight: 1,
+			gestureSpeed: 1,
+			deltaValue: 0,
+		}
 		speedMultiplierGesture.value = 1
+		offsetWeight = 1
 
 		if (!dragStartedFocused) emit('focus')
 		multi.capture()
 	},
 	onDrag(state) {
-		const [dx, dy] = state.delta
+		scrubState = updateNumberScrub({
+			state: scrubState,
+			delta: state.delta,
+			barVisible: barVisible.value,
+			min: props.min,
+			max: props.max,
+			width: width.value,
+			step: props.step,
+			speed: speedMultiplierKey.value * scrubState.gestureSpeed,
+			minSpeed: minSpeed.value,
+			maxSpeed: maxSpeed.value,
+		})
+		local.value = scrubState.local
+		offsetWeight = scrubState.offsetWeight
+		speedMultiplierGesture.value = scrubState.gestureSpeed
 
-		// Decide the weight for sensitivity/delta by the direction of the drag
-		dirAverage = vec2.normalize(
-			vec2.lerp(dirAverage, vec2.abs(state.delta), 0.1)
-		)
-
-		offsetWeight = scalar.smoothstep(
-			0.4,
-			0.6,
-			Math.abs(vec2.dot([1, 0], dirAverage))
-		)
-
-		// Inc/dec value by x-axis. Ranged: map the bar's full width to [min, max].
-		// Unranged: set sensitivity directly — a fixed PX_PER_STEP pixels per step
-		// when stepped (so it doesn't track the step's magnitude), else continuous
-		// at 1 unit/px.
-		const baseSpeed = barVisible.value
-			? (props.max - props.min) / width.value
-			: props.step
-				? props.step / PX_PER_STEP
-				: 1
-
-		const delta = dx * baseSpeed * speed.value * offsetWeight
-
-		let newLocal = local.value + delta
-
-		if (!barVisible.value) {
-			if (props.min !== Number.MIN_SAFE_INTEGER) {
-				newLocal = scalar.max(newLocal, props.min)
-			}
-			if (props.max !== Number.MAX_SAFE_INTEGER) {
-				newLocal = scalar.min(newLocal, props.max)
-			}
-		}
-		local.value = newLocal
-
-		deltaAccumulated += delta
+		deltaAccumulated += scrubState.deltaValue
 		multi.update(v => v + deltaAccumulated)
-
-		// Adjustment sensitivity by y-axis
-		speedMultiplierGesture.value = scalar.clamp(
-			scalar.lerp(
-				speedMultiplierGesture.value * 0.98 ** dy,
-				speedMultiplierGesture.value,
-				offsetWeight
-			),
-			minSpeed.value,
-			maxSpeed.value
-		)
 
 		snapEnabled.value = snapKey.value
 	},
@@ -467,12 +417,11 @@ const multi = useMultiSelectStore().register({
 //------------------------------------------------------------------------------
 // Styles
 
-const valueRangeStateClasses = computed(() => {
-	if (!barVisible.value) return {}
-
-	if (model.value < props.min) return {'below-range': true}
-	if (model.value > props.max) return {'above-range': true}
-	return {}
+const rangeState = computed(() => {
+	if (!barVisible.value) return undefined
+	if (model.value < props.min) return 'below'
+	if (model.value > props.max) return 'above'
+	return undefined
 })
 
 // The tweak overlay's scale dots visualise the (continuous) drag sensitivity.
@@ -546,8 +495,6 @@ const zoneStyle = computed<StyleValue>(() => {
 	}
 })
 
-const rangeSide = computed(() => (model.value < props.min ? 'below' : 'above'))
-
 // At min / max the handle is flush with an edge, where the thin top/bottom
 // strips get eaten by the corner radius — and there's no centred text to protect
 // out there anyway. So use a single full-height grab zone at the edges.
@@ -579,8 +526,9 @@ const barStyle = computed<StyleValue>(() => {
 	<InputTextBase
 		ref="$input"
 		v-model:focused="focused"
-		class="TqInputNumber"
-		:class="{...valueRangeStateClasses, tweaking}"
+		data-tq-input-number=""
+		:data-tq-range="rangeState"
+		:data-tq-tweaking="tweaking ? '' : undefined"
 		:ignoreInput="!focused"
 		:modelValue="display"
 		:active="multi.subfocus"
@@ -603,23 +551,27 @@ const barStyle = computed<StyleValue>(() => {
 		@reset="onReset"
 	>
 		<template #inactiveContent>
-			<div class="display-at-inactive">
-				<span v-if="prefix" class="prefix">{{ prefix }}</span>
+			<div data-tq-part="number-display">
+				<span v-if="prefix" data-tq-part="prefix">{{ prefix }}</span>
 				{{ display }}
-				<span v-if="suffix" class="suffix">{{ suffix }}</span>
+				<span v-if="suffix" data-tq-part="suffix">{{ suffix }}</span>
 			</div>
 		</template>
 		<template #back>
-			<div class="bar" :style="barStyle" />
+			<div data-tq-part="number-bar" :style="barStyle" />
 			<InputNumberScales :min="min" :max="max" :step="step" />
 
-			<svg v-if="tweaking && showTweakScale" class="overlay">
-				<line class="scale" v-bind="scaleAttrs(0)"></line>
-				<line class="scale" v-bind="scaleAttrs(1)"></line>
-				<line class="scale" v-bind="scaleAttrs(2)"></line>
+			<svg v-if="tweaking && showTweakScale" data-tq-part="scrub-scale-overlay">
+				<line data-tq-part="scrub-scale" v-bind="scaleAttrs(0)" />
+				<line data-tq-part="scrub-scale" v-bind="scaleAttrs(1)" />
+				<line data-tq-part="scrub-scale" v-bind="scaleAttrs(2)" />
 			</svg>
 
-			<div class="handle scrub" :style="handleStyles" />
+			<div
+				data-tq-number-scrub=""
+				data-tq-part="number-handle"
+				:style="handleStyles"
+			/>
 		</template>
 
 		<!-- Grab affordances live above the <input> (the back slot is below it) so
@@ -633,213 +585,48 @@ const barStyle = computed<StyleValue>(() => {
 				<template v-if="insideRange">
 					<div
 						v-if="handleAtEdge"
-						class="scrub-zone scrub edge"
+						data-tq-number-scrub=""
+						data-tq-part="scrub-zone"
+						data-tq-zone="edge"
 						:style="zoneStyle"
 					/>
 					<template v-else>
-						<div class="scrub-zone scrub top" :style="zoneStyle" />
-						<div class="scrub-zone scrub bottom" :style="zoneStyle" />
+						<div
+							data-tq-number-scrub=""
+							data-tq-part="scrub-zone"
+							data-tq-zone="top"
+							:style="zoneStyle"
+						/>
+						<div
+							data-tq-number-scrub=""
+							data-tq-part="scrub-zone"
+							data-tq-zone="bottom"
+							:style="zoneStyle"
+						/>
 					</template>
 				</template>
 				<template v-else>
-					<div class="scrub-zone scrub wide top" :class="rangeSide" />
-					<div class="scrub-zone scrub wide bottom" :class="rangeSide" />
+					<div
+						data-tq-number-scrub=""
+						data-tq-part="scrub-zone"
+						data-tq-zone="top"
+						data-tq-wide=""
+					/>
+					<div
+						data-tq-number-scrub=""
+						data-tq-part="scrub-zone"
+						data-tq-zone="bottom"
+						data-tq-wide=""
+					/>
 				</template>
 			</template>
-			<div v-else class="scrub grip">
-				<Icon v-if="!leftIcon" class="grip-hint" icon="mdi:arrow-left-right" />
+			<div v-else data-tq-number-scrub="" data-tq-part="scrub-grip">
+				<Icon
+					v-if="!leftIcon"
+					data-tq-part="scrub-grip-hint"
+					icon="mdi:arrow-left-right"
+				/>
 			</div>
 		</template>
 	</InputTextBase>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqInputNumber
-	position relative
-	$arrow-size = 4px
-
-	&:before
-		content ''
-		position absolute
-		display block
-		width 0
-		height 0
-		border-top $arrow-size solid transparent
-		border-bottom $arrow-size solid transparent
-		top 50%
-		margin-top -1 * $arrow-size
-		pointer-events none
-		z-index 100
-		opacity 0
-
-	&.below-range:before
-		left 0
-		border-right $arrow-size solid var(--tq-color-accent)
-		opacity .3
-
-	&.above-range:before
-		right 0
-		border-left $arrow-size solid var(--tq-color-accent)
-		opacity .3
-
-	&.tweaking.below-range:before, &.tweaking.above-range:before
-		opacity 1
-
-	&:has(:disabled) .bar
-			background var(--tq-color-input)
-
-.display-at-inactive
-	pointer-events none
-	position absolute
-	inset 0
-	display flex
-	align-items center
-	justify-content center
-
-	.prefix, .suffix
-		color var(--tq-color-text-mute)
-
-	.prefix
-		margin-right .1em
-
-	.suffix
-		margin-left .1em
-
-.bar, .handle
-	position absolute
-	height 100%
-
-.bar
-	pointer-events none
-	background var(--tq-color-accent-soft)
-	hover-transition(background)
-
-	// Not while disabled — the bar shouldn't light up on hover then.
-	.TqInputNumber:hover:not(:has(:disabled)) &
-		background var(--tq-color-accent-soft-hover)
-
-.handle
-	width 1px
-	background var(--tq-color-accent)
-	opacity .3
-
-	&:hover,
-	.TqInputNumber.tweaking &
-		width 3px
-		margin-left -1px
-
-	.TqInputNumber:hover &,
-	.TqInputNumber.tweaking &
-		opacity 1
-
-	// Focused: the grab zone (not the handle) takes the hover, so mirror the
-	// unfocused hover by thickening the handle when a tip zone is hovered. (The
-	// opacity is already 1 from the :hover rule above, since hovering a zone means
-	// the field is hovered.)
-	.TqInputNumber:focus-within:has(.scrub-zone:not(.wide):hover) &
-		width 3px
-		margin-left -1px
-
-	.below-range &,
-	.above-range &
-		pointer-events none
-
-	&:before
-		content ''
-		position absolute
-		display block
-		height 100%
-		left calc(var(--tq-input-height) / -2)
-		right @left
-
-	// Focused: the front grab zones own the pointer; the handle is just the mark.
-	.TqInputNumber:focus-within &
-		pointer-events none
-
-// Transparent hit areas above the <input>. Pinned to the handle's x (in range)
-// or spanning the width (out of range), split top/bottom so the centre stays
-// clickable as text. Only interactive while the field is focused — otherwise the
-// back-slot handle/bar drive dragging exactly as before.
-.scrub-zone
-	position absolute
-	// zoneStyle sets `left` to the (clamped) zone edge; no centring transform.
-	width var(--tq-input-height)
-	pointer-events none
-
-	&.top
-		top 0
-
-	&.bottom
-		bottom 0
-
-	&.top, &.bottom
-		height 'max((var(--tq-input-height) - 1em) / 2, 4px)' % ()
-
-	// At an edge: one full-height grip (the corner radius would gut thin strips).
-	&.edge
-		top 0
-		bottom 0
-
-	&.wide
-		left 0
-		right 0
-		width auto
-
-	.TqInputNumber:focus-within &
-		pointer-events auto
-		cursor ew-resize
-
-// Unranged: a horizontal scrub grip over the left-icon area. Inert until the
-// field is focused (unfocused, the whole field already drags); then it takes the
-// pointer so a focused press here scrubs while the text stays editable.
-.grip
-	position absolute
-	left 0
-	top 0
-	bottom 0
-	width var(--tq-input-height)
-	display flex
-	align-items center
-	justify-content center
-	pointer-events none
-
-	.TqInputNumber:focus-within &
-		pointer-events auto
-		cursor ew-resize
-
-// Faint hint shown only while focused when there's no leftIcon to grab.
-.grip-hint
-	color var(--tq-color-text-mute)
-	transform scale(0.7)
-	opacity 0
-
-	.TqInputNumber:focus-within &
-		opacity .5
-
-.overlay
-	position absolute
-	overflow visible
-	pointer-events none
-	top 50%
-	left 50%
-
-	.scale
-		--offset-weight 1
-		--gesture-precision 0
-		fill none
-		stroke 'color-mix(in srgb, var(--tq-color-accent), var(--tq-color-text-subtle) calc(var(--offset-weight) * 100%))' % ()
-		stroke-linecap round
-		stroke-width calc(4px + var(--offset-weight) * -1px)
-		stroke-dasharray 0 calc(pow(10, var(--gesture-precision)))
-		hover-transition(stroke-width)
-
-	.pointer
-		fill var(--tq-color-accent)
-
-	.bar
-		background var(--tq-color-input-tinted-accent-hover)
-
-	.handle
-		background var(--tq-color-accent)
-</style>

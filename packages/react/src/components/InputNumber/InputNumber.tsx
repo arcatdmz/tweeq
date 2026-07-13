@@ -25,7 +25,6 @@ import {
 	useState,
 } from 'react'
 
-import {classNames} from '../../classNames'
 import {
 	useDrag,
 	useElementBounding,
@@ -35,7 +34,6 @@ import {
 } from '../../hooks'
 import {Icon} from '../Icon'
 import {InputTextBase, type InputTextBaseHandle} from '../InputTextBase'
-import styles from './InputNumber.module.styl'
 import {InputNumberScales} from './InputNumberScales'
 
 const NUMBER_KEYS = ['Alt', 'Shift', 'q'] as const
@@ -279,7 +277,9 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 				shouldDrag(event: PointerEvent) {
 					if (!focusedRef.current) return true
 					return Boolean(
-						(event.target as Element | null)?.closest('[data-number-scrub]')
+						(event.target as Element | null)?.closest(
+							'[data-tq-number-scrub]'
+						)
 					)
 				},
 				onClick() {
@@ -294,7 +294,9 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 						current.max !== Number.MAX_SAFE_INTEGER &&
 						currentBounds.width > 0
 					const grabbed = Boolean(
-						(event.target as Element | null)?.closest('[data-number-scrub]')
+						(event.target as Element | null)?.closest(
+							'[data-tq-number-scrub]'
+						)
 					)
 					dragStartedFocused = focusedRef.current
 					if (
@@ -427,13 +429,12 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 			<InputTextBase
 				{...props}
 				ref={base}
-				className={classNames(
-					styles.tqInputNumber,
-					belowRange && styles.belowRange,
-					aboveRange && styles.aboveRange,
-					tweaking && styles.tweaking,
-					className
-				)}
+				className={className}
+				data-tq-input-number=""
+				data-tq-range={
+					belowRange ? 'below' : aboveRange ? 'above' : undefined
+				}
+				data-tq-tweaking={tweaking ? '' : undefined}
 				value={display}
 				ignoreInput={!focused}
 				active={multi.subfocus}
@@ -510,16 +511,16 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 					onConfirm?.()
 				}}
 				renderInactiveContent={() => (
-					<div className={styles.displayAtInactive}>
-						{prefix && <span className={styles.prefix}>{prefix}</span>}
+					<div data-tq-part="number-display">
+						{prefix && <span data-tq-part="prefix">{prefix}</span>}
 						{display}
-						{suffix && <span className={styles.suffix}>{suffix}</span>}
+						{suffix && <span data-tq-part="suffix">{suffix}</span>}
 					</div>
 				)}
 				renderBack={() => (
 					<>
 						<div
-							className={styles.bar}
+							data-tq-part="number-bar"
 							style={
 								barVisible
 									? {left: toPercent(barLeft), right: toPercent(barRight)}
@@ -528,7 +529,7 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 						/>
 						<InputNumberScales min={min} max={max} step={step} />
 						{tweaking && !steppedAndClamped && (
-							<svg className={styles.overlay}>
+							<svg data-tq-part="scrub-scale-overlay">
 								{[0, 1, 2].map(offset => {
 									const gesturePrecision = scalar.mod(
 										-Math.log(gestureSpeed) / Math.log(10) + offset,
@@ -537,13 +538,18 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 									return (
 										<line
 											key={offset}
-											className={styles.scale}
+											data-tq-part="scrub-scale"
 											x1={-width / 2}
 											x2={width / 2}
 											style={
 												{
 													'--offset-weight': offsetWeight,
 													'--gesture-precision': gesturePrecision,
+													strokeDashoffset: -(
+														barVisible
+															? scalar.efit(value, min, max, 0, width)
+															: width / 2 - value / gestureSpeed
+													),
 													opacity: Math.pow(
 														scalar.smoothstep(1, 2, gesturePrecision),
 														0.5
@@ -556,8 +562,8 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 							</svg>
 						)}
 						<div
-							className={classNames(styles.handle, styles.scrub)}
-							data-number-scrub=""
+							data-tq-number-scrub=""
+							data-tq-part="number-handle"
 							style={
 								barVisible
 									? {left: `calc((100% - 1px) * ${normalizedValue})`}
@@ -586,12 +592,12 @@ export const InputNumber = forwardRef<InputNumberHandle, InputNumberProps>(
 							)
 						) : (
 							<div
-								className={classNames(styles.scrub, styles.grip)}
-								data-number-scrub=""
+								data-tq-number-scrub=""
+								data-tq-part="scrub-grip"
 							>
 								{!leftIcon && (
 									<Icon
-										className={styles.gripHint}
+										data-tq-part="scrub-grip-hint"
 										icon="mdi:arrow-left-right"
 									/>
 								)}
@@ -619,15 +625,10 @@ function ScrubZone({
 }) {
 	return (
 		<div
-			className={classNames(
-				styles.scrubZone,
-				styles.scrub,
-				top && styles.top,
-				bottom && styles.bottom,
-				edge && styles.edge,
-				wide && styles.wide
-			)}
-			data-number-scrub=""
+			data-tq-number-scrub=""
+			data-tq-part="scrub-zone"
+			data-tq-zone={top ? 'top' : bottom ? 'bottom' : edge ? 'edge' : undefined}
+			data-tq-wide={wide ? '' : undefined}
 			style={
 				position === undefined
 					? undefined

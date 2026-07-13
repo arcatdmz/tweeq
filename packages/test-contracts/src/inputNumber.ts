@@ -50,7 +50,11 @@ export function runInputNumberContract(
 
 		it('forwards disabled state and stable parts', async () => {
 			harness = await createHarness('InputNumber', {value: 0, disabled: true})
-			expect(harness.part('root')).not.toBeNull()
+			const root = harness.part('root') as HTMLElement
+			expect(root.hasAttribute('data-tq-input-number')).toBe(true)
+			expect(harness.part('number-display')).not.toBeNull()
+			expect(harness.part('number-bar')).not.toBeNull()
+			expect(harness.part('scrub-grip')).not.toBeNull()
 			expect((harness.part('input') as HTMLInputElement).disabled).toBe(true)
 		})
 	})

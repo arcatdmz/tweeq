@@ -9,8 +9,7 @@ test('number and vector controls update controlled values', async ({page}) => {
 	await numberInput.blur()
 	const numberBox = await page
 		.getByTestId('InputNumber')
-		.locator('div')
-		.first()
+		.locator('[data-tq-input-number]')
 		.boundingBox()
 	if (!numberBox) throw new Error('InputNumber did not produce a box')
 	await page.mouse.move(numberBox.x + numberBox.width * 0.25, numberBox.y + 10)

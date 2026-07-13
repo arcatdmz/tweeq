@@ -43,6 +43,29 @@ describe('InputNumber core', () => {
 		expect(result.local).toBeCloseTo(1.1)
 	})
 
+	it('keeps stationary scrub samples finite', () => {
+		const result = updateNumberScrub({
+			state: {
+				local: 1,
+				directionAverage: [0, 0],
+				offsetWeight: 1,
+				gestureSpeed: 1,
+			},
+			delta: [0, 0],
+			barVisible: false,
+			min: -100,
+			max: 100,
+			width: 100,
+			speed: 1,
+			minSpeed: 0.0001,
+			maxSpeed: 1000,
+		})
+		expect(result.local).toBe(1)
+		expect(result.directionAverage).toEqual([1, 0])
+		expect(result.offsetWeight).toBe(1)
+		expect(result.gestureSpeed).toBe(1)
+	})
+
 	it('compiles numeric expressions with selection index', () => {
 		expect(compileNumberExpression('x * 2 + i')(3, {i: 1})).toBe(7)
 		expect(() => compileNumberExpression('"no"')(0, {i: 0})).toThrow()
