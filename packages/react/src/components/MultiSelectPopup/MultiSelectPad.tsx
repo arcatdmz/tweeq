@@ -2,10 +2,8 @@ import {type DragState, multiSelectStore} from '@tweeq/dom'
 import {type vec2} from 'linearly'
 import {useEffect, useMemo, useRef} from 'react'
 
-import {classNames} from '../../classNames'
 import {useDrag, useKeys} from '../../hooks'
 import {IconIndicator} from '../IconIndicator'
-import styles from './MultiSelectPopup.module.styl'
 
 const PAD_KEYS = ['x', 'y', '1', '2'] as const
 
@@ -76,11 +74,8 @@ export function MultiSelectPad({type, update, icon}: MultiSelectPadProps) {
 	return (
 		<div
 			ref={root}
-			className={classNames(
-				styles.pad,
-				type === 'slider' && styles.slider,
-				type === 'pad' && styles.pad2d
-			)}
+			data-tq-multi-select-action={type}
+			data-tq-dragging={drag.dragging ? '' : undefined}
 			data-tq-part="pad"
 		>
 			<IconIndicator icon={icon} active={drag.dragging} />

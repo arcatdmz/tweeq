@@ -1,7 +1,6 @@
 import {multiSelectStore} from '@tweeq/dom'
 
 import {IconIndicator} from '../IconIndicator'
-import styles from './MultiSelectPopup.module.styl'
 
 export function MultiSelectButton({
 	icon,
@@ -10,15 +9,17 @@ export function MultiSelectButton({
 	icon: string
 	update: (values: number[]) => number[]
 }) {
+	const edit = () => {
+		multiSelectStore.getState().updateValues(update)
+		multiSelectStore.getState().confirmValues()
+	}
+
 	return (
 		<IconIndicator
-			className={styles.button}
+			data-tq-multi-select-action="button"
 			data-tq-part="button"
 			icon={icon}
-			onClick={() => {
-				multiSelectStore.getState().updateValues(update)
-				multiSelectStore.getState().confirmValues()
-			}}
+			onChangeActive={edit}
 		/>
 	)
 }

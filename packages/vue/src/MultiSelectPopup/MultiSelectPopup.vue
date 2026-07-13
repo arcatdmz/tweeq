@@ -53,21 +53,41 @@ const visible = computed(() => {
 })
 
 watchEffect(() => {
-	$root.value?.togglePopover(visible.value)
+	const root = $root.value
+	if (!root) return
+	try {
+		if (
+			visible.value &&
+			typeof root.showPopover === 'function' &&
+			!root.matches(':popover-open')
+		) {
+			root.showPopover()
+		} else if (
+			!visible.value &&
+			typeof root.hidePopover === 'function' &&
+			root.matches(':popover-open')
+		) {
+			root.hidePopover()
+		}
+	} catch {
+		// Unsupported or partial native popover implementation: keep the popup
+		// in normal DOM flow and let the stable visibility state provide fallback.
+	}
 })
 </script>
 
 <template>
 	<div
 		ref="$root"
-		:class="{visible}"
 		class="TqMultiSelectPopup"
 		:style="anchorStyle"
 		popover="manual"
+		data-tq-component="multi-select-popup"
+		:data-tq-visible="visible ? '' : undefined"
 		data-tq-part="root"
 	>
-		<Icon class="tune-icon" icon="lsicon:control-filled" />
-		<div class="actions" data-tq-part="actions">
+		<Icon icon="lsicon:control-filled" data-tq-part="tune-icon" />
+		<div data-tq-part="actions">
 			<template v-for="action in enabledActions" :key="action.icon">
 				<MultiSelectPad
 					v-if="action.type === 'slider' || action.type === 'pad'"
@@ -84,54 +104,3 @@ watchEffect(() => {
 		</div>
 	</div>
 </template>
-
-<style lang="stylus" scoped>
-
-reset-viewport('.TqMultiSelectPopup')
-
-.TqMultiSelectPopup
-	position fixed
-	inset auto
-	popup-style()
-	margin 3px 0
-	z-index 1000
-	visibility hidden
-	padding 0
-	border-color var(--tq-color-accent)
-	box-shadow none
-	overflow hidden
-	hover-transition(width, height, border-radius)
-	box-sizing border-box
-
-	&:not(:hover)
-		width var(--tq-icon-size)
-		height var(--tq-icon-size)
-		border-radius 99px
-
-	&.visible
-		visibility visible
-
-.tune-icon
-	position absolute
-	top -1px
-	left -1px
-	width var(--tq-icon-size)
-	height var(--tq-icon-size)
-	scale .8
-	color var(--tq-color-accent)
-	opacity 1
-	pointer-events none
-
-	.TqMultiSelectPopup:hover &
-		opacity 0
-
-.actions
-	display flex
-	flex-direction row
-	padding 2px
-	gap var(--tq-gap-group)
-	opacity 0
-
-	.TqMultiSelectPopup:hover &
-		opacity 1
-</style>

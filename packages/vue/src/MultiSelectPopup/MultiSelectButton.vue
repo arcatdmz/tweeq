@@ -19,16 +19,8 @@ function edit() {
 	<IconIndicator
 		class="TqMultiSelectButton"
 		:icon="icon"
+		data-tq-multi-select-action="button"
 		data-tq-part="button"
-		@click="edit"
+		@update:active="edit"
 	/>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqMultiSelectButton
-	border-radius var(--tq-radius-input)
-
-	&:hover
-		background var(--tq-color-input-hover)
-</style>

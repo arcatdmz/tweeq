@@ -1,5 +1,3 @@
-import './MultiSelectPopup.global.styl'
-
 import {
 	addAnchorName,
 	getMultiSelectActions,
@@ -8,11 +6,9 @@ import {
 import {type CSSProperties, useEffect, useMemo, useRef} from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {Icon} from '../Icon'
 import {MultiSelectButton} from './MultiSelectButton'
 import {MultiSelectPad} from './MultiSelectPad'
-import styles from './MultiSelectPopup.module.styl'
 
 const ANCHOR_NAME = '--tq-multi-select-anchor'
 
@@ -47,11 +43,7 @@ export function MultiSelectPopup() {
 	return (
 		<div
 			ref={root}
-			className={classNames(
-				'TqMultiSelectPopup',
-				styles.popup,
-				visible && styles.visible
-			)}
+			className="TqMultiSelectPopup"
 			style={
 				{
 					positionAnchor: ANCHOR_NAME,
@@ -60,10 +52,12 @@ export function MultiSelectPopup() {
 				} as CSSProperties
 			}
 			popover="manual"
+			data-tq-component="multi-select-popup"
+			data-tq-visible={visible ? '' : undefined}
 			data-tq-part="root"
 		>
-			<Icon className={styles.tuneIcon} icon="lsicon:control-filled" />
-			<div className={styles.actions} data-tq-part="actions">
+			<Icon icon="lsicon:control-filled" data-tq-part="tune-icon" />
+			<div data-tq-part="actions">
 				{enabled.map(action =>
 					action.type === 'button' ? (
 						<MultiSelectButton

@@ -69,24 +69,10 @@ const {xy, dragging} = useDrag($root, {
 	<IconIndicator
 		ref="$root"
 		class="TqMultiSelectPad"
-		:class="{[type]: true}"
 		:icon="icon"
 		:active="dragging"
+		:data-tq-multi-select-action="type"
+		:data-tq-dragging="dragging ? '' : undefined"
 		data-tq-part="pad"
 	/>
 </template>
-
-<style lang="stylus" scoped>
-
-.TqMultiSelectPad
-	border-radius var(--tq-radius-input)
-
-	&:hover
-		background var(--tq-color-input-hover)
-
-	&.slider
-		cursor ew-resize
-
-	&.pad
-		cursor move
-</style>
