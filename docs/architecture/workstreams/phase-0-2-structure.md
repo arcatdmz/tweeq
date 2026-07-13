@@ -266,11 +266,11 @@ contain renderer markup only and no copied state transition.
   InputCubicBezier, InputCubicBezierPicker, App, Viewport, Popover, and
   InputSize, TitleBar, ParameterGroup, Balloon, Menu, PaneSplit, Tabs, and
   InputTextBase, InputDropdown, InputTranslate, InputRadio,
-  InputSwitchOverlay, InputDrum, InputRotary, PaneFloating, InputColorPad, and
-  MultiSelectPopup. Both renderers emit the same stable component/part/state
-  attributes, consume one shared rule set, and deleted their scoped/CSS-module
-  copies. The styles package now emits real component CSS rather than only the
-  initial placeholder.
+  InputSwitchOverlay, InputDrum, InputRotary, PaneFloating, InputColorPad,
+  MultiSelectPopup, and CommandPalette. Both renderers emit the same stable
+  component/part/state attributes, consume one shared rule set, and deleted
+  their scoped/CSS-module copies. The styles package now emits real component
+  CSS rather than only the initial placeholder.
 
 ## Retrospective Phase 0–2 audit repair (2026-07-13)
 

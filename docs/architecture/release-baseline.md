@@ -15,11 +15,11 @@ excluded from runtime size totals.
 | --- | ---: | ---: | ---: |
 | @tweeq/core JavaScript | 35 | 74.88 KiB | 25.90 KiB |
 | @tweeq/dom JavaScript | 14 | 42.14 KiB | 14.07 KiB |
-| @tweeq/styles CSS | 1 | 90.08 KiB | 11.14 KiB |
-| @tweeq/react JavaScript | 174 | 11672.00 KiB | 3010.10 KiB |
-| @tweeq/react CSS | 1 | 357.94 KiB | 97.60 KiB |
-| @tweeq/vue JavaScript | 177 | 16744.80 KiB | 4354.52 KiB |
-| @tweeq/vue CSS | 1 | 355.33 KiB | 97.34 KiB |
+| @tweeq/styles CSS | 1 | 93.31 KiB | 11.48 KiB |
+| @tweeq/react JavaScript | 174 | 11672.99 KiB | 3010.20 KiB |
+| @tweeq/react CSS | 1 | 359.08 KiB | 97.63 KiB |
+| @tweeq/vue JavaScript | 177 | 16748.17 KiB | 4355.26 KiB |
+| @tweeq/vue CSS | 1 | 357.21 KiB | 97.42 KiB |
 
 The renderer totals include Monaco and its language workers. They establish
 the MF-011 starting point; code splitting should be evaluated against these
@@ -34,8 +34,8 @@ still incomplete; renderer CSS remains separate until that finding is closed.
 The benchmark runs `unsignedMod`, ruler coordinate conversion, and enabled-tab
 resolution once per iteration (100,000 iterations, seven samples).
 
-- Median: 3.34 ms
-- Aggregate operations: 89,856,625 operations/second
+- Median: 2.53 ms
+- Aggregate operations: 118,649,625 operations/second
 
 This is a comparison baseline, not a CI timing threshold. Functional runtime
 parity remains enforced by the renderer-neutral contracts and browser suite.

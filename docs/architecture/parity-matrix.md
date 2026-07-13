@@ -42,7 +42,7 @@ by both implementations (`—` = logic still duplicated in renderer code);
 | Balloon | SFC | ✅ | `balloon` | — | |
 | BindIcon | SFC | ✅ | — | — | |
 | ColorIcon | SFC | ✅ | — | — | |
-| CommandPalette | SFC | ✅ | — | core history/navigation + dropdown-code | fuzzy search via `fast-fuzzy`; shared action lifecycle hooks, recent-history updates, wrap navigation, Ctrl/Cmd+P, and arrow behavior aligned in Phase 4 |
+| CommandPalette | SFC | ✅ | — | core history/navigation + dropdown-code | fuzzy search via `fast-fuzzy`; shared action lifecycle hooks, recent-history updates, wrap navigation, Ctrl/Cmd+P, feature-safe local fallback, combobox/listbox selection semantics, stable parts, and canonical styling aligned |
 | GlslCanvas | SFC | ✅ | `glsl` | shared DOM renderer + color-curves | one regl queue/context, resize redraw, stale-work invalidation, and unmount disposal aligned in Phase 4 |
 | Icon | SFC | ✅ | — | core fixtures | shared source parsing; framework-specific Iconify adapters/cache |
 | IconIndicator | SFC | ✅ | — | shared contract | controlled active state, pointer/keyboard activation, `aria-pressed`, and stable parts aligned in Phase 4 |

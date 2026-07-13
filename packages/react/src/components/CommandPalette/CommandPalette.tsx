@@ -1,5 +1,3 @@
-import './CommandPalette.global.styl'
-
 import {
 	moveCommandSelection,
 	updateCommandHistory,
@@ -9,15 +7,18 @@ import {search} from 'fast-fuzzy'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {useStore} from 'zustand'
 
-import {classNames} from '../../classNames'
 import {useConfigRef, useEventListener} from '../../hooks'
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
-import styles from './CommandPalette.module.styl'
 
 const historyEntry = appConfigStore
 	.getState()
 	.ref<string[]>('commandPalette.performedActionsHistory', [])
+const ACTION_LIST_ID = 'tq-command-palette-actions'
+
+function actionDomId(id: string) {
+	return `tq-command-palette-action-${encodeURIComponent(id)}`
+}
 
 export function CommandPalette() {
 	const root = useRef<HTMLDivElement>(null)
@@ -25,6 +26,7 @@ export function CommandPalette() {
 	const allActions = useStore(actionsStore, state => state.allActions)
 	const [history, setHistory] = useConfigRef(historyEntry)
 	const [open, setOpen] = useState(false)
+	const [nativePopover, setNativePopover] = useState<boolean | null>(null)
 	const [query, setQuery] = useState('')
 	const filtered = useMemo(() => {
 		if (query === '' && open) {
@@ -43,6 +45,13 @@ export function CommandPalette() {
 	useEventListener<ToggleEvent>(root, 'toggle', event => {
 		setOpen(event.newState === 'open')
 	})
+	useEffect(() => {
+		const element = root.current
+		setNativePopover(
+			typeof element?.togglePopover === 'function' &&
+				typeof element.hidePopover === 'function'
+		)
+	}, [])
 	useEventListener<KeyboardEvent>(
 		typeof window === 'undefined' ? null : window,
 		'keydown',
@@ -54,10 +63,16 @@ export function CommandPalette() {
 				return
 			}
 			event.preventDefault()
+			const element = root.current
+			if (typeof element?.togglePopover !== 'function') {
+				setOpen(current => !current)
+				return
+			}
 			try {
-				root.current?.togglePopover()
+				element.togglePopover()
 			} catch {
-				// Native popover unavailable.
+				setNativePopover(false)
+				setOpen(current => !current)
 			}
 		}
 	)
@@ -69,27 +84,48 @@ export function CommandPalette() {
 
 	const perform = (action: ActionItem) => {
 		setHistory(current => updateCommandHistory(current, action.id))
-		root.current?.hidePopover()
+		const element = root.current
+		if (typeof element?.hidePopover === 'function') {
+			try {
+				element.hidePopover()
+			} catch {
+				setNativePopover(false)
+				setOpen(false)
+			}
+		} else {
+			setOpen(false)
+		}
 		void actionsStore.getState().perform(action.id)
 	}
 
 	return (
 		<div
 			ref={root}
-			className={classNames('TqCommandPalette', styles.commandPalette)}
+			className="TqCommandPalette"
 			popover="auto"
+			data-tq-component="command-palette"
+			data-tq-open={open ? '' : undefined}
+			data-tq-popover-fallback={nativePopover === false ? '' : undefined}
+			data-tq-part="root"
 		>
-			<div className={styles.searchContainer}>
+			<div data-tq-part="search-container">
 				<Icon
-					className={styles.searchIcon}
 					icon="material-symbols:search-rounded"
+					data-tq-part="search-icon"
 				/>
 				<input
 					ref={input}
-					className={styles.search}
 					type="text"
 					placeholder="Search menus and commands"
 					value={query}
+					role="combobox"
+					aria-autocomplete="list"
+					aria-controls={ACTION_LIST_ID}
+					aria-expanded={open}
+					aria-activedescendant={
+						selected ? actionDomId(selected.id) : undefined
+					}
+					data-tq-part="search"
 					onChange={event => setQuery(event.currentTarget.value)}
 					onKeyDown={event => {
 						if (
@@ -111,29 +147,30 @@ export function CommandPalette() {
 				/>
 			</div>
 			{query === '' && filtered.length > 0 && (
-				<div className={styles.recentActions}>Recent Actions</div>
+				<div data-tq-part="recent-actions">Recent Actions</div>
 			)}
-			<ul>
+			<ul id={ACTION_LIST_ID} role="listbox" data-tq-part="action-list">
 				{filtered.map(action => (
 					<li
 						key={action.id}
-						className={classNames(
-							styles.action,
-							action === selected && styles.selected
-						)}
+						id={actionDomId(action.id)}
+						role="option"
+						aria-selected={action === selected}
+						data-tq-selected={action === selected ? '' : undefined}
+						data-tq-part="action"
 						onPointerMove={() => setSelectedId(action.id)}
 						onClick={() => perform(action)}
 					>
 						{action.icon ? (
-							<Icon className={styles.actionIcon} icon={action.icon} />
+							<Icon icon={action.icon} data-tq-part="action-icon" />
 						) : (
-							<span className={styles.actionIcon} />
+							<span data-tq-part="action-icon" />
 						)}
-						<span className={styles.actionLabel}>{action.label}</span>
+						<span data-tq-part="action-label">{action.label}</span>
 						{action.bind?.icon && (
 							<BindIcon
-								className={styles.actionBindIcon}
 								icon={action.bind.icon}
+								data-tq-part="action-bind-icon"
 							/>
 						)}
 					</li>
