@@ -49,7 +49,7 @@ import {
 	type Scheme,
 	useTweeqRuntime,
 } from '@tweeq/vue'
-import {ref, useTemplateRef} from 'vue'
+import {onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
 
 const numberValue = ref(24)
 const multiFirst = ref(10)
@@ -83,7 +83,33 @@ const overlayOpen = ref(false)
 const floatingOpen = ref(false)
 const frameWidth = ref(24)
 const popoverReference = useTemplateRef<HTMLElement>('popoverReference')
-const modal = useTweeqRuntime().modalStore.getState()
+const runtime = useTweeqRuntime()
+const modal = runtime.modalStore.getState()
+const titleMenuResult = ref('none')
+let disposeTitleMenu: (() => void) | undefined
+
+onMounted(() => {
+	disposeTitleMenu = runtime.actionsStore.getState().register([
+		{
+			id: 'vue-gallery-run',
+			label: 'Run command',
+			perform: () => (titleMenuResult.value = 'run'),
+		},
+		{
+			id: 'vue-gallery-more',
+			label: 'More',
+			children: [
+				{
+					id: 'vue-gallery-nested',
+					label: 'Nested command',
+					perform: () => (titleMenuResult.value = 'nested'),
+				},
+			],
+		},
+	])
+})
+
+onBeforeUnmount(() => disposeTitleMenu?.())
 const modalComplexResult = ref('not opened')
 const modalTabsResult = ref('not opened')
 const modalTabSpeed = ref(3)
@@ -400,6 +426,7 @@ const colorMask =
 		<section data-gallery-component="TitleBar">
 			<h2>TitleBar</h2>
 			<TitleBar name="Vue gallery" :icon="colorMask" style="position: relative" />
+			<output data-testid="title-menu-result">{{ titleMenuResult }}</output>
 		</section>
 
 		<section data-gallery-component="Tooltip">

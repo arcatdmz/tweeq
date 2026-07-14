@@ -162,6 +162,18 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 		)
 	expect(titleIconMasks).toHaveLength(2)
 	for (const mask of titleIconMasks) expect(mask).toContain('data:image/svg+xml')
+	const titleMenuTrigger = page.getByRole('button', {name: 'Vue gallery menu'})
+	await titleMenuTrigger.press('Enter')
+	const titleMenu = page.getByRole('menu')
+	const runTitleCommand = titleMenu.getByRole('menuitem', {name: 'Run command'})
+	await expect(runTitleCommand).toBeFocused()
+	await runTitleCommand.press('End')
+	await page.keyboard.press('ArrowRight')
+	await expect(page.getByRole('menuitem', {name: 'Nested command'})).toBeFocused()
+	await page.keyboard.press('Enter')
+	await expect(page.getByTestId('title-menu-result')).toHaveText('nested')
+	await expect(titleMenuTrigger).toBeFocused()
+	await expect(titleMenuTrigger).toHaveAttribute('aria-expanded', 'false')
 
 	const color = page.locator(
 		'[data-gallery-component="InputColor"] [data-tq-component="input-color"]',
@@ -188,6 +200,31 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 	const floatingPane = floating.locator('[data-tq-component="pane-floating"]')
 	await expect(floatingPane).toBeVisible()
 	await expect(floatingPane).toHaveCSS('position', 'relative')
+
+	const split = page.locator('[data-gallery-component="PaneSplit"]')
+	const firstPane = split.locator('[data-tq-part="first"]')
+	const divider = split.getByRole('separator', {
+		name: 'vue-gallery-split divider',
+	})
+	const splitWidth = (await firstPane.boundingBox())?.width
+	if (splitWidth === undefined) throw new Error('Vue split pane was not measurable')
+	await expect(divider).toHaveAttribute('aria-orientation', 'vertical')
+	await divider.press('ArrowRight')
+	await expect
+		.poll(async () => (await firstPane.boundingBox())?.width)
+		.toBeGreaterThan(splitWidth)
+
+	const tabs = page.locator('[data-gallery-component="Tabs"]')
+	const firstTab = tabs.getByRole('tab', {name: 'First'})
+	const secondTab = tabs.getByRole('tab', {name: 'Second'})
+	await firstTab.press('ArrowRight')
+	await expect(secondTab).toBeFocused()
+	await expect(secondTab).toHaveAttribute('aria-selected', 'true')
+	const secondPanel = tabs.getByRole('tabpanel').filter({hasText: 'Second tab'})
+	await expect(secondPanel).toHaveAttribute(
+		'aria-labelledby',
+		(await secondTab.getAttribute('id')) ?? '',
+	)
 
 	await page.getByRole('button', {name: 'Open generated modal'}).click()
 	let modal = page.locator('.TqPaneModal:popover-open')
