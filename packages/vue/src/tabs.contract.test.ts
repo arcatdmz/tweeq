@@ -2,6 +2,7 @@
 
 import {
 	type HarnessEvent,
+	type KeyAction,
 	type RendererHarness,
 	runTabsContract,
 	type TabsContractProps,
@@ -23,6 +24,7 @@ runTabsContract(async (_component, initialProps) => {
 				Tabs,
 				{
 					name,
+					vertical: props.vertical,
 					onChanged: (tab: {id: string}) =>
 						captured.push({name: 'change', payload: [tab.id]}),
 					onClicked: (tab: {id: string}) =>
@@ -50,7 +52,18 @@ runTabsContract(async (_component, initialProps) => {
 		},
 		part: part => container.querySelector(`[data-tq-part="${part}"]`),
 		async pointer() {},
-		async key() {},
+		async key(action: KeyAction, part = 'root') {
+			const target = harness.part(part)
+			if (!target) throw new Error(`Missing part: ${part}`)
+			const names =
+				action.type === 'press' ? ['keydown', 'keyup'] : [`key${action.type}`]
+			for (const name of names) {
+				target.dispatchEvent(
+					new KeyboardEvent(name, {...action, bubbles: true})
+				)
+			}
+			await nextTick()
+		},
 		async activate(part = 'root') {
 			;(harness.part(part) as HTMLElement | null)?.click()
 			await nextTick()

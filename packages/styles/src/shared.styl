@@ -1237,7 +1237,7 @@ reset-viewport('[data-tq-component="pane-modal"]')
 		hover-transition(background)
 		z-index 10
 
-		&:hover
+		&:hover, &:focus-visible
 			background var(--tq-color-accent)
 
 		&:before
@@ -1249,7 +1249,7 @@ reset-viewport('[data-tq-component="pane-modal"]')
 			background-repeat no-repeat
 			hover-transition(opacity)
 
-		&:hover:before
+		&:hover:before, &:focus-visible:before
 			opacity 1
 
 	&[data-tq-direction='horizontal'] > [data-tq-part='divider']
@@ -1309,7 +1309,7 @@ reset-viewport('[data-tq-component="pane-modal"]')
 					opacity .4
 					hover-transition(opacity, color)
 
-					&:not(:disabled):hover
+					&:not(:disabled):hover, &:focus-visible
 						color var(--tq-color-accent)
 						opacity 1
 

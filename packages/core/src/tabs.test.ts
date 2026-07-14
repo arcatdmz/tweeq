@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 
-import {normalizeTabId, resolveActiveTabId} from './tabs'
+import {moveTabSelection, normalizeTabId, resolveActiveTabId} from './tabs'
 
 describe('tabs selection', () => {
 	it('prefers current, persisted, default, then the first enabled tab', () => {
@@ -18,5 +18,45 @@ describe('tabs selection', () => {
 
 	it('derives stable fallback ids from labels', () => {
 		expect(normalizeTabId('Color Settings')).toBe('color-settings')
+	})
+
+	it('moves through enabled tabs with orientation-aware wrapping', () => {
+		const tabs = [
+			{id: 'first'},
+			{id: 'disabled', isDisabled: true},
+			{id: 'last'},
+		]
+		expect(
+			moveTabSelection({
+				tabs,
+				currentId: 'first',
+				key: 'ArrowRight',
+				vertical: false,
+			})
+		).toBe('last')
+		expect(
+			moveTabSelection({
+				tabs,
+				currentId: 'last',
+				key: 'ArrowRight',
+				vertical: false,
+			})
+		).toBe('first')
+		expect(
+			moveTabSelection({
+				tabs,
+				currentId: 'first',
+				key: 'ArrowDown',
+				vertical: false,
+			})
+		).toBeUndefined()
+		expect(
+			moveTabSelection({
+				tabs,
+				currentId: 'last',
+				key: 'Home',
+				vertical: true,
+			})
+		).toBe('first')
 	})
 })

@@ -1,5 +1,5 @@
 import {normalizeTabId} from '@tweeq/core'
-import {type HTMLAttributes, useContext, useEffect, useMemo} from 'react'
+import {type HTMLAttributes, useContext, useEffect, useId, useMemo} from 'react'
 
 import {classNames} from '../../classNames'
 import {TabsContext} from './TabsContext'
@@ -22,9 +22,16 @@ export function Tab({
 	if (!context) throw new Error('Tab must be rendered inside Tabs')
 	const {activeId, register, update} = context
 	const id = idProp ?? normalizeTabId(name)
+	const instanceId = useId().replaceAll(':', '')
 	const registration = useMemo(
-		() => ({id, name, isDisabled, paneId: `${id}-pane`}),
-		[id, isDisabled, name]
+		() => ({
+			id,
+			name,
+			isDisabled,
+			tabId: `tq-tab-${instanceId}`,
+			paneId: `tq-tabpanel-${instanceId}`,
+		}),
+		[id, instanceId, isDisabled, name]
 	)
 	useEffect(() => register(registration), [register, registration])
 	useEffect(() => update(registration), [registration, update])
@@ -40,6 +47,7 @@ export function Tab({
 			data-tq-component="tab"
 			data-tq-part={`panel-${id}`}
 			aria-hidden={!active}
+			aria-labelledby={registration.tabId}
 			role="tabpanel"
 			tabIndex={-1}
 		>

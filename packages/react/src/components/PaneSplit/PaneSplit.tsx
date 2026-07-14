@@ -1,14 +1,19 @@
-import {resizeSplitPane} from '@tweeq/core'
+import {
+	getSplitPaneSeparatorValues,
+	resizeSplitPane,
+	resizeSplitPaneFromKeyboard,
+} from '@tweeq/core'
 import {type DragState} from '@tweeq/dom'
 import {
 	type CSSProperties,
 	type HTMLAttributes,
+	type KeyboardEvent,
 	type ReactNode,
 	useMemo,
 	useRef,
 } from 'react'
 
-import {useConfigRef, useDrag} from '../../hooks'
+import {useConfigRef, useDrag, useElementBounding} from '../../hooks'
 import {useTweeqRuntime} from '../../runtime'
 
 export interface PaneSplitProps extends HTMLAttributes<HTMLDivElement> {
@@ -38,6 +43,8 @@ export function PaneSplit({
 	const {appConfigStore} = useTweeqRuntime()
 	const root = useRef<HTMLDivElement>(null)
 	const divider = useRef<HTMLDivElement>(null)
+	const rootBounds = useElementBounding(root)
+	const updateRootBounds = rootBounds.update
 	const entry = useMemo(
 		() =>
 			appConfigStore
@@ -52,9 +59,9 @@ export function PaneSplit({
 	const dragOptions = useMemo(
 		() => ({
 			dragDelaySeconds: 0,
-			onDragStart: () => {
-				startSize.current = current.current.size
-			},
+				onDragStart: () => {
+					startSize.current = current.current.size
+				},
 			onDrag: (drag: DragState) => {
 				const state = current.current
 				const delta =
@@ -66,6 +73,7 @@ export function PaneSplit({
 					state.direction === 'horizontal'
 						? bounds?.width ?? 0
 						: bounds?.height ?? 0
+				updateRootBounds()
 				state.setSize(
 					resizeSplitPane({
 						start: startSize.current,
@@ -77,12 +85,39 @@ export function PaneSplit({
 				)
 			},
 		}),
-		[]
+		[updateRootBounds]
 	)
 	useDrag(divider, dragOptions)
 	const sizedPane = fixed ?? 'first'
 	const dimension = direction === 'horizontal' ? 'width' : 'height'
 	const sizeStyle = {[dimension]: `${size}${fixed ? 'px' : '%'}`}
+	const viewportSize =
+		direction === 'horizontal' ? rootBounds.width : rootBounds.height
+	const separator = getSplitPaneSeparatorValues({
+		size,
+		fixed,
+		viewportSize,
+		minPixelSize: min,
+	})
+
+	function onDividerKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+		const bounds = root.current?.getBoundingClientRect()
+		const measuredViewportSize =
+			direction === 'horizontal' ? bounds?.width ?? 0 : bounds?.height ?? 0
+		const next = resizeSplitPaneFromKeyboard({
+			current: size,
+			key: event.key,
+			direction,
+			fixed,
+			viewportSize: measuredViewportSize,
+			minPixelSize: min,
+			largeStep: event.shiftKey,
+		})
+		if (next === undefined) return
+		event.preventDefault()
+		rootBounds.update()
+		setSize(next)
+	}
 
 	return (
 		<div
@@ -107,7 +142,21 @@ export function PaneSplit({
 					{first}
 				</div>
 			</div>
-			<div ref={divider} data-tq-part="divider" />
+			<div
+				ref={divider}
+				role="separator"
+				tabIndex={0}
+				aria-label={`${name} divider`}
+				aria-orientation={
+					direction === 'horizontal' ? 'vertical' : 'horizontal'
+				}
+				aria-valuemin={separator.min}
+				aria-valuemax={separator.max}
+				aria-valuenow={separator.now}
+				aria-valuetext={separator.text}
+				data-tq-part="divider"
+				onKeyDown={onDividerKeyDown}
+			/>
 			<div
 				style={sizedPane === 'second' ? sizeStyle : undefined}
 				data-tq-part="second"

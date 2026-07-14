@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import {
+	type KeyAction,
 	type PaneSplitContractProps,
 	type PointerAction,
 	type RendererHarness,
@@ -39,7 +40,19 @@ runPaneSplitContract(async (_component, initialProps) => {
 			harness.part(part)?.dispatchEvent(pointerEvent(action))
 			await nextTick()
 		},
-		async key() {},
+		async key(action: KeyAction, part = 'divider') {
+			installGeometry(harness)
+			const target = harness.part(part)
+			if (!target) throw new Error(`Missing part: ${part}`)
+			const names =
+				action.type === 'press' ? ['keydown', 'keyup'] : [`key${action.type}`]
+			for (const name of names) {
+				target.dispatchEvent(
+					new KeyboardEvent(name, {...action, bubbles: true})
+				)
+			}
+			await nextTick()
+		},
 		async activate() {},
 		value: () => {
 			const pane = harness.part(props.fixed ?? 'first') as HTMLElement

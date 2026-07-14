@@ -24,3 +24,28 @@ export function resolveActiveTabId(
 		''
 	)
 }
+
+export function moveTabSelection({
+	tabs,
+	currentId,
+	key,
+	vertical,
+}: {
+	tabs: readonly TabSelectionEntry[]
+	currentId: string
+	key: string
+	vertical: boolean
+}): string | undefined {
+	const enabled = tabs.filter(tab => !tab.isDisabled)
+	if (!enabled.length) return undefined
+	if (key === 'Home') return enabled[0].id
+	if (key === 'End') return enabled.at(-1)?.id
+
+	const previousKey = vertical ? 'ArrowUp' : 'ArrowLeft'
+	const nextKey = vertical ? 'ArrowDown' : 'ArrowRight'
+	if (key !== previousKey && key !== nextKey) return undefined
+	const currentIndex = enabled.findIndex(tab => tab.id === currentId)
+	const start = currentIndex < 0 ? 0 : currentIndex
+	const delta = key === previousKey ? -1 : 1
+	return enabled[(start + delta + enabled.length) % enabled.length].id
+}

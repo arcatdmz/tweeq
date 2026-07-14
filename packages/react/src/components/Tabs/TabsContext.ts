@@ -4,6 +4,7 @@ export interface TabRegistration {
 	id: string
 	name: string
 	isDisabled: boolean
+	tabId: string
 	paneId: string
 }
 

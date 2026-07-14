@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {resolveActiveTabId} from '@tweeq/core'
+import {moveTabSelection, resolveActiveTabId} from '@tweeq/core'
 import {provide, reactive, watch} from 'vue'
 
 import {useAppConfigStore} from '../stores/appConfig'
@@ -76,6 +76,25 @@ const findTab = (id: string): Tab | undefined => {
 	return state.tabs.find(tab => tab.id === id)
 }
 
+function onTabKeydown(event: KeyboardEvent, id: string) {
+	const next = moveTabSelection({
+		tabs: state.tabs,
+		currentId: id,
+		key: event.key,
+		vertical: Boolean(props.vertical),
+	})
+	if (!next) return
+	event.preventDefault()
+	const buttons = (event.currentTarget as HTMLElement)
+		.closest('[role="tablist"]')
+		?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+	const target = [...(buttons ?? [])].find(
+		button => button.dataset.tqTabId === next
+	)
+	target?.focus()
+	if (next !== state.activeId) selectTab(next)
+}
+
 // Keep exactly one valid tab active. Reactive (not a one-shot onMounted) because
 // tabs register via their own onBeforeMount — which, for tabs rendered by a
 // v-for, can land after this parent mounts — and the active tab can later be
@@ -136,6 +155,7 @@ watch(
 					:data-tq-active="tab.isActive ? '' : undefined"
 				>
 					<button
+						:id="tab.tabId"
 						type="button"
 						class="tablist-link"
 						:class="{disabled: tab.isDisabled, active: tab.isActive}"
@@ -143,9 +163,12 @@ watch(
 						:aria-controls="tab.paneId"
 						:aria-selected="tab.isActive"
 						:disabled="tab.isDisabled"
+						:tabindex="tab.isActive ? 0 : -1"
 						data-tq-tab=""
+						:data-tq-tab-id="tab.id"
 						:data-tq-part="`tab-${tab.id}`"
 						@click="selectTab(tab.id, $event)"
+						@keydown="onTabKeydown($event, tab.id)"
 						>{{ tab.name }}</button
 					>
 				</li>

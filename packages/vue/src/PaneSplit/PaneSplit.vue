@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import {resizeSplitPane} from '@tweeq/core'
-import {computed, useTemplateRef} from 'vue'
+import {
+	getSplitPaneSeparatorValues,
+	resizeSplitPane,
+	resizeSplitPaneFromKeyboard,
+} from '@tweeq/core'
+import {useResizeObserver} from '@vueuse/core'
+import {computed, ref, useTemplateRef} from 'vue'
 
 import {useAppConfigStore} from '../stores/appConfig'
 import {useDrag} from '../use/useDrag'
@@ -17,11 +22,26 @@ const appConfig = useAppConfigStore()
 const $root = useTemplateRef('$root')
 const $divider = useTemplateRef('$divider')
 
+const measurementVersion = ref(0)
+
 const viewportSize = computed(() => {
+	measurementVersion.value
 	const bounds = $root.value?.getBoundingClientRect()
 	return props.direction === 'horizontal'
 		? bounds?.width ?? 0
 		: bounds?.height ?? 0
+})
+
+function measureViewportSize() {
+	measurementVersion.value++
+	const bounds = $root.value?.getBoundingClientRect()
+	return props.direction === 'horizontal'
+		? bounds?.width ?? 0
+		: bounds?.height ?? 0
+}
+
+useResizeObserver($root, () => {
+	measurementVersion.value++
 })
 
 // Which pane carries the stored size. In proportional mode it's always `first`
@@ -48,6 +68,30 @@ const secondStyle = computed(() =>
 	sizedPane.value === 'second' ? sizeStyle.value : null
 )
 
+const separator = computed(() =>
+	getSplitPaneSeparatorValues({
+		size: size.value,
+		fixed: props.fixed,
+		viewportSize: viewportSize.value,
+		minPixelSize: props.min,
+	})
+)
+
+function onDividerKeydown(event: KeyboardEvent) {
+	const next = resizeSplitPaneFromKeyboard({
+		current: size.value,
+		key: event.key,
+		direction: props.direction,
+		fixed: props.fixed,
+		viewportSize: measureViewportSize(),
+		minPixelSize: props.min,
+		largeStep: event.shiftKey,
+	})
+	if (next === undefined) return
+	event.preventDefault()
+	size.value = next
+}
+
 let sizeAtDragStart = size.value
 useDrag($divider, {
 	dragDelaySeconds: 0,
@@ -63,7 +107,7 @@ useDrag($divider, {
 			start: sizeAtDragStart,
 			movement,
 			fixed: props.fixed,
-			viewportSize: viewportSize.value,
+			viewportSize: measureViewportSize(),
 			minPixelSize: props.min,
 		})
 	},
@@ -97,7 +141,20 @@ useDrag($divider, {
 				<slot name="first" />
 			</div>
 		</div>
-		<div ref="$divider" class="divider" data-tq-part="divider" />
+		<div
+			ref="$divider"
+			class="divider"
+			role="separator"
+			tabindex="0"
+			:aria-label="`${name} divider`"
+			:aria-orientation="direction === 'horizontal' ? 'vertical' : 'horizontal'"
+			:aria-valuemin="separator.min"
+			:aria-valuemax="separator.max"
+			:aria-valuenow="separator.now"
+			:aria-valuetext="separator.text"
+			data-tq-part="divider"
+			@keydown="onDividerKeydown"
+		/>
 		<div
 			class="pane"
 			:class="{grow: sizedPane !== 'second'}"

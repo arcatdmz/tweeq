@@ -1,7 +1,7 @@
-import {resolveActiveTabId} from '@tweeq/core'
+import {moveTabSelection, resolveActiveTabId} from '@tweeq/core'
 import {
 	type HTMLAttributes,
-	type MouseEvent,
+	type KeyboardEvent,
 	type ReactNode,
 	useCallback,
 	useEffect,
@@ -56,7 +56,7 @@ export function Tabs({
 	}, [])
 
 	const select = useCallback(
-		(id: string, event?: MouseEvent) => {
+		(id: string, event?: {preventDefault(): void}) => {
 			const selected = tabs.find(tab => tab.id === id)
 			if (!selected) return
 			if (selected.isDisabled) {
@@ -72,6 +72,28 @@ export function Tabs({
 			onChanged?.(selected)
 		},
 		[activeId, onChanged, onClicked, setPersistedId, tabs]
+	)
+
+	const onTabKeyDown = useCallback(
+		(event: KeyboardEvent<HTMLButtonElement>, id: string) => {
+			const next = moveTabSelection({
+				tabs,
+				currentId: id,
+				key: event.key,
+				vertical,
+			})
+			if (!next) return
+			event.preventDefault()
+			const buttons = event.currentTarget
+				.closest('[role="tablist"]')
+				?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+			const target = [...(buttons ?? [])].find(
+				button => button.dataset.tqTabId === next
+			)
+			target?.focus()
+			if (next !== activeId) select(next)
+		},
+		[activeId, select, tabs, vertical]
 	)
 
 	useEffect(() => {
@@ -116,14 +138,18 @@ export function Tabs({
 								data-tq-active={tab.id === activeId ? '' : undefined}
 							>
 								<button
+									id={tab.tabId}
 									type="button"
 									role="tab"
 									aria-controls={tab.paneId}
 									aria-selected={tab.id === activeId}
 									disabled={tab.isDisabled}
+									tabIndex={tab.id === activeId ? 0 : -1}
 									data-tq-tab=""
+									data-tq-tab-id={tab.id}
 									data-tq-part={`tab-${tab.id}`}
 									onClick={event => select(tab.id, event)}
+									onKeyDown={event => onTabKeyDown(event, tab.id)}
 								>
 									{tab.name}
 								</button>

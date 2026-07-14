@@ -2,6 +2,7 @@ export interface PushTabOptions {
 	name: string
 	isDisabled: boolean
 	id: string
+	tabId: string
 	paneId: string
 }
 

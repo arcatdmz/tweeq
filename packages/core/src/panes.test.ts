@@ -1,6 +1,12 @@
 import {describe, expect, it} from 'vitest'
 
-import {clampSplitSize, resizeFloatingPane, resizeSplitPane} from './panes'
+import {
+	clampSplitSize,
+	getSplitPaneSeparatorValues,
+	resizeFloatingPane,
+	resizeSplitPane,
+	resizeSplitPaneFromKeyboard,
+} from './panes'
 
 describe('pane geometry', () => {
 	it('clamps proportional and fixed splits', () => {
@@ -44,5 +50,55 @@ describe('pane geometry', () => {
 				minPixelSize: 80,
 			})
 		).toBe(80)
+	})
+
+	it('resizes the divider from orientation-aware keyboard input', () => {
+		expect(
+			resizeSplitPaneFromKeyboard({
+				current: 50,
+				key: 'ArrowRight',
+				direction: 'horizontal',
+				viewportSize: 500,
+			})
+		).toBe(51)
+		expect(
+			resizeSplitPaneFromKeyboard({
+				current: 200,
+				key: 'ArrowDown',
+				direction: 'vertical',
+				fixed: 'second',
+				viewportSize: 500,
+			})
+		).toBe(190)
+		expect(
+			resizeSplitPaneFromKeyboard({
+				current: 50,
+				key: 'ArrowDown',
+				direction: 'horizontal',
+				viewportSize: 500,
+			})
+		).toBeUndefined()
+		expect(
+			resizeSplitPaneFromKeyboard({
+				current: 50,
+				key: 'End',
+				direction: 'horizontal',
+				viewportSize: 500,
+			})
+		).toBe(90)
+	})
+
+	it('reports separator position for proportional and either fixed pane', () => {
+		expect(
+			getSplitPaneSeparatorValues({size: 65, viewportSize: 500})
+		).toEqual({min: 10, max: 90, now: 65, text: '65%'})
+		expect(
+			getSplitPaneSeparatorValues({
+				size: 120,
+				fixed: 'second',
+				viewportSize: 500,
+				minPixelSize: 80,
+			})
+		).toEqual({min: 80, max: 420, now: 380, text: '380px'})
 	})
 })

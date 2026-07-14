@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {normalizeTabId} from '@tweeq/core'
+import {uniqueId} from 'lodash-es'
 import {computed, onBeforeMount, onBeforeUnmount, watch} from 'vue'
 
 import {AddTabKey, DeleteTabKey, TabsProviderKey, UpdateTabKey} from './symbols'
@@ -24,14 +25,17 @@ const deleteTab = injectStrict(DeleteTabKey)
 const id = computed(() =>
 	props.id ? props.id : normalizeTabId(props.name)
 )
-const paneId = computed(() => id.value + '-pane')
+const instanceId = uniqueId('TqTab_')
+const tabId = `${instanceId}_tab`
+const paneId = `${instanceId}_panel`
 const isActive = computed(() => id.value === tabsProvider.activeId)
 
 const descriptor = () => ({
 	name: props.name,
 	isDisabled: props.isDisabled,
 	id: id.value,
-	paneId: paneId.value,
+	tabId,
+	paneId,
 })
 
 watch([id, () => props.name, () => props.isDisabled], ([nextId], [oldId]) => {
@@ -43,7 +47,8 @@ watch([id, () => props.name, () => props.isDisabled], ([nextId], [oldId]) => {
 			name: props.name,
 			isDisabled: props.isDisabled,
 			id: nextId,
-			paneId: paneId.value,
+			tabId,
+			paneId,
 		})
 	}
 })
@@ -66,6 +71,7 @@ onBeforeUnmount(() => {
 		data-tq-component="tab"
 		:data-tq-part="`panel-${id}`"
 		:aria-hidden="!isActive"
+		:aria-labelledby="tabId"
 		role="tabpanel"
 		tabindex="-1"
 	>

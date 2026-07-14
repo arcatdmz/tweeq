@@ -53,6 +53,83 @@ export function resizeSplitPane({
 	})
 }
 
+export type SplitPaneKeyboardKey =
+	| 'ArrowDown'
+	| 'ArrowLeft'
+	| 'ArrowRight'
+	| 'ArrowUp'
+	| 'End'
+	| 'Home'
+
+export function resizeSplitPaneFromKeyboard({
+	current,
+	key,
+	direction,
+	fixed,
+	viewportSize,
+	minPixelSize = 40,
+	largeStep = false,
+}: {
+	current: number
+	key: string
+	direction: 'horizontal' | 'vertical'
+	fixed?: 'first' | 'second'
+	viewportSize: number
+	minPixelSize?: number
+	largeStep?: boolean
+}): number | undefined {
+	const nearKey = direction === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
+	const farKey = direction === 'horizontal' ? 'ArrowRight' : 'ArrowDown'
+	if (key !== nearKey && key !== farKey && key !== 'Home' && key !== 'End') {
+		return undefined
+	}
+
+	const step = fixed
+		? largeStep
+			? 50
+			: 10
+		: viewportSize * (largeStep ? 0.1 : 0.01)
+	const movement =
+		key === 'Home'
+			? Number.NEGATIVE_INFINITY
+			: key === 'End'
+				? Number.POSITIVE_INFINITY
+				: key === nearKey
+					? -step
+					: step
+
+	return resizeSplitPane({
+		start: current,
+		movement,
+		fixed,
+		viewportSize,
+		minPixelSize,
+	})
+}
+
+export function getSplitPaneSeparatorValues({
+	size,
+	fixed,
+	viewportSize,
+	minPixelSize = 40,
+}: {
+	size: number
+	fixed?: 'first' | 'second'
+	viewportSize: number
+	minPixelSize?: number
+}): {min: number; max: number; now: number; text: string} {
+	if (!fixed) {
+		const now = clampSplitSize({value: size, fixed: false, viewportSize})
+		return {min: 10, max: 90, now, text: `${now}%`}
+	}
+
+	const min = minPixelSize
+	const max = Math.max(min, viewportSize - minPixelSize)
+	const position = fixed === 'first' ? size : viewportSize - size
+	const now = Math.max(min, Math.min(max, position))
+	return {min, max, now, text: `${now}px`}
+}
+
 export function resizeFloatingPane({
 	position,
 	axis,
