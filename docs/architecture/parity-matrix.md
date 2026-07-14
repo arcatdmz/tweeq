@@ -191,6 +191,18 @@ The explicit `apps/playground-react` target now owns the React gallery that the
 docs route embeds; coverage gates and browser smokes compare both renderer
 playgrounds with their current public component-module barrels.
 
+## Visual fidelity completion note (2026-07-14)
+
+The two exhaustive galleries now use equivalent props, values, labels, host
+flow, and live interaction fixtures. Playwright isolates 43 renderer-owned
+component roots and compares React with Vue at light desktop, dark desktop,
+and 320px mobile widths; it separately compares 13 activated states and the
+real host-owned Markdown typography. Meaningful geometry or color drift fails,
+while only microscopic raster antialias rounding is accepted. The curated
+React Components page is additionally checked against the 240×24px geometry
+measured from the published Vue reference, with its broken InputString and
+blank Dropdown output recorded as reference defects rather than copied.
+
 ## Stage V1 completion note (2026-07-13)
 
 The Vue renderer builds again as `@tweeq/vue` (ES + CJS + browser UMD + `style.css` +

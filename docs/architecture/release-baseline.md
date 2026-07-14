@@ -1,7 +1,7 @@
 # Phase 6 release baseline
 
-Recorded: 2026-07-14 (Asia/Tokyo)
-Runtime: Node 24.16.0, linux/x64
+Recorded: 2026-07-15 (Asia/Tokyo)
+Runtime: Node 24.15.0, linux/x64
 Command: `pnpm build && pnpm baseline:record`
 
 This is the completed shared-core migration baseline and can seed a future
@@ -14,13 +14,13 @@ excluded from runtime size totals.
 
 | Artifact | Files | Raw | Gzip |
 | --- | ---: | ---: | ---: |
-| @tweeq/core JavaScript | 35 | 74.88 KiB | 25.90 KiB |
-| @tweeq/dom JavaScript | 17 | 52.82 KiB | 16.51 KiB |
-| @tweeq/styles CSS | 1 | 363.03 KiB | 98.02 KiB |
-| @tweeq/react JavaScript | 179 | 19856.58 KiB | 4937.95 KiB |
-| @tweeq/react CSS | 1 | 363.03 KiB | 98.02 KiB |
-| @tweeq/vue JavaScript | 182 | 24983.68 KiB | 6302.00 KiB |
-| @tweeq/vue CSS | 1 | 363.03 KiB | 98.02 KiB |
+| @tweeq/core JavaScript | 35 | 77.64 KiB | 26.76 KiB |
+| @tweeq/dom JavaScript | 17 | 54.69 KiB | 17.07 KiB |
+| @tweeq/styles CSS | 1 | 365.79 KiB | 98.34 KiB |
+| @tweeq/react JavaScript | 179 | 19872.39 KiB | 4942.87 KiB |
+| @tweeq/react CSS | 1 | 365.79 KiB | 98.34 KiB |
+| @tweeq/vue JavaScript | 182 | 25008.09 KiB | 6309.65 KiB |
+| @tweeq/vue CSS | 1 | 365.79 KiB | 98.34 KiB |
 
 The renderer totals include Monaco and its language workers. They establish
 the MF-011 starting point; code splitting should be evaluated against these
@@ -36,17 +36,17 @@ renderer source no longer emits independent owned CSS.
 The benchmark runs `unsignedMod`, ruler coordinate conversion, and enabled-tab
 resolution once per iteration (100,000 iterations, seven samples).
 
-- Median: 1.86 ms
-- Aggregate operations: 161,052,381 operations/second
+- Median: 1.56 ms
+- Aggregate operations: 192,187,575 operations/second
 
 This is a comparison baseline, not a CI timing threshold. Functional runtime
 parity remains enforced by the renderer-neutral contracts and browser suite.
 
 ## Interaction evidence
 
-- React renderer contracts: 85 tests
-- Vue renderer contracts and compatibility warning: 84 tests
-- Cross-page Playwright interaction/visual suite: 26 tests
+- React renderer contracts: 90 tests
+- Vue renderer contracts and compatibility warning: 89 tests
+- Cross-page Playwright interaction/visual suite: 33 tests
 - Packed downstream consumers: React Vite and Vue Vite, each typechecked and built
 
 Regenerate this document on the release runner immediately before each
