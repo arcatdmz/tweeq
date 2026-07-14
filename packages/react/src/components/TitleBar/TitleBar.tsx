@@ -28,7 +28,13 @@ export function TitleBar({
 	const appIcon = useRef<HTMLDivElement>(null)
 	const menu = useStore(actionsStore, state => state.menu)
 	const [menuShown, setMenuShown] = useState(false)
+	const [menuAutoFocus, setMenuAutoFocus] = useState(false)
 	const [focusWithin, setFocusWithin] = useState(false)
+	const closeMenu = () => {
+		setMenuShown(false)
+		setMenuAutoFocus(false)
+		appIcon.current?.focus()
+	}
 
 	return (
 		<div
@@ -52,21 +58,31 @@ export function TitleBar({
 					aria-label={`${name} menu`}
 					aria-expanded={menuShown}
 					data-tq-part="menu-trigger"
-					onClick={() => setMenuShown(current => !current)}
+					onClick={() => {
+						setMenuAutoFocus(false)
+						setMenuShown(current => !current)
+					}}
 					onKeyDown={event => {
-						if (event.key === 'Enter' || event.key === ' ')
+						if (event.key === 'Enter' || event.key === ' ') {
+							event.preventDefault()
+							setMenuAutoFocus(true)
 							setMenuShown(current => !current)
+						}
 					}}
 				/>
 				<Popover
 					reference={appIcon.current}
 					placement="bottom-start"
 					open={menuShown}
-					onChangeOpen={setMenuShown}
+					onChangeOpen={open => {
+						if (open) setMenuShown(true)
+						else closeMenu()
+					}}
 				>
 					<Menu
 						items={decorateActionMenuItems(menu)}
-						onClose={() => setMenuShown(false)}
+						autoFocus={menuAutoFocus}
+						onClose={closeMenu}
 					/>
 				</Popover>
 				<span data-tq-part="app-name">{name}</span>

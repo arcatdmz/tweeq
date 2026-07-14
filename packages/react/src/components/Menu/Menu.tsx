@@ -1,11 +1,15 @@
 import {
 	isPointInTriangle,
 	type MenuItem,
+	moveMenuFocus,
 	type Point,
 } from '@tweeq/core'
 import {
 	forwardRef,
+	type KeyboardEvent,
 	type PointerEvent,
+	useCallback,
+	useEffect,
 	useImperativeHandle,
 	useRef,
 	useState,
@@ -20,6 +24,8 @@ import {Popover} from '../Popover'
 export interface MenuProps {
 	items: MenuItem[]
 	onClose?: () => void
+	autoFocus?: boolean
+	onReturnToParent?: () => void
 }
 
 export interface MenuHandle {
@@ -27,13 +33,17 @@ export interface MenuHandle {
 }
 
 export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
-	{items, onClose},
+	{items, onClose, autoFocus = false, onReturnToParent},
 	forwardedRef
 ) {
 	const {themeStore} = useTweeqRuntime()
 	const popupPadding = useStore(themeStore, state => state.popupPadding)
 	const [hoverIndex, setHoverIndex] = useState(-1)
 	const [candidateIndex, setCandidateIndex] = useState(-1)
+	const [focusIndex, setFocusIndex] = useState(
+		() => moveMenuFocus(items, -1, 'Home') ?? -1
+	)
+	const [keyboardSubmenuIndex, setKeyboardSubmenuIndex] = useState(-1)
 	const root = useRef<HTMLUListElement>(null)
 	const itemElements = useRef<(HTMLLIElement | null)[]>([])
 	const childMenu = useRef<MenuHandle>(null)
@@ -41,6 +51,21 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 	const previousPointer = useRef<Point>({x: 0, y: 0})
 
 	useImperativeHandle(forwardedRef, () => ({getRoot: () => root.current}), [])
+
+	const focusItem = useCallback((index: number) => {
+		setFocusIndex(index)
+		itemElements.current[index]?.focus()
+	}, [])
+
+	useEffect(() => {
+		const item = items[focusIndex]
+		if (item && !('separator' in item) && !item.disabled) return
+		setFocusIndex(moveMenuFocus(items, -1, 'Home') ?? -1)
+	}, [focusIndex, items])
+
+	useEffect(() => {
+		if (autoFocus && focusIndex !== -1) focusItem(focusIndex)
+	}, [autoFocus, focusIndex, focusItem])
 
 	const hoveredItem = items[hoverIndex]
 	const childItems =
@@ -67,10 +92,67 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 	}
 
 	const onItemEnter = (index: number, event: PointerEvent) => {
+		const item = items[index]
+		if (!item || (!('separator' in item) && item.disabled)) return
+		setFocusIndex(index)
+		setKeyboardSubmenuIndex(-1)
 		setCandidateIndex(index)
 		pointer.current = {x: event.clientX, y: event.clientY}
 		if (!submenuIsOpen() || !headingToSubmenu(pointer.current)) {
 			setHoverIndex(index)
+		}
+	}
+
+	const openSubmenu = (index: number) => {
+		const item = items[index]
+		if (!item || 'separator' in item || !('children' in item) || item.disabled) {
+			return false
+		}
+		setHoverIndex(index)
+		setCandidateIndex(index)
+		setKeyboardSubmenuIndex(index)
+		return true
+	}
+
+	const performItem = (item: MenuItem) => {
+		if ('separator' in item || item.disabled) return
+		if ('perform' in item && item.perform) {
+			item.perform()
+			onClose?.()
+		}
+	}
+
+	const onItemKeyDown = (event: KeyboardEvent, index: number) => {
+		const next = moveMenuFocus(items, index, event.key)
+		if (next !== undefined) {
+			event.preventDefault()
+			event.stopPropagation()
+			focusItem(next)
+			return
+		}
+		if (event.key === 'ArrowRight') {
+			if (openSubmenu(index)) {
+				event.preventDefault()
+				event.stopPropagation()
+			}
+			return
+		}
+		if (event.key === 'ArrowLeft' && onReturnToParent) {
+			event.preventDefault()
+			event.stopPropagation()
+			onReturnToParent()
+			return
+		}
+		if (event.key === 'Escape') {
+			event.preventDefault()
+			event.stopPropagation()
+			onClose?.()
+			return
+		}
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault()
+			event.stopPropagation()
+			if (!openSubmenu(index)) performItem(items[index])
 		}
 	}
 
@@ -91,6 +173,8 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 		<>
 			<ul
 				ref={root}
+				role="menu"
+				aria-orientation="vertical"
 				data-tq-component="menu"
 				onPointerMove={onPointerMove}
 				onPointerLeave={() => setCandidateIndex(-1)}
@@ -104,6 +188,7 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 								itemElements.current[index] = element
 							}}
 							data-tq-part="separator"
+							role="separator"
 						/>
 					) : (
 						<li
@@ -123,12 +208,17 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 									? ''
 									: undefined
 							}
-							onClick={() => {
-								if ('perform' in item && item.perform) {
-									item.perform()
-									onClose?.()
-								}
-							}}
+							role="menuitem"
+							tabIndex={index === focusIndex && !item.disabled ? 0 : -1}
+							aria-disabled={item.disabled || undefined}
+							aria-haspopup={'children' in item ? 'menu' : undefined}
+							aria-expanded={
+								'children' in item ? index === hoverIndex : undefined
+							}
+							data-tq-disabled={item.disabled ? '' : undefined}
+							onClick={() => performItem(item)}
+							onFocus={() => setFocusIndex(index)}
+							onKeyDown={event => onItemKeyDown(event, index)}
 							onPointerEnter={event => onItemEnter(index, event)}
 							data-tq-part="item"
 						>
@@ -163,7 +253,19 @@ export const Menu = forwardRef<MenuHandle, MenuProps>(function MenuComponent(
 					offset={{crossAxis: -popupPadding}}
 					lightDismiss={false}
 				>
-					<Menu ref={childMenu} items={childItems} onClose={onClose} />
+					<Menu
+						ref={childMenu}
+						items={childItems}
+						onClose={onClose}
+						autoFocus={keyboardSubmenuIndex === hoverIndex}
+						onReturnToParent={() => {
+							const parentIndex = hoverIndex
+							setHoverIndex(-1)
+							setCandidateIndex(-1)
+							setKeyboardSubmenuIndex(-1)
+							focusItem(parentIndex)
+						}}
+					/>
 				</Popover>
 			)}
 		</>

@@ -3,6 +3,7 @@
 import type {MenuItem} from '@tweeq/core'
 import {
 	type HarnessEvent,
+	type KeyAction,
 	type MenuContractProps,
 	type RendererHarness,
 	runMenuContract,
@@ -26,20 +27,24 @@ runMenuContract(async (component, initialProps) => {
 	document.body.append(container)
 	const props = reactive({...initialProps})
 	const captured: HarnessEvent[] = []
-	const app = createApp(
-		defineComponent(() => () => {
-			const items: MenuItem[] = props.items.map(item =>
-				item.kind === 'separator'
-					? {separator: true}
+	const toItems = (entries = props.items): MenuItem[] =>
+		entries.map(item =>
+			item.kind === 'separator'
+				? {separator: true}
+				: item.kind === 'group'
+					? {label: item.label, children: toItems(item.children)}
 					: {
 							label: item.label,
 							shortLabel: item.shortLabel,
+							disabled: item.disabled,
 							perform: () =>
 								captured.push({name: 'perform', payload: [item.label]}),
 						}
-			)
+		)
+	const app = createApp(
+		defineComponent(() => () => {
 			return h(Menu, {
-				items,
+				items: toItems(),
 				onClose: () => captured.push({name: 'close', payload: []}),
 			})
 		})
@@ -52,9 +57,23 @@ runMenuContract(async (component, initialProps) => {
 			Object.assign(props, next)
 			await nextTick()
 		},
-		part: name => container.querySelector(`[data-tq-part="${name}"]`),
+		part: name =>
+			name === 'focused'
+				? document.activeElement
+				: container.querySelector(`[data-tq-part="${name}"]`),
 		async pointer() {},
-		async key() {},
+		async key(action: KeyAction, part = 'focused') {
+			const target = harness.part(part)
+			if (!target) throw new Error(`Missing part: ${part}`)
+			const names =
+				action.type === 'press' ? ['keydown', 'keyup'] : [`key${action.type}`]
+			for (const name of names) {
+				target.dispatchEvent(
+					new KeyboardEvent(name, {...action, bubbles: true})
+				)
+			}
+			await nextTick()
+		},
 		async activate(part) {
 			const target = harness.part(part ?? 'item') as HTMLElement | null
 			if (!target) throw new Error(`Missing part: ${part ?? 'item'}`)

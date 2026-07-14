@@ -2,9 +2,10 @@
 import {
 	isPointInTriangle,
 	type MenuItem,
+	moveMenuFocus,
 	type Point,
 } from '@tweeq/core'
-import {computed, ref, useTemplateRef} from 'vue'
+import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from 'vue'
 
 import {BindIcon} from '../BindIcon'
 import {Icon} from '../Icon'
@@ -13,16 +14,17 @@ import {useThemeStore} from '../stores/theme'
 
 export interface Props {
 	items: MenuItem[]
+	autoFocus?: boolean
 }
 
 const props = defineProps<Props>()
 
 // Bubbles up when a command is chosen, so the whole menu chain can close (this
 // replaces floating-vue's v-close-popper.all now that menus use Tweeq Popover).
-const emit = defineEmits<{close: []}>()
+const emit = defineEmits<{close: []; returnToParent: []}>()
 
 function onClick(menu: MenuItem) {
-	if ('perform' in menu && menu.perform) {
+	if (!('separator' in menu) && !menu.disabled && 'perform' in menu && menu.perform) {
 		menu.perform()
 		emit('close')
 	}
@@ -31,6 +33,8 @@ function onClick(menu: MenuItem) {
 const theme = useThemeStore()
 
 const hoverIndex = ref(-1)
+const focusIndex = ref(moveMenuFocus(props.items, -1, 'Home') ?? -1)
+const keyboardSubmenuIndex = ref(-1)
 
 const $menuRoot = useTemplateRef<HTMLElement>('$menuRoot')
 const $lists = useTemplateRef<HTMLElement[]>('$lists')
@@ -89,10 +93,88 @@ function commitHover(index: number) {
 	hoverIndex.value = index
 }
 
+function focusItem(index: number) {
+	focusIndex.value = index
+	$lists.value?.[index]?.focus()
+}
+
+watch(
+	() => props.items,
+	items => {
+		const item = items[focusIndex.value]
+		if (item && !('separator' in item) && !item.disabled) return
+		focusIndex.value = moveMenuFocus(items, -1, 'Home') ?? -1
+	},
+	{deep: true}
+)
+
+onMounted(() => {
+	if (props.autoFocus && focusIndex.value !== -1) {
+		void nextTick(() => focusItem(focusIndex.value))
+	}
+})
+
 function onItemEnter(index: number, e: PointerEvent) {
+	const item = props.items[index]
+	if (!item || (!('separator' in item) && item.disabled)) return
+	focusIndex.value = index
+	keyboardSubmenuIndex.value = -1
 	candidateIndex.value = index
 	pointer = {x: e.clientX, y: e.clientY}
 	if (!submenuIsOpen() || !headingToSubmenu(pointer)) commitHover(index)
+}
+
+function openSubmenu(index: number) {
+	const item = props.items[index]
+	if (!item || 'separator' in item || !('children' in item) || item.disabled) {
+		return false
+	}
+	hoverIndex.value = index
+	candidateIndex.value = index
+	keyboardSubmenuIndex.value = index
+	return true
+}
+
+function onItemKeydown(event: KeyboardEvent, index: number) {
+	const next = moveMenuFocus(props.items, index, event.key)
+	if (next !== undefined) {
+		event.preventDefault()
+		event.stopPropagation()
+		focusItem(next)
+		return
+	}
+	if (event.key === 'ArrowRight') {
+		if (openSubmenu(index)) {
+			event.preventDefault()
+			event.stopPropagation()
+		}
+		return
+	}
+	if (event.key === 'ArrowLeft') {
+		event.preventDefault()
+		event.stopPropagation()
+		emit('returnToParent')
+		return
+	}
+	if (event.key === 'Escape') {
+		event.preventDefault()
+		event.stopPropagation()
+		emit('close')
+		return
+	}
+	if (event.key === 'Enter' || event.key === ' ') {
+		event.preventDefault()
+		event.stopPropagation()
+		if (!openSubmenu(index)) onClick(props.items[index])
+	}
+}
+
+function returnFromSubmenu() {
+	const parentIndex = hoverIndex.value
+	hoverIndex.value = -1
+	candidateIndex.value = -1
+	keyboardSubmenuIndex.value = -1
+	focusItem(parentIndex)
 }
 
 function onPointerMove(e: PointerEvent) {
@@ -122,6 +204,8 @@ function onPointerLeave() {
 	<ul
 		ref="$menuRoot"
 		class="TqMenu"
+		role="menu"
+		aria-orientation="vertical"
 		data-tq-component="menu"
 		@pointermove="onPointerMove"
 		@pointerleave="onPointerLeave"
@@ -133,6 +217,7 @@ function onPointerLeave() {
 				ref="$lists"
 				class="separator"
 				data-tq-part="separator"
+				role="separator"
 			/>
 			<li
 				v-else
@@ -155,7 +240,15 @@ function onPointerLeave() {
 						? ''
 						: undefined
 				"
+				role="menuitem"
+				:tabindex="index === focusIndex && !menu.disabled ? 0 : -1"
+				:aria-disabled="menu.disabled || undefined"
+				:aria-haspopup="'children' in menu ? 'menu' : undefined"
+				:aria-expanded="'children' in menu ? index === hoverIndex : undefined"
+				:data-tq-disabled="menu.disabled ? '' : undefined"
 				@click="onClick(menu)"
+				@focus="focusIndex = index"
+				@keydown="onItemKeydown($event, index)"
 				@pointerenter="onItemEnter(index, $event)"
 				data-tq-part="item"
 			>
@@ -194,6 +287,12 @@ function onPointerLeave() {
 		:offset="{crossAxis: -theme.popupPadding}"
 		:lightDismiss="false"
 	>
-		<Menu ref="$childMenu" :items="childItems" @close="emit('close')" />
+		<Menu
+			ref="$childMenu"
+			:items="childItems"
+			:auto-focus="keyboardSubmenuIndex === hoverIndex"
+			@close="emit('close')"
+			@return-to-parent="returnFromSubmenu"
+		/>
 	</Popover>
 </template>

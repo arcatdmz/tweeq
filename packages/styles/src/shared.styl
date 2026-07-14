@@ -1190,6 +1190,14 @@ li[data-tq-component='parameter-heading'][data-tq-part='root']
 		align-items center
 		border-radius var(--tq-radius-input)
 
+		&:focus-visible
+			background var(--tq-color-accent)
+			color var(--tq-color-on-accent)
+
+		&[data-tq-disabled]
+			opacity .4
+			cursor not-allowed
+
 		// State is deliberate rather than :hover so the safe triangle can keep an
 		// open submenu highlighted while the pointer crosses sibling items.
 		&[data-tq-submenu-open]

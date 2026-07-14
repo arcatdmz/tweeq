@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 
-import {isPointInTriangle} from './menu'
+import {isPointInTriangle, type MenuItem, moveMenuFocus} from './menu'
 
 describe('isPointInTriangle', () => {
 	it('accepts points inside or on the safe corridor', () => {
@@ -31,5 +31,22 @@ describe('isPointInTriangle', () => {
 				{x: 10, y: 10}
 			)
 		).toBe(false)
+	})
+})
+
+describe('menu focus', () => {
+	it('moves through enabled commands and groups with wrapping', () => {
+		const items: MenuItem[] = [
+			{label: 'First', perform() {}},
+			{separator: true},
+			{label: 'Disabled', disabled: true, perform() {}},
+			{label: 'Group', children: []},
+		]
+		expect(moveMenuFocus(items, 0, 'ArrowDown')).toBe(3)
+		expect(moveMenuFocus(items, 3, 'ArrowDown')).toBe(0)
+		expect(moveMenuFocus(items, 0, 'ArrowUp')).toBe(3)
+		expect(moveMenuFocus(items, 3, 'Home')).toBe(0)
+		expect(moveMenuFocus(items, 0, 'End')).toBe(3)
+		expect(moveMenuFocus(items, 0, 'ArrowRight')).toBeUndefined()
 	})
 })

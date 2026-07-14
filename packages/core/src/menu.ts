@@ -9,6 +9,7 @@ interface BaseMenu {
 	icon?: string
 	label: string
 	shortLabel?: string
+	disabled?: boolean
 	perform?: () => void
 	children?: MenuItem[]
 }
@@ -28,6 +29,25 @@ export interface MenuSeparator {
 }
 
 export type MenuItem = MenuCommand | MenuGroup | MenuSeparator
+
+export function moveMenuFocus(
+	items: readonly MenuItem[],
+	currentIndex: number,
+	key: string
+): number | undefined {
+	const enabled = items
+		.map((item, index) => ({item, index}))
+		.filter(({item}) => !('separator' in item) && !item.disabled)
+		.map(({index}) => index)
+	if (!enabled.length) return undefined
+	if (key === 'Home') return enabled[0]
+	if (key === 'End') return enabled.at(-1)
+	if (key !== 'ArrowDown' && key !== 'ArrowUp') return undefined
+	const current = enabled.indexOf(currentIndex)
+	const start = current < 0 ? 0 : current
+	const delta = key === 'ArrowDown' ? 1 : -1
+	return enabled[(start + delta + enabled.length) % enabled.length]
+}
 
 export interface Point {
 	x: number

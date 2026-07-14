@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {decorateActionMenuItems} from '@tweeq/dom'
-import {computed, useTemplateRef} from 'vue'
-import {ref} from 'vue'
+import {computed, nextTick, ref, useTemplateRef} from 'vue'
 
 import {ColorIcon} from '../ColorIcon'
 import {Menu} from '../Menu'
@@ -23,6 +22,7 @@ const appIcon = useTemplateRef<any>('appIcon')
 const appMenu = useTemplateRef<any>('appMenu')
 
 const isMenuShown = ref(false)
+const menuAutoFocus = ref(false)
 
 // The whole bar is a drag region (-webkit-app-region: drag), and the OS
 // swallows pointer events over drag regions — so clicking the bar's background
@@ -42,13 +42,21 @@ function onFocusOut(event: FocusEvent) {
 }
 
 function toggleMenu() {
+	menuAutoFocus.value = false
 	isMenuShown.value = !isMenuShown.value
 }
 
 function onIconKeydown(event: KeyboardEvent) {
 	if (event.key !== 'Enter' && event.key !== ' ') return
 	event.preventDefault()
-	toggleMenu()
+	menuAutoFocus.value = true
+	isMenuShown.value = !isMenuShown.value
+}
+
+function closeMenu() {
+	isMenuShown.value = false
+	menuAutoFocus.value = false
+	void nextTick(() => appIcon.value?.$el?.focus?.() ?? appIcon.value?.focus?.())
 }
 </script>
 
@@ -85,7 +93,8 @@ function onIconKeydown(event: KeyboardEvent) {
 					v-if="isMenuShown"
 					ref="appMenu"
 					:items="menus"
-					@close="isMenuShown = false"
+					:auto-focus="menuAutoFocus"
+					@close="closeMenu"
 				/>
 			</Popover>
 			<span class="app-name" data-tq-part="app-name">{{ name }}</span>
