@@ -26,7 +26,10 @@ test('renderer switch preserves the documentation slug in both directions', asyn
 	)
 
 	await page.goto(`${vueDocs}/all-components.html`)
-	await expect(page.getByTestId('vue-component-gallery')).toBeVisible()
+	const gallery = page.getByTestId('vue-component-gallery')
+	await expect(gallery).toBeVisible()
+	await expect(gallery).not.toHaveClass(/standalone-gallery-page/)
+	expect((await gallery.boundingBox())?.width).toBeGreaterThan(800)
 	await expect(page.getByRole('link', {name: 'React'}).first()).toHaveAttribute(
 		'href',
 		'/all-components.html',

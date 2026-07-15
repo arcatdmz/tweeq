@@ -25,6 +25,13 @@
 	width: min-content;
 }
 
+// The exhaustive gallery needs the same wider content column as its React
+// counterpart. The gallery component itself remains inside VuePress's content
+// wrapper so the normal page gutters and responsive behavior still apply.
+.vp-page:has(.renderer-gallery-page) {
+	--content-width: 64rem;
+}
+
 // For user testing
 .user-study .vp-navbar,
 .presentation .vp-navbar {

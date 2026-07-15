@@ -207,7 +207,8 @@ const componentsHref = props.embeddedDocs
 
 <template>
 	<main
-		class="renderer-gallery-page standalone-gallery-page"
+		class="renderer-gallery-page"
+		:class="{'standalone-gallery-page': !embeddedDocs}"
 		data-testid="vue-component-gallery"
 	>
 		<header class="gallery-header">
