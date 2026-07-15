@@ -1,5 +1,5 @@
 import {Icon, InputComplex, type Scheme, useKeys} from '@tweeq/react'
-import {type ReactNode, useEffect, useState} from 'react'
+import {type ReactNode, useState} from 'react'
 
 import {DemoContainer} from './DemoContainer'
 
@@ -108,13 +108,4 @@ export function DemoComponent<V, T extends Record<string, unknown>>({
 			)}
 		</DemoContainer>
 	)
-}
-
-/** Scroll restoration guard: remount-safe hash-anchor jump on first render. */
-export function useAnchorScroll() {
-	useEffect(() => {
-		const anchor = window.location.hash.split('#')[2]
-		if (!anchor) return
-		document.getElementById(anchor)?.scrollIntoView()
-	}, [])
 }

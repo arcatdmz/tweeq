@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('number and vector controls update controlled values', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const numberInput = page.getByTestId('InputNumber').locator('input')
 	await numberInput.fill('42')

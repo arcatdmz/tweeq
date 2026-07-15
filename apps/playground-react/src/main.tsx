@@ -17,7 +17,7 @@ createRoot(document.getElementById('app')!).render(
 			<p>
 				This exhaustive gallery contains every component in this renderer. For
 				the documented, selected set with usage notes, see the{' '}
-				<a href={`${docsBase}#/components`}>Components page</a>.
+				<a href={`${docsBase}components.html`}>Components page</a>.
 			</p>
 			<nav className="renderer-switcher" aria-label="Renderer comparison">
 				<a href="./" aria-current="page">React gallery</a>

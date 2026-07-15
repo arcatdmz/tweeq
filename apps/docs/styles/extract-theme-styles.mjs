@@ -1,12 +1,17 @@
-// Extracts <style lang="scss"> blocks from @vuepress/theme-default's Vue SFC
-// sources (the chrome styles are authored there, not in styles/*.scss) into
-// demo/styles/theme-sfc/ partials. Source-derived — no scraped assets.
-// Re-run after upgrading the theme:  node demo/styles/extract-theme-styles.mjs
 import fs from 'node:fs'
 import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
-const pkgRoot = 'node_modules/@vuepress/theme-default/lib/client'
-const outDir = 'demo/styles/theme-sfc'
+// Extract the VuePress theme's SFC-authored chrome styles for the React docs.
+// Run `pnpm --filter @tweeq/docs extract:theme-styles` after upgrading the
+// theme. Paths are resolved from this script so the command works from any
+// directory.
+const stylesDir = path.dirname(fileURLToPath(import.meta.url))
+const pkgRoot = path.resolve(
+	stylesDir,
+	'../node_modules/@vuepress/theme-default/lib/client'
+)
+const outDir = path.join(stylesDir, 'theme-sfc')
 fs.rmSync(outDir, {recursive: true, force: true})
 fs.mkdirSync(outDir, {recursive: true})
 

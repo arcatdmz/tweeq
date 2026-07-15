@@ -1,6 +1,6 @@
 // The docs site's styles compiled from source, mirroring the exact import
 // order of @vuepress/theme-default's client config.js (helper base CSS,
-// then theme + user styles — see demo/styles/index.scss). Our chrome
+// then theme + user styles — see styles/index.scss). Our chrome
 // reproduces the theme's DOM (class names from its SFC sources).
 import '@vuepress/helper/colors.css'
 import '@vuepress/helper/normalize.css'

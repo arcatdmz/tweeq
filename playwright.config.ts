@@ -33,5 +33,12 @@ export default defineConfig({
 			reuseExistingServer: true,
 			stdout: 'ignore',
 		},
+		{
+			command:
+				'pnpm exec vuepress dev docs --port 5177 --host 127.0.0.1',
+			url: 'http://localhost:5177/vue/',
+			reuseExistingServer: true,
+			stdout: 'ignore',
+		},
 	],
 })

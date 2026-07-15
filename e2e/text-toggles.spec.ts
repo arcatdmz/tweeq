@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 test('text and toggle inputs update controlled values', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const stringInput = page.getByTestId('InputString').locator('input')
 	await stringInput.fill('updated')

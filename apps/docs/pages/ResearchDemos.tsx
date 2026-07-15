@@ -11,6 +11,26 @@ export const booleanScheme = {
 export const positionScheme = {offset: {type: 'vec2', ui: 'position'}} as Scheme<{offset: [number, number]}>
 export const timeScheme = {duration: {type: 'number', ui: 'time', frameRate: 24, min: 0}} as Scheme<{duration: number}>
 
+export function UserTestDropShadow() {
+	return <ExampleContainer initialValue={{offset: [0, 0] as [number, number], blur: 10, spread: 0, color: '#00000030'}} scheme={{offset: {type: 'vec2', ui: 'position', min: -100, max: 100}, blur: {type: 'number', min: 0, max: 100}, spread: {type: 'number', min: -100, max: 100}, color: {type: 'string', ui: 'color', alpha: true}} as Scheme<{offset: [number, number]; blur: number; spread: number; color: string}>} />
+}
+
+export function UserTestSpring() {
+	return <ExampleContainer initialValue={{stiffness: 500, damping: 0.5}} scheme={{stiffness: {type: 'number', min: 0, max: 1000, clampMin: true, clampMax: true}, damping: {type: 'number', min: 0, max: 1, clampMin: true, clampMax: true}} as Scheme<{stiffness: number; damping: number}>} />
+}
+
+export function UserTestTime() {
+	return <ExampleContainer initialValue={{time: 0}} scheme={{time: {type: 'number', ui: 'time', min: 0, frameRate: 24}} as Scheme<{time: number}>} />
+}
+
+export function UserTestThreePointLighting() {
+	return <ExampleContainer initialValue={{keyIntensity: 100, keyColor: '#ffffff', fillIntensity: 100, fillColor: '#ffffff', backIntensity: 100, backColor: '#ffffff'}} scheme={{keyIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, keyColor: {type: 'string', ui: 'color'}, fillIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, fillColor: {type: 'string', ui: 'color'}, backIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, backColor: {type: 'string', ui: 'color'}} as Scheme<{keyIntensity: number; keyColor: string; fillIntensity: number; fillColor: string; backIntensity: number; backColor: string}>} />
+}
+
+export function PresentationThreePointLighting() {
+	return <ExampleContainer initialValue={{keyEnabled: true, keyIntensity: 63, keyColor: '#a28fff', fillEnabled: true, fillIntensity: 28, fillColor: '#ed8d40', backEnabled: true, backIntensity: 110, backColor: '#5240fa'}} scheme={{keyEnabled: {type: 'boolean'}, keyIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, keyColor: {type: 'string', ui: 'color'}, fillEnabled: {type: 'boolean'}, fillIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, fillColor: {type: 'string', ui: 'color'}, backEnabled: {type: 'boolean'}, backIntensity: {type: 'number', min: 0, max: 200, suffix: '%'}, backColor: {type: 'string', ui: 'color'}} as Scheme<{keyEnabled: boolean; keyIntensity: number; keyColor: string; fillEnabled: boolean; fillIntensity: number; fillColor: string; backEnabled: boolean; backIntensity: number; backColor: string}>} />
+}
+
 export function UserStudyDemos({headings = true}: {headings?: boolean}) {
 	return <div className="research-tasks">
 		{headings && <h3>Task 1: Drop Shadow</h3>}

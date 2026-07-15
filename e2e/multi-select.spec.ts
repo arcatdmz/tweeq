@@ -55,7 +55,7 @@ async function exerciseKeyboardActions({
 }
 
 test('React and Vue multi-select actions share keyboard behavior', async ({page}) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 	await exerciseKeyboardActions({
 		page,
 		section: page.getByTestId('MultiSelectPopup'),

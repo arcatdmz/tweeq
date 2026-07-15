@@ -192,11 +192,17 @@ function openTabbedModal() {
 		})
 }
 
+const props = withDefaults(defineProps<{embeddedDocs?: boolean}>(), {
+	embeddedDocs: false,
+})
+
 const docsBase = import.meta.env.DEV
 	? 'http://127.0.0.1:5174/'
 	: import.meta.env.BASE_URL.replace(/vue\/$/, '')
-const reactGalleryHref = `${docsBase}#/all-components`
-const componentsHref = `${docsBase}#/components`
+const reactGalleryHref = `${docsBase}all-components.html`
+const componentsHref = props.embeddedDocs
+	? `${import.meta.env.BASE_URL}components.html`
+	: `${docsBase}components.html`
 </script>
 
 <template>

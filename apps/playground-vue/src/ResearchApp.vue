@@ -29,7 +29,7 @@ const lightingScheme = {keyIntensity: {type: 'number', min: 0, max: 200, suffix:
 <template>
 	<main class="research">
 		<nav aria-label="Renderer example">
-			<a href="../#/uist2025">React</a>
+			<a href="../uist2025.html">React</a>
 			<strong aria-current="page">Vue</strong>
 		</nav>
 		<h1>UIST 2025 research demos — Vue</h1>

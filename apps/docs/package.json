@@ -7,6 +7,7 @@
 	"scripts": {
 		"dev": "vite --port 5174",
 		"build": "vite build",
+		"extract:theme-styles": "node styles/extract-theme-styles.mjs",
 		"preview": "vite preview"
 	},
 	"dependencies": {
@@ -15,15 +16,18 @@
 		"react-dom": "catalog:"
 	},
 	"devDependencies": {
+		"@mdx-js/rollup": "^3.1.1",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
 		"@vuepress/helper": "2.0.0-rc.80",
 		"@vuepress/theme-default": "2.0.0-rc.80",
+		"rehype-slug": "^6.0.0",
 		"sass-embedded": "^1.100.0",
 		"stylus": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
-		"vite-plugin-glsl": "catalog:"
+		"vite-plugin-glsl": "catalog:",
+		"yaml": "^2.9.0"
 	}
 }

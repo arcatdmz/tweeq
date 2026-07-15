@@ -1,34 +1,14 @@
 import {useTweeq} from '@tweeq/react'
 import {
-	Fragment,
 	type ReactNode,
 	useEffect,
 	useState,
 } from 'react'
 
-import {ComponentGallery} from '../playground-react/src/ComponentGallery'
 import {assetPath} from './assetPath'
-import {ColorsPage} from './pages/ColorsPage'
-import {ComponentsPage} from './pages/ComponentsPage'
-import {ExamplesPage} from './pages/ExamplesPage'
-import {FeaturesPage} from './pages/FeaturesPage'
 import {HomePage} from './pages/HomePage'
-import {PresentationPage} from './pages/PresentationPage'
-import {UIST2025Page} from './pages/UIST2025Page'
-import {UserStudyComponentsPage} from './pages/UserStudyComponentsPage'
-import {UserStudyPage} from './pages/UserStudyPage'
-
-type Page =
-	| 'home'
-	| 'features'
-	| 'components'
-	| 'colors'
-	| 'example'
-	| 'all-components'
-	| 'uist2025'
-	| 'user-study'
-	| 'user-study-components'
-	| 'presentation'
+import {MarkdownPage} from './pages/MarkdownPage'
+import {type Page, pageFromLocation, pageHref, vuePageHref} from './routes'
 
 // Original VuePress navbar order. The exhaustive gallery is linked from the
 // curated Components page rather than competing with it in the primary nav.
@@ -39,49 +19,6 @@ const pages: {page: Page; label: string}[] = [
 	{page: 'colors', label: 'Colors'},
 	{page: 'example', label: 'Example'},
 ]
-
-const routePages: Page[] = [
-	...pages.map(({page}) => page),
-	'all-components',
-	'uist2025',
-	'user-study',
-	'user-study-components',
-	'presentation',
-]
-
-function pageFromHash(): Page {
-	const value = window.location.hash.replace(/^#\/?/, '').split('#')[0]
-	return routePages.includes(value as Page)
-		? (value as Page)
-		: 'home'
-}
-
-function AllComponentsPage() {
-	const vueGalleryHref = import.meta.env.DEV
-		? 'http://127.0.0.1:5175/'
-		: assetPath('vue/')
-	return (
-		<div
-			className="renderer-gallery-page"
-			{...{'vp-content': ''}}
-			data-testid="components-page"
-		>
-			<header className="gallery-header">
-				<h1>All Components</h1>
-				<p>
-					This exhaustive gallery contains every component in this renderer. For
-					the documented, selected set with usage notes, see the{' '}
-					<a href="#/components">Components page</a>.
-				</p>
-				<nav className="renderer-switcher" aria-label="Renderer comparison">
-					<a href="#/all-components" aria-current="page">React gallery</a>
-					<a href={vueGalleryHref}>Vue gallery</a>
-				</nav>
-			</header>
-			<ComponentGallery withProvider={false} />
-		</div>
-	)
-}
 
 interface SidebarHeading {
 	id: string
@@ -155,11 +92,11 @@ function SidebarItems({
 				(active === heading.id ? ' route-link-active' : '')
 			}
 			aria-current={active === heading.id ? 'location' : undefined}
-			href={`#/${page}#${heading.id}`}
+			href={pageHref(page, heading.id)}
 			aria-label={heading.text}
 			onClick={event => {
 				event.preventDefault()
-				history.replaceState(null, '', `#/${page}#${heading.id}`)
+				history.replaceState(null, '', pageHref(page, heading.id))
 				document
 					.getElementById(heading.id)
 					?.scrollIntoView({behavior: 'smooth'})
@@ -205,13 +142,22 @@ function NavbarItems({page}: {page: Page}) {
 							'route-link auto-link' +
 							(page === item.page ? ' route-link-active' : '')
 						}
-						href={`#/${item.page}`}
+						href={pageHref(item.page)}
 						aria-label={item.label}
 					>
 						{item.label}
 					</a>
 				</div>
 			))}
+			<div className="vp-navbar-item">
+				<a
+					className="auto-link"
+					href={vuePageHref(page)}
+					aria-label={`View ${pageTitles[page]} with Vue`}
+				>
+					Vue
+				</a>
+			</div>
 			<div className="vp-navbar-item">
 				<a
 					className="auto-link external-link"
@@ -287,17 +233,9 @@ const pageTitles: Record<Page, string> = {
 }
 
 export function DemoApp(): ReactNode {
-	const [page, setPage] = useState<Page>(pageFromHash)
+	const [page] = useState<Page>(pageFromLocation)
 	const [content, setContent] = useState<HTMLElement | null>(null)
 	const [sidebarOpen, setSidebarOpen] = useState(false)
-	useEffect(() => {
-		const update = () => {
-			setPage(pageFromHash())
-			setSidebarOpen(false)
-		}
-		window.addEventListener('hashchange', update)
-		return () => window.removeEventListener('hashchange', update)
-	}, [])
 
 	const isHome = page === 'home'
 	const hasSidebar = !['home', 'uist2025', 'user-study', 'user-study-components', 'presentation'].includes(page)
@@ -326,7 +264,7 @@ export function DemoApp(): ReactNode {
 					</div>
 				</div>
 				<span>
-					<a className="route-link" href="#/home">
+					<a className="route-link" href={pageHref('home')}>
 						<img
 							className="vp-site-logo"
 							src={assetPath('logo.svg')}
@@ -352,13 +290,22 @@ export function DemoApp(): ReactNode {
 									'route-link auto-link' +
 									(page === item.page ? ' route-link-active' : '')
 								}
-								href={`#/${item.page}`}
+								href={pageHref(item.page)}
 								aria-label={item.label}
 							>
 								{item.label}
 							</a>
 						</div>
 					))}
+					<div className="vp-navbar-item">
+						<a
+							className="auto-link"
+							href={vuePageHref(page)}
+							aria-label={`View ${pageTitles[page]} with Vue`}
+						>
+							Vue
+						</a>
+					</div>
 				</nav>
 				<SidebarItems root={content} page={page} title={pageTitles[page]} />
 			</aside>
@@ -368,17 +315,7 @@ export function DemoApp(): ReactNode {
 				</main>
 			) : (
 				<main className="vp-page" ref={setContent}>
-					<Fragment key={page}>
-						{page === 'features' && <FeaturesPage />}
-						{page === 'components' && <ComponentsPage />}
-						{page === 'colors' && <ColorsPage />}
-						{page === 'example' && <ExamplesPage />}
-						{page === 'all-components' && <AllComponentsPage />}
-						{page === 'uist2025' && <UIST2025Page />}
-						{page === 'user-study' && <UserStudyPage />}
-						{page === 'user-study-components' && <UserStudyComponentsPage />}
-						{page === 'presentation' && <PresentationPage />}
-					</Fragment>
+					<MarkdownPage key={page} page={page} />
 				</main>
 			)}
 		</div>

@@ -36,22 +36,66 @@ features:
 	</p>
 </div>
 
-Tweeq provides maintained [React](https://react.dev) and [Vue 3](https://vuejs.org) renderers for creative professionals. Both use the same parameter semantics, interaction controllers, and visual system.
+This repository maintains [React](https://react.dev) and [Vue 3](https://vuejs.org)
+renderers over the shared behavior of [baku89/tweeq](https://github.com/baku89/tweeq).
+Both use the same parameter semantics, interaction controllers, and visual system.
 
 It is continuously developed by the visual artist [Baku Hashimoto](https://baku89.com).
 
 ## How to Use
 
-### Installation
+### React
 
 ```sh
-npm install @tweeq/vue vue
+npm install @tweeq/react react react-dom
 ```
 
 `@tweeq/core` and `@tweeq/dom` are transitive renderer dependencies. Install
 them explicitly only when application code imports their APIs directly.
 
-### main.ts
+#### main.tsx
+
+```tsx
+import {createRoot} from 'react-dom/client'
+import '@tweeq/react/style.css'
+import {MyApp} from './App'
+
+createRoot(document.getElementById('root')!).render(<MyApp />)
+```
+
+#### App.tsx
+
+```tsx
+import {useState} from 'react'
+import {App, InputNumber, Parameter, ParameterGrid, TitleBar} from '@tweeq/react'
+
+export function MyApp() {
+  const [opacity, setOpacity] = useState(1)
+
+  return (
+    <App
+      appId="com.yourid.yourapp"
+      colorMode="dark"
+      accentColor="#ff0000"
+      title={<TitleBar name="My App" icon="favicon.svg" />}
+    >
+      <ParameterGrid>
+        <Parameter label="Opacity">
+          <InputNumber value={opacity} min={0} max={1} onChange={setOpacity} />
+        </Parameter>
+      </ParameterGrid>
+    </App>
+  )
+}
+```
+
+### Vue
+
+```sh
+npm install @tweeq/vue vue
+```
+
+#### main.ts
 
 ```ts
 import {createApp} from 'vue'
@@ -61,7 +105,7 @@ import Root from './App.vue'
 createApp(Root).mount('#app')
 ```
 
-### App.vue
+#### App.vue
 
 ```vue
 <script setup lang="ts">
@@ -72,12 +116,10 @@ const opacity = ref(1)
 </script>
 
 <template>
-  <App
-    app-id="com.yourid.yourapp"
-    color-mode="dark"
-    accent-color="#ff0000"
-  >
-    <template #title><TitleBar name="My App" icon="favicon.svg" /></template>
+  <App app-id="com.yourid.yourapp" color-mode="dark" accent-color="#ff0000">
+    <template #title>
+      <TitleBar name="My App" icon="favicon.svg" />
+    </template>
     <ParameterGrid>
       <Parameter label="Opacity">
         <InputNumber v-model="opacity" :min="0" :max="1" />

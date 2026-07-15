@@ -21,31 +21,31 @@ async function expectColorDragPalette(page: Page, control: Locator) {
 }
 
 test('Home exposes visible React and Vue choices', async ({page}) => {
-	await page.goto('/#/home')
+	await page.goto('/')
 
 	const galleryNavigation = page.getByRole('navigation', {
 		name: 'Renderer galleries',
 	})
 	await expect(
 		galleryNavigation.getByRole('link', {name: /React gallery/}),
-	).toHaveAttribute('href', '#/all-components')
+	).toHaveAttribute('href', '/all-components.html')
 	await expect(
 		galleryNavigation.getByRole('link', {name: /Vue gallery/}),
-	).toHaveAttribute('href', 'http://127.0.0.1:5175/')
+	).toHaveAttribute(
+		'href',
+		'http://127.0.0.1:5177/vue/all-components.html',
+	)
 
-	const active = page.locator('.framework-switcher [aria-pressed="true"]')
-	const colors = await active.evaluate(element => {
-		const style = getComputedStyle(element)
-		return {background: style.backgroundColor, foreground: style.color}
-	})
-	expect(colors.background).not.toBe('rgba(0, 0, 0, 0)')
-	expect(colors.foreground).not.toBe(colors.background)
+	await expect(page.getByRole('heading', {name: 'React', exact: true})).toBeVisible()
+	await expect(page.getByRole('heading', {name: 'Vue', exact: true})).toBeVisible()
+	await expect(page.getByText('npm install @tweeq/react react react-dom')).toBeVisible()
+	await expect(page.getByText('npm install @tweeq/vue vue')).toBeVisible()
 })
 
 test('React embedded gallery resists docs CSS and keeps drag/modal interactions actionable', async ({
 	page,
 }) => {
-	await page.goto('/#/all-components')
+	await page.goto('/all-components.html')
 
 	const rendererNavigation = page.getByRole('navigation', {
 		name: 'Renderer comparison',
@@ -55,7 +55,10 @@ test('React embedded gallery resists docs CSS and keeps drag/modal interactions 
 	).toHaveAttribute('aria-current', 'page')
 	await expect(
 		rendererNavigation.getByRole('link', {name: 'Vue gallery'}),
-	).toHaveAttribute('href', 'http://127.0.0.1:5175/')
+	).toHaveAttribute(
+		'href',
+		'http://127.0.0.1:5177/vue/all-components.html',
+	)
 
 	for (const selector of [
 		'[data-testid="InputRadio"] [data-tq-component="input-radio"]',
@@ -144,7 +147,7 @@ test('Vue gallery matches the usable React demonstrations', async ({page}) => {
 	})
 	await expect(
 		rendererNavigation.getByRole('link', {name: 'React gallery'}),
-	).toHaveAttribute('href', 'http://127.0.0.1:5174/#/all-components')
+	).toHaveAttribute('href', 'http://127.0.0.1:5174/all-components.html')
 	await expect(
 		rendererNavigation.getByRole('link', {name: 'Vue gallery'}),
 	).toHaveAttribute('aria-current', 'page')

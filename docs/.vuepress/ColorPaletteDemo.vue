@@ -7,7 +7,7 @@ import {
 	type ColorMode,
 	generateThemeColorsRadix,
 	paletteRepresentatives,
-} from '../../src/theme'
+} from '@tweeq/core'
 
 // Local, self-contained theme inputs — this demo computes scales directly and
 // never touches the global theme store, so playing here doesn't reskin the docs.

@@ -20,7 +20,7 @@ jobs:
         run: pnpm check:release
       - name: Build workspace packages and applications
         run: pnpm build
-      - name: Validate generated API reference
+      - name: Validate documentation links and snippets
         run: pnpm docs:check
       - name: Test Node SSR imports
         run: pnpm test:ssr
@@ -58,9 +58,9 @@ jobs:
           retention-days: 14
 
   deploy:
-    name: Deploy renderer demos to GitHub Pages
+    name: Deploy renderer documentation to GitHub Pages
     needs: build
-    if: github.ref == 'refs/heads/feat/monorepo'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -83,12 +83,12 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Build workspace libraries
         run: pnpm build:packages
-      - name: Build React documentation and playground
+      - name: Build React documentation
         run: pnpm build:demo --base "/${{ github.event.repository.name }}/"
-      - name: Build Vue research playground
-        run: pnpm build:demo:vue --base "/${{ github.event.repository.name }}/vue/"
-      - name: Add Vue playground to Pages artifact
-        run: cp -R apps/playground-vue/dist apps/docs/dist/vue
+      - name: Build Vue documentation
+        env:
+          TWEEQ_VUE_DOCS_BASE: "/${{ github.event.repository.name }}/vue/"
+        run: pnpm build:docs:vue
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/docs/dist

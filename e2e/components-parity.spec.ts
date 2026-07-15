@@ -37,7 +37,7 @@ async function publishedPageGeometry(page: Page) {
 test('Components page keeps short controls visually faithful to Vue', async ({
 	page,
 }) => {
-	await page.goto('/#/components')
+	await page.goto('/components.html')
 
 	const checkbox = page.locator('[data-tq-component="input-checkbox"]').first()
 	await checkbox.click()
@@ -63,7 +63,7 @@ test('Components page keeps short controls visually faithful to Vue', async ({
 test('Components page preserves the published ground-truth demo geometry', async ({
 	page,
 }) => {
-	await page.goto('/#/components')
+	await page.goto('/components.html')
 
 	// These are the 13 controls that currently render in the published Vue
 	// reference. Its InputString demo is an empty comment node, so that upstream
@@ -116,7 +116,7 @@ test('Components page directly matches the published reference contract', async 
 		published.goto('https://baku89.github.io/tweeq/components.html', {
 			waitUntil: 'networkidle',
 		}),
-		local.goto('/#/components', {waitUntil: 'networkidle'}),
+		local.goto('/components.html', {waitUntil: 'networkidle'}),
 	])
 	await Promise.all([
 		published.evaluate(() => document.fonts.ready),

@@ -1,7 +1,7 @@
 import {expect, type Page, test} from '@playwright/test'
 
 async function showInputSize(page: Page, theme: 'light' | 'dark') {
-	await page.goto('/#/components')
+	await page.goto('/components.html')
 	if ((await page.locator('html').getAttribute('data-theme')) !== theme) {
 		await page.getByRole('button', {name: 'toggle color mode'}).click()
 	}
