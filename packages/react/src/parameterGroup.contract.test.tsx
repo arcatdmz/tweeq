@@ -7,8 +7,17 @@ import {
 } from '@tweeq/test-contracts'
 import {act} from 'react'
 import {createRoot} from 'react-dom/client'
+import {vi} from 'vitest'
 
 import {ParameterGroup} from './components/ParameterGrid'
+
+vi.mock('@iconify/react', () => ({
+  Icon: () => null,
+  addIcon: () => undefined,
+  getIcon: () => undefined,
+  iconLoaded: () => true,
+  loadIcon: async () => undefined,
+}))
 
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT: boolean})
 	.IS_REACT_ACT_ENVIRONMENT = true
@@ -28,12 +37,7 @@ runParameterGroupContract(async (_component, initialProps) => {
 	})
 
 	const harness: RendererHarness<ParameterGroupContractProps> = {
-		async update() {
-			// Iconify schedules one async state pass; keep it inside React's act.
-			await act(async () => {
-				await new Promise(resolve => setTimeout(resolve, 20))
-			})
-		},
+		async update() {},
 		part: part => container.querySelector(`[data-tq-part="${part}"]`),
 		async pointer() {},
 		async key() {},
