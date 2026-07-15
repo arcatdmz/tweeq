@@ -135,9 +135,18 @@ async function setOpaqueVisualBackground(target: Locator) {
 	await target.evaluate(element => {
 		const root = element as HTMLElement
 		root.style.setProperty('background', 'white')
-		root
-			.querySelector<HTMLElement>('[data-tq-part="panels-wrapper"]')
-			?.style.setProperty('background', 'white')
+		const panels = root.querySelector<HTMLElement>(
+			'[data-tq-part="panels-wrapper"]'
+		)
+		panels?.style.setProperty('background', 'white')
+		for (const panel of panels?.querySelectorAll<HTMLElement>(
+			'[data-tq-component="tab"]'
+		) ?? []) {
+			panel.style.setProperty('background', 'white')
+			if (!panel.hasAttribute('data-tq-active')) {
+				panel.style.setProperty('display', 'none')
+			}
+		}
 	})
 }
 
