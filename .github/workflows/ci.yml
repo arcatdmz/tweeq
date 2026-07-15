@@ -33,6 +33,14 @@ jobs:
       - name: Run browser parity tests
         run: pnpm e2e
 
+      - name: Upload browser parity failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: browser-parity-failure-${{ github.sha }}
+          path: test-results
+          retention-days: 7
+
       - name: Record non-blocking release baseline
         id: release-baseline
         continue-on-error: true
